@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1776731667 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\consola.c
+	<stdio.h>
+	<stdlib.h>
+	"consola.h"
+
+1776746484 c:\users\tomas\onedrive\desktop\caravana_del_desierto\consola.h
+
+1776746484 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\main.c
+	<stdio.h>
+	<stdlib.h>
+	"consola.h"
+
