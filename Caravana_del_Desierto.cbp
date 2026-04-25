@@ -42,6 +42,10 @@
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="manejo_archivos.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="manejo_archivos.h" />
 		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

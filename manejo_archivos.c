@@ -27,3 +27,8 @@ FILE* abrir_txt(const char* nombre_archivo, const char* modo)
 
     return fopen(buffer, modo);
 }
+
+
+char* leerLinea(const FILE* arch_txt){
+
+}

@@ -1,6 +1,6 @@
 #ifndef MANEJO_ARCHIVOS_H_INCLUDED
 #define MANEJO_ARCHIVOS_H_INCLUDED
-#define MAX_BUFFER 64
+#define MAX_BUFFER 256
 #define EXTENSION ".txt"
 #define EXT_LEN (sizeof(EXTENSION) - 1)
 
