@@ -1,13 +1,27 @@
 # depslib dependency file v1.0
-1776731667 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\consola.c
+1776746834 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\consola.c
 	<stdio.h>
 	<stdlib.h>
 	"consola.h"
 
 1776746484 c:\users\tomas\onedrive\desktop\caravana_del_desierto\consola.h
 
-1776746484 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\main.c
+1777142527 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\main.c
 	<stdio.h>
 	<stdlib.h>
+	"manejo_archivos.h"
 	"consola.h"
+
+1776874893 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\dado.c
+	<stdlib.h>
+	"dado.h"
+
+1776874860 c:\users\tomas\onedrive\desktop\caravana_del_desierto\dado.h
+
+1777142421 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\manejo_archivos.c
+	<string.h>
+	"manejo_archivos.h"
+
+1777142447 c:\users\tomas\onedrive\desktop\caravana_del_desierto\manejo_archivos.h
+	<stdio.h>
 
