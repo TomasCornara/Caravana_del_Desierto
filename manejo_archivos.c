@@ -29,6 +29,6 @@ FILE* abrir_txt(const char* nombre_archivo, const char* modo)
 }
 
 
-char* leerLinea(const FILE* arch_txt){
+/*char* leerLinea(const FILE* arch_txt){
 
-}
+}*/

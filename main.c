@@ -3,16 +3,9 @@
 
 #include "manejo_archivos.h"
 #include "consola.h"
+#include "lista_circular_simple.h"
 
-int main()
-{
-    FILE* arch;
+int main() {
 
-
-    arch = abrir_txt("ejemplo","w");
-    if(arch){
-        printf("Todo en orden");
-        fclose(arch);
-    }
     return 0;
 }

@@ -6,11 +6,12 @@
 
 1776746484 c:\users\tomas\onedrive\desktop\caravana_del_desierto\consola.h
 
-1777142527 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\main.c
+1777762713 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\main.c
 	<stdio.h>
 	<stdlib.h>
 	"manejo_archivos.h"
 	"consola.h"
+	"lista_circular_simple.h"
 
 1776874893 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\dado.c
 	<stdlib.h>
@@ -18,10 +19,18 @@
 
 1776874860 c:\users\tomas\onedrive\desktop\caravana_del_desierto\dado.h
 
-1777142421 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\manejo_archivos.c
+1777761864 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\manejo_archivos.c
 	<string.h>
 	"manejo_archivos.h"
 
-1777142447 c:\users\tomas\onedrive\desktop\caravana_del_desierto\manejo_archivos.h
+1777148388 c:\users\tomas\onedrive\desktop\caravana_del_desierto\manejo_archivos.h
 	<stdio.h>
+
+1777763256 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\lista_circular_simple.c
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	"lista_circular_simple.h"
+
+1777762701 c:\users\tomas\onedrive\desktop\caravana_del_desierto\lista_circular_simple.h
 

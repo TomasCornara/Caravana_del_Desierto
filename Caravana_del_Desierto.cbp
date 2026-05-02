@@ -39,6 +39,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="dado.h" />
+		<Unit filename="lista_circular_simple.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="lista_circular_simple.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
