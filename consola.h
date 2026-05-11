@@ -16,6 +16,8 @@ void printBandido(void);
 void printTormenta(void);
 void printCaravana(void);
 void printOasis(void);
+void printPremio(void);
+void printVidaExtra(void);
 
 
 #endif // CONSOLA_H_INCLUDED

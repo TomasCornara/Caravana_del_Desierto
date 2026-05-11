@@ -6,8 +6,9 @@
 #include "lista_circular_simple.h"
 #include"funciones_auxiliares.h"
 int main() {
-    int  opcion;
+    //int  opcion;
 
+    /*
     limp_pant();
     printf("\n  === CARAVANA DEL DESIERTO ===\n");
 
@@ -41,9 +42,7 @@ int main() {
                 break;
         }
     } while (opcion != 3);
-
+    */
     return 0;
 }
 
-/*
-}*/

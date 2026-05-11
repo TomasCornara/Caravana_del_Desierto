@@ -123,6 +123,54 @@ void printOasis(void){
         );
 }
 
+void printVidaExtra(void){
+    printf(
+    "                                                     @@@@@@@@@@        @@@@@@@@@@                    \n"
+    "                                   ####            @@@@        @@@     @@@       @@@  \n"
+    "                                 #aaaa#           @@              @@@@@            @  \n"
+    "                  ###          #aaa##a#           @               @@@              @@@\n"
+    "                  ###         ###aa #a#           @             @@                  @ \n"
+    "                  ###               #a#           @           @@                   @@ \n"
+    "                  ###              #aa#           @                               @@  \n"
+    "           ##################      #a #           @                              @@   \n"
+    "           ##################      #a #           @@                            @@    \n"
+    "                  ###              #a #            @@@                         @@     \n"
+    "                  ###              #a #              @@@@                    @@       \n"
+    "                  ###          #####a # ##              @@@@              @@@         \n"
+    "                  ###         ############                 @@@         @@@@           \n"
+    "                                                             @@     @@@@              \n"
+    "                                                              @@@#@@                  \n"
+    "                                                              ###                     \n"
+    "                                                             #                        \n"
+    );
+}
+
+void printPremio(void){
+    printf(
+    "                     ####################################                                            \n"
+    "                 XXXXXXXXXXXXXXXXXXX      XXXXXXXXXXXXXXXXXXXX                                       \n"
+    "              XXXX  XXX TTTTTTTTTT X      X TTTTTTTTTTTTXXX  XXX                                     \n"
+    "             XX   XzzzzzzzzzzzzzzzzzX     XzzzzzzzzzzzzzzzXX   XX                                    \n"
+    "            XX   XX TTTTTTTTTTTTTT  X     X TTTTTTTTTTTTTT XX   X                                    \n"
+    "           XX   XXzzzzzzzzzzzzzzzzzzX     XzzzzzzzzzzzzzzzzzzX  XX                                   \n"
+    "           X    X TTTTTTTTTTTTTTTT  X     X TTTTTTTTTTTTTTTT X   XX                 ###       ###    \n"
+    "           X    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    X                 ###     ## ##    \n"
+    "           XzzzzzzzzzzzzzzzzzzzzzXnUnnXXnnUnXzzzzzzzzzzzzzzzzzzzzzXX             ########      ##    \n"
+    "           X                     XnUnXXXXnUnX                     X              ########      ##    \n"
+    "           X    XXXXXXXXXXXXXXXX XnUUX  XUUXXXXXXXXXXXXXXXXXXX    X                 ###        ##    \n"
+    "           X    X TTTTTTTTTTTTTT XXXUXXXXUXX TTTTTTTTTTTTTTT X    X                 ###        ##    \n"
+    "           XX   X  TTTTTTTTTTTTTT  XXXXXXXX  TTTTTTTTTTTTTTT X   XX                          ######  \n"
+    "            X   XzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzX   X                                   \n"
+    "            XX  XX TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT XX  XX                                   \n"
+    "             X   XzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzX   X                                    \n"
+    "             XXXXXXXTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT XXXXX                                    \n"
+    "              X   UXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXU  UX                                    \n"
+    "              XU   UUXX                                 XXX   UXX                                    \n"
+    "              XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                                     \n"
+    );
+}
+
+
 void mostrarFooter(void){
         printf(
         "########################################################################################################################\n"
