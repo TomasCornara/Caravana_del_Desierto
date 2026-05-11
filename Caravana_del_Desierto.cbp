@@ -43,6 +43,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="funciones_auxiliares.h" />
+		<Unit filename="juego.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="juego.h" />
 		<Unit filename="lista_circular_simple.c">
 			<Option compilerVar="CC" />
 		</Unit>
