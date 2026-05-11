@@ -10,46 +10,6 @@ A revisar: \*
 
 
 
-**Integracion/Juego:**
-
-
-
-\- Estructura configuracion
-
-\- Estructura de movimientos
-
-\- Estructura para jugador
-
-\- Estructura para bandido
-
-\- Estructura de un casillero
-
-\- Estructura de una mano
-
-\- Funcion para definir si lo desapilado es un t\_bandido o t\_jugador
-
-\- Crear bandido
-
-\- Asignarle a un bandido la direccion de un t\_casillero
-
-\- Calcular movimiento bandido (Tirar dado, elegir mejor direccion, moverse en el mapa)
-
-\- Crear jugador
-
-\- Jugar mano (Fijarse si hay que aplicar efectos, premios, etc y como, tirar dado, pedir direccion, desplazarlo. Todas estas podrian ser sub funciones asociadas a esta)
-
-\- Cargar mano en el sistema de manos
-
-\- Bajar un archivo al sistema de pre-preparacion del mapa
-
-\- Bajar del sistema de pre-preparacion del mapa al sistema de mapa
-
-\- Funciones wrapper para los sistemas (Ejemplo: nuestro sistema de mapa usa t\_nodos en una lista circular, pero nosotros necesitamos una funcion wrapper que pongan en cola el caso especifico nuestro, que seria t\_casillero. O sea, se necesita funciones como "crearMapa" que envuelvan a funciones como "crearColaCircular" o "cargarCasillero" que envuelvan a "ponerEncola")
-
-
-
-
-
 **Sistema de archivos:**
 
 
@@ -58,53 +18,19 @@ A revisar: \*
 
 \- Cerrar archivo
 
-\- Hacer lectura de una linea del arch de configuracion y bajarla dentro del sistema de un t\_configuracion + t\_casillero (y un bandido asociado a ese casillero, segun corresponda)
+\- Hacer lectura de una linea del arch de configuracion txt y bajarla dentro del sistema de un t\_configuracion + t\_casillero 
 
-\- Bajar t\_mano a archivo
+\- Guardar movimiento en un txt 
 
+\- Guardar datos de configuracion en un txt
 
+\- Guardar registro\_ranking en un bin
 
+\- Bajar arbol a archivo bin
 
-
-**Estructura para el Sistema de pre-preparacion del mapa:**
-
-
-
-\- Estructura del nodo de un vector
-
-\- Crear vector
-
-\- Destruir vector
-
-\- Poner al final
-
-\- Vaciar vector
-
-\- Ver posicion
+\- Cargar arbol desde archivo bin
 
 
-
-**Estructura para el Sistema de Turnos:**
-
-
-
-\- Estructura del nodo de lista circular
-
-\- Crear Lista Circular
-
-\- Vaciar Lista
-
-\- Lista llena
-
-\- Lista vacia
-
-\- Poner un elemento al principio
-
-\- Mostrar elemento actual
-
-\- Quitar elemento
-
-\- Desplazar al siguiente nodo
 
 
 
@@ -126,39 +52,51 @@ A revisar: \*
 
 
 
-**Estructura para el Sistema de mapa:**
+
+
+**Sistema de Mapa:**
 
 
 
-\- Estructura del nodo de lista circular doble
+*Estructura Basica:*
+
+\- Estructura lista circular doble
 
 \- Crear Lista circular doble
 
-\- vaciar lista circular doble
+\- Vaciar lista circular doble
 
-\- lista llena
+\- Insertar Nodo al final
 
-\- lista vacia
+\- Lista llena
 
-\- vaciar lista
+\- Lista vacia
 
-\- poner elemento al final
+\- Vaciar lista
 
-\- ver elemento actual
-
-\- Desplazar al siguiente nodo
-
-\- Desplazar al anterior nodo
-
-\- Desplazar N nodos
+\- Ver elemento actual
 
 
 
-**Estructura para el Sistema movimientos:**
+*Estructura t\_mapa*
+
+\- Envolver t\_lista en t\_mapa y encolar movimiento
+
+\- Mover a un bandido N nodos y encolar movimiento
+
+\- Desplazar jugador N nodos
 
 
 
-\- Estructura del nodo de cola
+
+
+**Sistema movimientos:**
+
+
+
+*Estructura Basica:*
+
+\- Estructura de cola
 
 \- Crear Cola
 
@@ -171,4 +109,50 @@ A revisar: \*
 \- Cola vacia
 
 \- Desencolar
+
+\- Vaciar Cola
+
+
+
+*Estructura t\_movimiento*
+
+\- Envolver t\_cola en t\_movimiento
+
+\- Guardar movimiento de jugador
+
+\- Guardar movimiento de bandido
+
+\- Funciones de archivo relacionadas
+
+
+
+**Sistema ranking:**
+
+
+
+*Estructura Basica:*
+
+\- Estructura del arbol/indice
+
+\- Crear arbol/indice
+
+\- Destruir arbol/indice
+
+\- Buscar nodo y retornar contenido
+
+\- Poner nodo nuevo
+
+\- Eliminar nodo
+
+\- Destruir arbol
+
+\- Funciones de archivo relacionadas
+
+
+
+
+
+
+
+
 
