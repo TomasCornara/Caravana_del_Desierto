@@ -4,18 +4,12 @@
 #define EXTENSION ".txt"
 #define EXT_LEN (sizeof(EXTENSION) - 1)
 #define ARCHIVO_CONFIG  "config.txt"
-#include <stdio.h>
 
-typedef struct {
-    int cantidad_posiciones;
-    int vidas_inicio;
-    int maximo_bandidos;
-    int maximo_premios;
-    int maximo_vidas_extra;
-    int maximo_oasis;
-    int maximo_tormentas;
-} Configuracion;
+#include <stdio.h>
+#include "juego.h"
 
 FILE* abrir_txt(const char* nombre_archivo, const char* modo);
-int   juego_cargar_config(Configuracion *config);
+int   juego_cargar_config(t_config *config);
+char* leerLineaABuffer(FILE* arch, char* buffer, unsigned tam);
+
 #endif // MANEJO_ARCHIVOS_H_INCLUDED
