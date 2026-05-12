@@ -58,7 +58,7 @@ A revisar: \*
 
 
 
-*Estructura Basica:*(*\[Ulises]*)
+*Estructura Basica:*
 
 \- Estructura lista circular doble
 
@@ -94,7 +94,7 @@ A revisar: \*
 
 
 
-*Estructura Basica:*
+*Estructura Basica:*(*\[Ulises]*)
 
 \- Estructura de cola
 
