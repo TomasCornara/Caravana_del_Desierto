@@ -58,7 +58,7 @@ A revisar: \*
 
 
 
-*Estructura Basica:*
+*Estructura Basica:*(*\[Ulises]*)
 
 \- Estructura lista circular doble
 
