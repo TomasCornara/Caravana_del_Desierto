@@ -31,6 +31,10 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="cola_dinamica.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="cola_dinamica.h" />
 		<Unit filename="consola.c">
 			<Option compilerVar="CC" />
 		</Unit>
