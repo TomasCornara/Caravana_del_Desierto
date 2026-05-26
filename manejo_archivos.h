@@ -9,7 +9,6 @@
 #include "juego.h"
 
 FILE* abrir_txt(const char* nombre_archivo, const char* modo);
-int   juego_cargar_config(t_config *config);
 char* leerLineaABuffer(FILE* arch, char* buffer, unsigned tam);
 
 #endif // MANEJO_ARCHIVOS_H_INCLUDED

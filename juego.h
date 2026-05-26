@@ -4,6 +4,7 @@
 #include <stdbool.h>
 
 #include "cola_dinamica.h"
+#include "arbolBinario.h"
 
 #define MAX_NOMBRE 4
 #define TIPO_INICIO 1
@@ -26,7 +27,7 @@
 
 typedef void (*animCasillero)(void);
 
-typedef t_arbol t_raking;
+typedef t_Arbol t_raking;
 //typedef t_mapa t_pos;
 //typedef t_listaCirDoble t_mapa;
 
@@ -69,5 +70,8 @@ typedef struct{
     unsigned maximo_oasis;
     unsigned maximo_tormentas;
 } t_config;
+
+int   juego_cargar_config(t_config *config);
+
 
 #endif // JUEGO_H_INCLUDED

@@ -2,11 +2,11 @@
 #define ARBOLBINARIO_H_INCLUDED
 #define ABS(X) ((X >= 0)? (X):((X) * (-1)))
 
-typedef struct sNodo{
+typedef struct sNodoA{
     void* dato;
     unsigned tam;
-    struct sNodo* der;
-    struct sNodo* izq;
+    struct sNodoA* der;
+    struct sNodoA* izq;
 }t_Nodo;
 
 typedef t_Nodo* t_Arbol;
