@@ -19,16 +19,6 @@ Este proyecto está escrito en C y construye un motor de juego utilizando TDA (T
 
 ## Instrucciones de Uso
 
-### Compilacion
-Para compilar y ejecutar el proyecto:
-
-1. Clonar este repositorio.
-2. Compilar usando GCC:
-```bash
-gcc -o Caravana_del_Desierto main.c consola.c dado.c manejo_archivos.c cola_dinamica.c arbolBinario.c juego.c lista_circular_simple.c -Wall
-```
-*(De forma opcional, si utiliza Code::Blocks, puede abrir directamente el archivo `Caravana_del_Desierto.cbp` para buildear el proyecto).*
-
 ### Archivos de Configuración
 Antes de iniciar, puede modificar el archivo de texto `config.txt` que debe encontrarse en el mismo directorio que el ejecutable. Debe estar formateado de la siguiente manera:
 
@@ -53,9 +43,9 @@ Caravana_del_Desierto.exe
 3. Siga las instrucciones en pantalla y presione la tecla indicada para lanzar el dado.
 
 ## Integrantes
-- Valentín Nievas 
+- Valentín, Nievas 
 - Divano, Matías 
 - Gauto, Gastón
 - Cornara, Tomás
-- Lazarte Ulises
+- Lazarte, Ulises
 
