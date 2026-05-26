@@ -1,4 +1,4 @@
-# Caravana del Desierto - Algoritmos y Estructuras de Datos
+# Caravana del Desierto - AyED
 
 Este repositorio es una implementación en C de un juego interactivo de consola llamado "Caravana del Desierto", donde los jugadores emprenden una peligrosa travesía por el desierto. 
 
