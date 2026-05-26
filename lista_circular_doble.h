@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MIN(X,Y) ((X)<(Y)?(X):(Y))
+#include "globales.h"
 
 typedef struct sNodo {
     void *info;

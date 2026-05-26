@@ -3,23 +3,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#define MIN(A,B) (((A)>(B))? (B):(A))
+#include "globales.h"
 
 #define OK 1
 #define ERROR 0
 
-typedef struct sNodo
+typedef struct sNodoCola
 {
-    struct sNodo* sig;
+    struct sNodoCola* sig;
     unsigned tamElemento;
     void* elemento;
-}tNodo;
+}tNodoCola;
 
 typedef struct
 {
-    struct sNodo * pPrimero;
-    struct sNodo * pUltimo;
+    tNodoCola * pPrimero;
+    tNodoCola * pUltimo;
 }t_cola;
 
 void crearCola(t_cola* cola);

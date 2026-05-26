@@ -1,6 +1,6 @@
 #ifndef ARBOLBINARIO_H_INCLUDED
 #define ARBOLBINARIO_H_INCLUDED
-#define ABS(X) ((X >= 0)? (X):((X) * (-1)))
+#include "globales.h"
 
 typedef struct sNodoA{
     void* dato;
