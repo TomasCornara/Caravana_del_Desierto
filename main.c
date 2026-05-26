@@ -44,7 +44,7 @@ int main() {
                 break;
 
             case 3:
-                printf("\n  Hasta la proxima. �El desierto espera!\n\n");
+                printf("\n  Hasta la proxima. El desierto espera!\n\n");
                 break;
 
             default:

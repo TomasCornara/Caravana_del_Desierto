@@ -1,6 +1,5 @@
 #include "lista_circular_doble.h"
 
-// --- TUS FUNCIONES YA EXISTENTES ---
 void crear_lista(tLista* pl)
 {
     *pl = NULL;
@@ -84,8 +83,6 @@ int ver_dato_lista(const tLista *pl, void* dato, unsigned tam) {
     memcpy(dato, top->info, MIN(tam, top->tamInfo));
     return 1;
 }
-
-// --- FUNCIONES NUEVAS QUE PEDISTE ---
 
 int agregar_final_lista(tLista *pl, const void *dato, unsigned tam)
 {
@@ -212,7 +209,6 @@ void vaciar_lista(tLista *pl)
     *pl = NULL;
 }
 
-// --- TUS FUNCIONES DE RECORRER ---
 void recorrer_adelante(tLista *pl)
 {
     tNodo *nue = *pl;
