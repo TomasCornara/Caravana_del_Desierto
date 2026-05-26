@@ -17,6 +17,22 @@ void destruirArbol(t_Arbol* arbol) {
     *arbol = NULL;
 }
 
+int grabarEnArchivoRecursivo(const t_Arbol* arbol, FILE* destino, unsigned cantBytes) {
+    if (*arbol == NULL) return 1;
+
+    fwrite((*arbol)->dato, cantBytes, 1, destino);
+    
+    grabarEnArchivoRecursivo(&(*arbol)->izq, destino, cantBytes);
+    grabarEnArchivoRecursivo(&(*arbol)->der, destino, cantBytes);
+
+    return 1;
+}
+
+int grabarArbolEnArchivo(const t_Arbol* arbol, FILE* destino, unsigned cantBytes) {
+    if (!destino) return 0;
+    return grabarEnArchivoRecursivo(arbol, destino, cantBytes);
+}
+
 int buscarEnArbol(const t_Arbol* arbol, void* dato, unsigned cantBytes, comFunc cmp) {
     int c;
     if(*arbol == NULL) return 0;

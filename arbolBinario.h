@@ -19,6 +19,8 @@ int ponerEnArbol(t_Arbol* arbol, const void* dato, unsigned cantBytes, comFunc c
 int buscarEnArbol(const t_Arbol* arbol, void* dato, unsigned cantBytes, comFunc cmp);
 void destruirArbol(t_Arbol* arbol);
 void printInOrden(const t_Arbol* arbol,ptrFunc ptr);
+int grabarEnArchivoRecursivo(const t_Arbol* arbol, FILE* destino, unsigned cantBytes);
+int grabarArbolEnArchivo(const t_Arbol* arbol, FILE* destino, unsigned cantBytes);
 void printPreOrden(const t_Arbol* arbol,ptrFunc ptr);
 void printPosOrden(const t_Arbol* arbol,ptrFunc ptr);
 int calcularAltura(const t_Arbol* arbol);
