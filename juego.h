@@ -26,7 +26,7 @@
 
 typedef void (*animCasillero)(void);
 
-//typedef t_arbol t_raking;
+typedef t_arbol t_raking;
 //typedef t_mapa t_pos;
 //typedef t_listaCirDoble t_mapa;
 
