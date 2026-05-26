@@ -3,11 +3,26 @@
 
 #include "manejo_archivos.h"
 #include "consola.h"
-#include "lista_circular_simple.h"
+//#include "lista_circular_simple.h"
 #include"funciones_auxiliares.h"
+#include "juego.h"
 int main() {
     int  opcion;
+    Configuracion config;
+    t_mapa mapa;
+    juego_cargar_config(&config);
+    if (!juego_validar_config(&config)) {
+        printf("Error: Configuracion invalida en config.txt\n");
+        pausa();
+        return 1;
+    }
 
+    printf("Configuracion cargada correctamente.\n");
+    printf("Casilleros: %u | Vidas: %u | Bandidos: %u\n",
+           config.cantidad_posiciones, config.vidas_inicio, config.maximo_bandidos);
+    juego_generar_mapa(&config,&mapa);
+
+    pausa();
     limp_pant();
     printf("\n  === CARAVANA DEL DESIERTO ===\n");
 
