@@ -3,8 +3,8 @@
 
 #include "manejo_archivos.h"
 #include "consola.h"
-#include "lista_circular_simple.h"
-#include"funciones_auxiliares.h"
+
+
 int main() {
     //int  opcion;
 

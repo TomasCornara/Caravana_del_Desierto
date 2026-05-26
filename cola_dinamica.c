@@ -1,22 +1,22 @@
 #include "cola_dinamica.h"
 
-void crearCola(struct tCola * cola)
+void crearCola(t_cola* cola)
 {
     cola->pPrimero = NULL;
     cola->pUltimo = NULL;
 }
 
-int colaVacia(const struct  tCola* cola)
+int colaVacia(const t_cola* cola)
 {
     return NULL == cola->pPrimero ? OK : ERROR;
 }
 
-int colaLlena(const struct  tCola* cola, unsigned tamElemento)
+int colaLlena(const  t_cola* cola, unsigned tamElemento)
 {
     return OK;
 }
 
-int acolar(struct tCola * cola,const void * elemento, unsigned tamElemento)
+int acolar(t_cola * cola,const void * elemento, unsigned tamElemento)
 {
 
     struct sNodo nodonuevo;
@@ -54,7 +54,7 @@ int acolar(struct tCola * cola,const void * elemento, unsigned tamElemento)
     return OK;
 }
 
-int desacolar(struct tCola*cola, void*destino, unsigned tamanio)
+int desacolar(t_cola* cola, void* destino, unsigned tamanio)
 {
 
     struct sNodo nodoeliminado;
@@ -84,7 +84,7 @@ int desacolar(struct tCola*cola, void*destino, unsigned tamanio)
     return OK;
 }
 
-void vaciarCola(struct tCola* cola)
+void vaciarCola(t_cola* cola)
 {
 
     struct sNodo nodoElmiminado;
@@ -100,7 +100,7 @@ void vaciarCola(struct tCola* cola)
     }
 }
 
-int verTopeCola(const struct tCola * cola, void*destino, unsigned tamanio)
+int verTopeCola(const t_cola * cola, void* destino, unsigned tamanio)
 {
     int minimo;
     if( colaVacia(cola) == OK )

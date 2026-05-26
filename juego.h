@@ -1,8 +1,11 @@
 #ifndef JUEGO_H_INCLUDED
 #define JUEGO_H_INCLUDED
+
 #include <stdbool.h>
 
-//#include "lista_circular_doble"
+#include "lista_circular_doble.h"
+#include "lista_circular_simple.h"
+#include "cola_dinamica.h"
 
 #define MAX_NOMBRE 4
 #define TIPO_INICIO 1
@@ -24,11 +27,10 @@
 
 
 typedef void (*animCasillero)(void);
-/*
-typedef t_arbol t_raking;
-typedef t_listaCirDoble t_mapa;
-typedef t_mapa t_pos;
-*/
+
+//typedef t_arbol t_raking;
+//typedef t_mapa t_pos;
+//typedef t_listaCirDoble t_mapa;
 
 typedef struct{
     char nombre[MAX_NOMBRE];
@@ -46,7 +48,7 @@ typedef struct{
     animCasillero animacion;
 }t_casillero;
 
-//typedef t_cola t_movimientos;
+typedef t_cola t_movimientos;
 
 typedef struct{
     unsigned pos_inicial;
