@@ -1,14 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "manejo_archivos.h"
-#include "consola.h"
-//#include "lista_circular_simple.h"
-#include"funciones_auxiliares.h"
 #include "juego.h"
+
 int main() {
     int  opcion;
-    Configuracion config;
+    t_config config;
     t_mapa mapa;
     juego_cargar_config(&config);
     if (!juego_validar_config(&config)) {
@@ -23,11 +20,11 @@ int main() {
     juego_generar_mapa(&config,&mapa);
 
     pausa();
-    limp_pant();
+    limpiar_pantalla();
     printf("\n  === CARAVANA DEL DESIERTO ===\n");
 
     do {
-        limp_pant();
+        limpiar_pantalla();
         mostrar_menu();
         if (scanf("%d", &opcion) != 1) opcion = 0;
 
@@ -39,7 +36,7 @@ int main() {
                 break;
 
             case 2:
-                limp_pant();
+                limpiar_pantalla();
                 printf("\n  RANKING DE JUGADORES  \n");
                 printf("\n  PROXIMAMENTE\n");
                 //ranking_mostrar(&arbol_jugadores); creo que seria algo asi
@@ -47,7 +44,7 @@ int main() {
                 break;
 
             case 3:
-                printf("\n  Hasta la proxima. ¡El desierto espera!\n\n");
+                printf("\n  Hasta la proxima. ï¿½El desierto espera!\n\n");
                 break;
 
             default:
@@ -60,5 +57,3 @@ int main() {
     return 0;
 }
 
-/*
-}*/

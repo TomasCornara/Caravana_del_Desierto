@@ -1,6 +1,13 @@
 #include <string.h>
 #include "manejo_archivos.h"
 
+char* leerLineaABuffer(FILE* arch, char* buffer, unsigned tam){
+    if(!arch || !buffer || !tam) return NULL;
+
+    if(!fgets(buffer,tam,arch)) return NULL;
+
+    return buffer;
+}
 
 FILE* abrir_txt(const char* nombre_archivo, const char* modo)
 {
@@ -27,4 +34,5 @@ FILE* abrir_txt(const char* nombre_archivo, const char* modo)
 
     return fopen(buffer, modo);
 }
+
 

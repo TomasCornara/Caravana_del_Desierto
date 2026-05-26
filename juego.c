@@ -1,4 +1,6 @@
 #include "juego.h"
+#include "manejo_archivos.h"
+
 void poner_tipo_random(t_casillero *temp, int total, unsigned tipo, int cantidad) {
     int puestos = 0;
     while (puestos < cantidad) {
@@ -27,8 +29,7 @@ void poner_bandidos_random(t_casillero *temp, int total, int cantidad) {
     }
 }
 
-// === GENERACIÓN DE MAPA - TU VERSIÓN ===
-int juego_generar_mapa(Configuracion *config, t_mapa *mapa) {
+int juego_generar_mapa(t_config *config, t_mapa *mapa) {
     crear_lista(mapa);
     srand(time(NULL));
     t_casillero *p, *fin;
@@ -67,7 +68,7 @@ int juego_generar_mapa(Configuracion *config, t_mapa *mapa) {
     return 1;
 }
 
-int juego_cargar_config(Configuracion *config) {
+int juego_cargar_config(t_config *config) {
     FILE *f = abrir_txt(ARCHIVO_CONFIG, "r");
     if (!f) {
         /* Valores por defecto si no existe el archivo */
@@ -96,7 +97,7 @@ int juego_cargar_config(Configuracion *config) {
     return 1;
 }
 
-int juego_validar_config(Configuracion *config) {
+int juego_validar_config(t_config *config) {
     int total_especiales = config->maximo_oasis + config->maximo_tormentas +
                            config->maximo_premios + config->maximo_vidas_extra;
     if (config->cantidad_posiciones < 2) {

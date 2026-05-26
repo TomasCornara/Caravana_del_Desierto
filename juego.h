@@ -5,7 +5,10 @@
 #include <stdlib.h>
 
 #include "lista_circular_doble.h"
-#include"manejo_archivos.h"
+#include "manejo_archivos.h"
+#include "cola_dinamica.h"
+#include "arbolBinario.h"
+#include "consola.h"
 
 #define MAX_NOMBRE 4
 #define TIPO_INICIO 1
@@ -16,7 +19,7 @@
 #define TIPO_VIDA_EXTRA 6
 #define TIPO_PREMIO 7
 
-//typedef t_arbol t_raking;
+typedef t_Arbol t_raking;
 typedef tLista t_mapa;
 typedef t_mapa t_pos;
 
@@ -33,9 +36,10 @@ typedef struct{
     unsigned tipo_casillero;
     bool presencia_jugador;
     unsigned cant_bandidos;
+    //animCasillero animacion;
 }t_casillero;
 
-//typedef t_cola t_movimientos;
+typedef t_cola t_movimientos;
 
 typedef struct{
     unsigned pos_inicial;
@@ -57,11 +61,14 @@ typedef struct {
     int maximo_vidas_extra;
     int maximo_oasis;
     int maximo_tormentas;
-} Configuracion;
+} t_config;
 
 void poner_tipo_random(t_casillero *temp, int total, unsigned tipo, int cantidad);
 void poner_bandidos_random(t_casillero *temp, int total, int cantidad);
-int juego_generar_mapa(Configuracion *config, t_mapa *mapa);
-int   juego_cargar_config(Configuracion *config);
-int juego_validar_config(Configuracion *config);
+int juego_generar_mapa(t_config *config, t_mapa *mapa);
+int   juego_cargar_config(t_config *config);
+int juego_validar_config(t_config *config);
+
+int   juego_cargar_config(t_config *config);
+
 #endif // JUEGO_H_INCLUDED

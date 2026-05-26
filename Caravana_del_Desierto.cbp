@@ -31,6 +31,14 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="arbolBinario.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="arbolBinario.h" />
+		<Unit filename="cola_dinamica.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="cola_dinamica.h" />
 		<Unit filename="consola.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -39,10 +47,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="dado.h" />
-		<Unit filename="funciones_auxiliares.c">
-			<Option compilerVar="CC" />
+		<Unit filename="globales.h">
+			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
-		<Unit filename="funciones_auxiliares.h" />
 		<Unit filename="juego.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -51,10 +58,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="lista_circular_doble.h" />
-		<Unit filename="lista_circular_simple.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="lista_circular_simple.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>

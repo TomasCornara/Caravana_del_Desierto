@@ -1,17 +1,15 @@
 # depslib dependency file v1.0
-1776746834 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\consola.c
+1779819617 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\consola.c
 	<stdio.h>
 	<stdlib.h>
 	"consola.h"
 
-1776746484 c:\users\tomas\onedrive\desktop\caravana_del_desierto\consola.h
+1779819617 c:\users\tomas\onedrive\desktop\caravana_del_desierto\consola.h
 
-1777762713 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\main.c
+1779821178 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\main.c
 	<stdio.h>
 	<stdlib.h>
-	"manejo_archivos.h"
-	"consola.h"
-	"lista_circular_simple.h"
+	"juego.h"
 
 1776874893 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\dado.c
 	<stdlib.h>
@@ -19,20 +17,21 @@
 
 1776874860 c:\users\tomas\onedrive\desktop\caravana_del_desierto\dado.h
 
-1777761864 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\manejo_archivos.c
+1779820372 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\manejo_archivos.c
 	<string.h>
 	"manejo_archivos.h"
 
-1777148388 c:\users\tomas\onedrive\desktop\caravana_del_desierto\manejo_archivos.h
+1779820282 c:\users\tomas\onedrive\desktop\caravana_del_desierto\manejo_archivos.h
 	<stdio.h>
+	"juego.h"
 
-1777763256 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\lista_circular_simple.c
+1779808046 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\lista_circular_simple.c
 	<stdlib.h>
 	<stdio.h>
 	<string.h>
 	"lista_circular_simple.h"
 
-1777762701 c:\users\tomas\onedrive\desktop\caravana_del_desierto\lista_circular_simple.h
+1779807869 c:\users\tomas\onedrive\desktop\caravana_del_desierto\lista_circular_simple.h
 
 1778524780 source:c:\algoritmo\caravana_del_desierto\consola.c
 	<stdio.h>
@@ -81,9 +80,36 @@
 	"lista_circular_doble.h"
 
 1779295191 c:\algoritmo\caravana_del_desierto\lista_circular_doble.h
+
+1778529388 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\funciones_auxiliares.c
+	"funciones_auxiliares.h"
+
+1778529388 c:\users\tomas\onedrive\desktop\caravana_del_desierto\funciones_auxiliares.h
+	<stdio.h>
+	<stdlib.h>
+
+1779820476 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\juego.c
+	"juego.h"
+	"manejo_archivos.h"
+
+1779821083 c:\users\tomas\onedrive\desktop\caravana_del_desierto\juego.h
+	<stdbool.h>
+	<time.h>
+	<stdlib.h>
+	"lista_circular_doble.h"
+	"manejo_archivos.h"
+	"cola_dinamica.h"
+	"arbolBinario.h"
+	"consola.h"
+
+1779821050 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\cola_dinamica.c
+	"cola_dinamica.h"
+
+1779821049 c:\users\tomas\onedrive\desktop\caravana_del_desierto\cola_dinamica.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
+	"globales.h"
 
 1779817130 source:c:\algoritmo\caravana_del_desierto\juego.c
 	"juego.h"
@@ -94,4 +120,24 @@
 	<stdlib.h>
 	"lista_circular_doble.h"
 	"manejo_archivos.h"
+
+1779820808 c:\users\tomas\onedrive\desktop\caravana_del_desierto\lista_circular_doble.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"globales.h"
+
+1779819561 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\lista_circular_doble.c
+	"lista_circular_doble.h"
+
+1779819617 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\arbolbinario.c
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	"arbolBinario.h"
+
+1779820808 c:\users\tomas\onedrive\desktop\caravana_del_desierto\arbolbinario.h
+	"globales.h"
+
+1779820808 c:\users\tomas\onedrive\desktop\caravana_del_desierto\globales.h
 
