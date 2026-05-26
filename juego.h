@@ -3,8 +3,6 @@
 
 #include <stdbool.h>
 
-#include "lista_circular_doble.h"
-#include "lista_circular_simple.h"
 #include "cola_dinamica.h"
 
 #define MAX_NOMBRE 4
