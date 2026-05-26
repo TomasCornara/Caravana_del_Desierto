@@ -9,6 +9,8 @@ void limpiar_pantalla();
 void mostrarHeader(void);
 void mostrarFooter(void);
 void mostrarEstadisticas(unsigned vidas, unsigned puntos);
+void pausa();
+void mostrar_menu();
 
 //Pantallas
 void mostrarBienvenida(void);

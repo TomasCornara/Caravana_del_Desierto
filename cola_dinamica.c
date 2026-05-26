@@ -1,4 +1,4 @@
-#include "colaDinamica.h"
+#include "cola_dinamica.h"
 
 void crearCola(struct tCola * cola)
 {
