@@ -20,6 +20,7 @@ void jugar_partida(t_mapa *mapa, t_config *config){
     inicializar_jugador(&jugador, config, *mapa);
     pedir_nombre(jugador.nombre); //INICIALIZAR NOMBRE DEL JUGADOR
 
+    limpiar_buffer();
     ///Juego
     while (jugador.vidas && ((t_casillero*)jugador.pos->info)->tipo_casillero != TIPO_FIN) {
         if (jugador.efectoTormenta) {
@@ -44,14 +45,13 @@ void jugar_partida(t_mapa *mapa, t_config *config){
             // PARA DEBUGGEAR
             printf("Ingresa un valor para debuggear el dado y presiona ENTER: ");
             scanf("%d", &dado.cara);
-            limpiar_buffer();
 
-            // ((t_casillero*)jugador.pos->info)->nro_posicion) = numero de casillero actual
+            // (((t_casillero*)jugador.pos->info)->nro_posicion) = numero de casillero actual del jugador
             if(dado.cara < (((t_casillero*)jugador.pos->info)->nro_posicion) +1){
                 do{
                     printf("\nIngresa 'A' para avanzar y 'R' para retroceder y presiona ENTER: ");
-                    scanf(" %c", &c_lado);
                     limpiar_buffer();
+                    scanf("%c", &c_lado);
 
                     if(c_lado != 'A' && c_lado != 'R')
                             printf("\nIngrese un término válido.");
@@ -61,6 +61,7 @@ void jugar_partida(t_mapa *mapa, t_config *config){
             if(c_lado == 'R')
                 lado *= -1;
 
+            limpiar_buffer();
             pausa();
 
             mover_jugador(&jugador, dado.cara, &cola_movimientos, lado);
@@ -68,7 +69,7 @@ void jugar_partida(t_mapa *mapa, t_config *config){
             casillero_actual = (t_casillero*)jugador.pos->info;
 
             //Aplica los los buffeos y debuffos + bandidos
-            resolver_casillero_actual(&jugador, casillero_actual);
+            resolver_casillero_actual(&jugador, casillero_actual, &cola_movimientos);
             limpiar_pantalla();
         }
 
@@ -146,7 +147,7 @@ void mover_jugador(t_jugador *jugador, unsigned pasos, t_movimientos *cola_movim
     guardar_movimiento(cola_movimientos, pos_inicial, pos_final, true);
 }
 
-void resolver_casillero_actual(t_jugador *jugador, t_casillero *casillero_actual) {
+void resolver_casillero_actual(t_jugador *jugador, t_casillero *casillero_actual, t_movimientos *cola_movimientos) {
     bool caso_oasis = false;
 
     if (!jugador || !casillero_actual) {
@@ -171,6 +172,7 @@ void resolver_casillero_actual(t_jugador *jugador, t_casillero *casillero_actual
         limpiar_pantalla();
         printf("Pierdes el efecto Oasis.\n");
         pausa();
+        limpiar_buffer();
     }
 
     if (casillero_actual->animacion) {
@@ -181,6 +183,7 @@ void resolver_casillero_actual(t_jugador *jugador, t_casillero *casillero_actual
             caso_oasis = false;
             printf("El Oasis te protege\n");
             jugador->efectoOasis = false;
+            limpiar_buffer();
         }
 
         pausa();
@@ -188,10 +191,10 @@ void resolver_casillero_actual(t_jugador *jugador, t_casillero *casillero_actual
 
 
 
-    resolver_bandido_en_casillero(jugador, casillero_actual);
+    resolver_bandido_en_casillero(jugador, casillero_actual, cola_movimientos);
 }
 
-void resolver_bandido_en_casillero(t_jugador *jugador, t_casillero *casillero_actual) {
+void resolver_bandido_en_casillero(t_jugador *jugador, t_casillero *casillero_actual, t_movimientos *cola_movimientos) {
     if (!jugador || !casillero_actual) return;
 
     //No hay bandidos
@@ -205,6 +208,7 @@ void resolver_bandido_en_casillero(t_jugador *jugador, t_casillero *casillero_ac
         jugador->vidas--;
         limpiar_pantalla();
         printf("El bandido te quita 1 vida.\n");
+        mover_jugador(jugador, ((t_casillero*)jugador->pos->info)->nro_posicion, cola_movimientos, -1);
     }
 
     casillero_actual->cant_bandidos--; //Elimina al bandido que ataco
