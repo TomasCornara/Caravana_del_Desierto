@@ -4,6 +4,7 @@
 void crearDado(t_dado* d, unsigned cnt_lados)
 {
     if (!d) return;
+    d->lados = cnt_lados;
     d->cara = 1;
 }
 

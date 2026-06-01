@@ -20,7 +20,6 @@ void jugar_partida(t_mapa *mapa, t_config *config){
     inicializar_jugador(&jugador, config, *mapa);
     pedir_nombre(jugador.nombre); //INICIALIZAR NOMBRE DEL JUGADOR
 
-    limpiar_buffer();
     ///Juego
     while (jugador.vidas && ((t_casillero*)jugador.pos->info)->tipo_casillero != TIPO_FIN) {
         if (jugador.efectoTormenta) {
@@ -45,13 +44,14 @@ void jugar_partida(t_mapa *mapa, t_config *config){
             // PARA DEBUGGEAR
             printf("Ingresa un valor para debuggear el dado y presiona ENTER: ");
             scanf("%d", &dado.cara);
+            limpiar_buffer();
 
             // ((t_casillero*)jugador.pos->info)->nro_posicion) = numero de casillero actual
             if(dado.cara < (((t_casillero*)jugador.pos->info)->nro_posicion) +1){
                 do{
                     printf("\nIngresa 'A' para avanzar y 'R' para retroceder y presiona ENTER: ");
+                    scanf(" %c", &c_lado);
                     limpiar_buffer();
-                    scanf("%c", &c_lado);
 
                     if(c_lado != 'A' && c_lado != 'R')
                             printf("\nIngrese un término válido.");
@@ -61,7 +61,6 @@ void jugar_partida(t_mapa *mapa, t_config *config){
             if(c_lado == 'R')
                 lado *= -1;
 
-            limpiar_buffer();
             pausa();
 
             mover_jugador(&jugador, dado.cara, &cola_movimientos, lado);
