@@ -90,7 +90,7 @@ int juego_validar_config(t_config *config);
 void jugar_partida(t_mapa *mapa, t_config *config);
 void inicializar_jugador(t_jugador *jugador, t_config *config, t_mapa mapa);
 int guardar_movimiento(t_movimientos *cola, unsigned pos_inicial, unsigned pos_final, bool jugador_humano);
-void mover_jugador(t_jugador *jugador, unsigned pasos, t_movimientos *cola_movimientos);
+void mover_jugador(t_jugador *jugador, unsigned pasos, t_movimientos *cola_movimientos, int lado);
 void mover_bandido(t_mapa *mapa, t_movimientos *cola_movimientos);
 void resolver_casillero_actual(t_jugador *jugador, t_casillero *casillero_actual);
 void resolver_bandido_en_casillero(t_jugador *jugador, t_casillero *casillero_actual);
