@@ -8,9 +8,11 @@
 void limpiar_pantalla();
 void mostrarHeader(void);
 void mostrarFooter(void);
-void mostrarEstadisticas(unsigned vidas, unsigned puntos);
+void mostrarEstadisticas(unsigned vidas, unsigned puntos, char* nombre);
 void pausa();
 void mostrar_menu();
+void pedir_nombre(char *nombre);
+void limpiar_buffer(void);;
 
 //Pantallas
 void mostrarBienvenida(void);
@@ -20,6 +22,6 @@ void printCaravana(void);
 void printOasis(void);
 void printPremio(void);
 void printVidaExtra(void);
-
+void gameOver(void);
 
 #endif // CONSOLA_H_INCLUDED

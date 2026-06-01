@@ -1,23 +1,134 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 #include "consola.h"
+#include "juego.h"
+
+void mostrarMapa(t_mapa *mapa) {
+    tNodo *temp;
+    t_casillero *cas;
+    unsigned pos;
+
+    if (!mapa || !*mapa) return;
+
+    temp = *mapa;
+    while (temp->ant != NULL) {
+        temp = temp->ant;
+    }
+
+    printf("\n=== MAPA DE LA CARAVANA ===\n");
+
+    while (temp != NULL) {
+        cas = (t_casillero *)temp->info;
+        pos = cas->nro_posicion;
+
+        int num_elems = 0;
+        char elems[20][3];
+
+        if (cas->tipo_casillero != TIPO_NORMAL || (!cas->presencia_jugador && cas->cant_bandidos == 0)) {
+            switch (cas->tipo_casillero) {
+                case TIPO_INICIO: strcpy(elems[num_elems++], "I"); break;
+                case TIPO_FIN: strcpy(elems[num_elems++], "F"); break;
+                case TIPO_NORMAL: strcpy(elems[num_elems++], "."); break;
+                case TIPO_OASIS: strcpy(elems[num_elems++], "O"); break;
+                case TIPO_TORMENTA: strcpy(elems[num_elems++], "T"); break;
+                case TIPO_VIDA_EXTRA: strcpy(elems[num_elems++], "V"); break;
+                case TIPO_PREMIO: strcpy(elems[num_elems++], "P"); break;
+                default: strcpy(elems[num_elems++], "?"); break;
+            }
+        }
+
+        if (cas->presencia_jugador) {
+            strcpy(elems[num_elems++], "J");
+        }
+
+        for (unsigned i = 0; i < cas->cant_bandidos; i++) {
+            if (num_elems < 20) strcpy(elems[num_elems++], "B");
+        }
+
+        printf("%02u", pos);
+        if (num_elems == 1) {
+            printf(":%s\n", elems[0]);
+        } else if (num_elems > 1) {
+            printf(":[");
+            for (int i = 0; i < num_elems; i++) {
+                printf("%s%s", elems[i], i == num_elems - 1 ? "" : " ");
+            }
+            printf("]\n");
+        } else {
+            printf(":.\n");
+        }
+
+        temp = temp->sig;
+    }
+
+    printf("\n");
+}
 
 void pausa() {
+    int c;
     printf("\n  Presione ENTER para continuar...");
-    while (getchar() != '\n');
-    getchar();
+    while ((c = getchar()) != '\n' && c != EOF);
+}
+
+void limpiar_buffer(void) {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
+
+void pedir_nombre(char *nombre) {
+    size_t len;
+    size_t i;
+    int letras;
+
+    limpiar_buffer();
+
+    do {
+        printf("Ingrese su nombre (al menos 3 letras): ");
+        if (fgets(nombre, MAX_NOMBRE, stdin) == NULL) {
+            nombre[0] = '\0';
+            return;
+        }
+
+        // Eliminar el salto de linea
+        len = strlen(nombre);
+        if (len > 0 && nombre[len - 1] == '\n') {
+            nombre[len - 1] = '\0';
+            len--;
+        }
+
+        // Verificar que se haya escrito algo
+        letras = 0;
+        for (i = 0; i < len; i++) {
+            if (isalpha((unsigned char)nombre[i])) {
+                letras++;
+            }
+        }
+
+        if (letras < 3) {
+            printf("Nombre invalido: ingrese al menos 3 letras.\n");
+        }
+    } while (letras < 3);
+
+    // Normalizar a mayusculas
+    for (i = 0; i < len; i++) {
+        nombre[i] = (char)toupper((unsigned char)nombre[i]);
+    }
 }
 
 void mostrar_menu() {
-    printf("\n");
-    printf("  ------------------------------------\n");
-    printf("  |     CARAVANA DEL DESIERTO        |\n");
-    printf("  ------------------------------------\n");
-    printf("  |  1. Jugar nueva partida          |\n");
-    printf("  |  2. Ver ranking                  |\n");
-    printf("  |  3. Salir                        |\n");
-    printf("  ------------------------------------\n");
-    printf("  Opcion: ");
+    printf("\n"
+           "  ------------------------------------\n"
+           "  |     CARAVANA DEL DESIERTO        |\n"
+           "  ------------------------------------\n"
+           "  |  1. Jugar nueva partida          |\n"
+           "  |  2. Ver ranking                  |\n"
+           "  |  3. Salir                        |\n"
+           "  ------------------------------------\n"
+           "  |             GRUPO 10             |\n"
+           "  ------------------------------------\n"
+           "  Opcion: ");
 }
 
 
@@ -37,22 +148,45 @@ void mostrarBienvenida(void){
     );
 }
 
-void mostrarEstadisticas(unsigned vidas, unsigned puntos){
+void mostrarEstadisticas(unsigned vidas, unsigned puntos, char* nombre){
     printf(
     "                                                      VIDAS: %d                                                         \n"
-    "                                                      PUNTOS: %d                                                        \n"
+    "                                                      PUNTOS: %d                             JUGADOR: %s                \n"
     "########################################################################################################################\n",
-    vidas, puntos
+    vidas, puntos, nombre
     );
 }
+
+
+void gameOver(void){
+    printf(
+    "                                                                                                                          \n"
+    "                                                                                  sSSSSSs                                 \n"
+    "                                                                               sSSs                                       \n"
+    "             SUCUMBES ANTE LOS                                                 sSS                                        \n"
+    "                BANDIDOS...                                                     ssSS     S                                \n"
+    "                                                                                  ssSSSSS                                 \n"
+    "                                                                                                                          \n"
+    "                                               cc                                                                         \n"
+    "                               ccCCC     cccccccccc cc                                                                    \n"
+    "                                 cCCc  ccccc ccccccccccc                                                                  \n"
+    "                                  c cccccccccccccccCCCCc··                                                                \n"
+    "                                        cccccccccccccccc                                                                  \n"
+    "                                          ccc       cc  cc                                                                \n"
+    "                                          c  cc     cc   cc                                                               \n"
+    "                                         Xc c       XX   XX                                                               \n"
+    );
+
+}
+
 
 void printCaravana(void){
     printf(
     "                                                                                                                          \n"
     "                                         sSSSSSs                                                                          \n"
     "                                      sSSsSSSSSSss                                                                        \n"
-    "                                      sSSSSSSSSSSSs                                                                       \n"
-    "                                       ssSSSSSSSSSs                                                                       \n"
+    "             ESCAPAS CON VIDA         sSSSSSSSSSSSs                                                                       \n"
+    "                DE LAS ARENAS...       ssSSSSSSSSSs                                                                       \n"
     "                                         ssSSSSSs                                                                         \n"
     "                                                                                                                          \n"
     "                                               cc                         cccc                   ccccc                    \n"
@@ -96,13 +230,13 @@ void printBandido(void){
 
 void printTormenta(void){
         printf(
-        "           ............     (((((           ....)))))))))                              \n"
+        "           ............     (((((           ....)))))))))                                                              \n"
         "                          ........(((((((   ..  ((....(((((         ))).......))))         )))))                       \n"
         "                    ((((...   ((((      ...   ....       ...))))..............   )).............)))))                  \n"
         "                 (((...     (((.......(((((((.                .))))))        .....)).))))     .......)))               \n"
         "               ((  ..    .(((..    (((    .             ......   ....))    )     ....   )))))).        ))).            \n"
         "              ((    .. .((      .((        ...(((........            ..)...)))   )) ....     .)))        ))..          \n"
-        "              ( .......(    ..(((       ..((((                        .).....)....)))  ...      .))       ))           \n"
+        "              ( .......(    ..(((  TORMENTA DE ARENA!!!               .).....)....)))  ...      .))       ))           \n"
         "             ((..   ..(    ..((        .(((                 )       ..))     )     .))).          )).    ..)           \n"
         "             (..    . (    .((        .((       )           )      ))))     ))        ).....       )..    )).          \n"
         "             (..   .  (    .((        .(      ..))    ))   .)   ))))       )) ..      )              ...               \n"
@@ -119,7 +253,7 @@ void printTormenta(void){
 
 void printOasis(void){
         printf(
-        "                              ......                                                                                   \n"
+        "                             ......                                                                                   \n"
         "                          .............                                                                                \n"
         "                         ...... ..........                                        ***                                  \n"
         "                       ..................        ######                              **             ****               \n"
@@ -128,7 +262,7 @@ void printOasis(void){
         "           #####  ####    #########     #######                    #####                OOO**  ** OOO                  \n"
         "        #####                          ###                            ###              **********  ***O**              \n"
         " ########    0**    *00              ##                                #########   ***** *********** OO *****          \n"
-        "               *  ** 0               ##                           ######          **   OOO    *A*******     *          \n"
+        "               *  ** 0               ##      OASIS!               ######          **   OOO    *A*******     *          \n"
         "            *******                                            ###                *     OO    AA  OOO***               \n"
         "         0**  0******                                                                       AA    OO  **               \n"
         "         00    * 0AA  **                                                                     A          **     ######  \n"
@@ -159,7 +293,7 @@ void printVidaExtra(void){
     "                  ###         ############                 @@@         @@@@           \n"
     "                                                             @@     @@@@              \n"
     "                                                              @@@#@@                  \n"
-    "                                                              ###                     \n"
+    "       VIDA EXTRA!                                            ###                     \n"
     "                                                             #                        \n"
     );
 }
@@ -168,7 +302,7 @@ void printPremio(void){
     printf(
     "                     ####################################                                            \n"
     "                 XXXXXXXXXXXXXXXXXXX      XXXXXXXXXXXXXXXXXXXX                                       \n"
-    "              XXXX  XXX TTTTTTTTTT X      X TTTTTTTTTTTTXXX  XXX                                     \n"
+    "              XXXX  XXX TTTTTTTTTT X      X TTTTTTTTTTTTXXX  XXX         PUNTO EXTRA!                \n"
     "             XX   XzzzzzzzzzzzzzzzzzX     XzzzzzzzzzzzzzzzXX   XX                                    \n"
     "            XX   XX TTTTTTTTTTTTTT  X     X TTTTTTTTTTTTTT XX   X                                    \n"
     "           XX   XXzzzzzzzzzzzzzzzzzzX     XzzzzzzzzzzzzzzzzzzX  XX                                   \n"

@@ -20,6 +20,7 @@
 #define TIPO_PREMIO 7
 
 typedef t_Arbol t_raking;
+typedef void(*animCasillero)(void);
 typedef tLista t_mapa;
 typedef t_mapa t_pos;
 
@@ -33,10 +34,11 @@ typedef struct{
 }t_jugador;
 
 typedef struct{
+    unsigned nro_posicion;
     unsigned tipo_casillero;
     bool presencia_jugador;
     unsigned cant_bandidos;
-    //animCasillero animacion;
+    animCasillero animacion;
 }t_casillero;
 
 typedef t_cola t_movimientos;
