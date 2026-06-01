@@ -1,17 +1,260 @@
 #include "juego.h"
 #include "manejo_archivos.h"
+#include "dado.h"
+#include "consola.h"
 
-void poner_tipo_random(t_casillero *temp, int total, unsigned tipo, int cantidad) {
-    int puestos = 0;
-    while (puestos < cantidad) {
-        // pos entre 1 y total-2, no INICIO ni FIN
-        t_casillero *cas = temp + 1 + rand() % (total - 2);
+void jugar_partida(t_mapa *mapa, t_config *config){
+    t_movimientos cola_movimientos;
+    t_jugador jugador;
+    t_dado dado;
+    t_casillero *casillero_actual;
 
-        if (cas->tipo_casillero == TIPO_NORMAL) {
-            cas->tipo_casillero = tipo;
-            puestos++;
+    limpiar_pantalla();
+
+
+    //Inicializacion
+    crearCola(&cola_movimientos);
+    crearDado(&dado, CARAS_DADO);
+    inicializar_jugador(&jugador, config, *mapa);
+    pedir_nombre(jugador.nombre); //INICIALIZAR NOMBRE DEL JUGADOR
+
+    ///Juego
+    while (jugador.vidas && ((t_casillero*)jugador.pos->info)->tipo_casillero != TIPO_FIN) {
+        if (jugador.efectoTormenta) {
+                jugador.efectoTormenta = false;
+                limpiar_pantalla();
+                mostrarEstadisticas(jugador.vidas, jugador.puntos, jugador.nombre);
+                mostrarMapa(mapa);
+                printf("La tormenta te hace perder este turno.\n");
+                mostrarFooter();
+                pausa();
+
+        } else {
+            limpiar_pantalla();
+            mostrarEstadisticas(jugador.vidas, jugador.puntos, jugador.nombre);
+            mostrarMapa(mapa);
+            tirarDado(&dado);
+            printf("DADO - Sacaste un: %d\n",dado.cara);
+            mostrarFooter();
+
+            ///PARA DEBUGGEAR
+            printf("Ingresa un valor para debuggear el dado y presiona ENTER: ");
+            scanf("%d", &dado.cara);
+            limpiar_buffer();
+
+            pausa();
+            mover_jugador(&jugador, dado.cara, &cola_movimientos);
+
+            casillero_actual = (t_casillero*)jugador.pos->info;
+
+            //Aplica los los buffeos y debuffos + bandidos
+            resolver_casillero_actual(&jugador, casillero_actual);
+            limpiar_pantalla();
         }
+
+        ///Logica del bandido
+        mover_bandido(mapa, &cola_movimientos);
     }
+
+    ///Fin del juego
+    limpiar_pantalla();
+    if(jugador.vidas){
+       printCaravana(); //Ganaste
+    } else {
+        gameOver();
+    }
+
+    printf("Puntos: %d\n",jugador.puntos);
+
+    ///ACA FALTA BAJAR LOS RESULTADOS AL INDICE Y LOS MOVIMIENTOS A UN ARCHIVO
+
+    //Limpiar estructuras
+    vaciarCola(&cola_movimientos);
+    destruirDado(&dado);
+
+    return;
+}
+
+void inicializar_jugador(t_jugador *jugador, t_config *config, t_mapa mapa) {
+    tNodo *inicio;
+
+    strcpy(jugador->nombre, "");
+    jugador->vidas = config->vidas_inicio;
+    jugador->puntos = 0;
+    jugador->efectoTormenta = false;
+    jugador->efectoOasis = false;
+    inicio = mapa;
+    while (inicio != NULL && inicio->ant != NULL) {
+        inicio = inicio->ant;
+    }
+    jugador->pos = inicio;
+}
+
+int guardar_movimiento(t_movimientos *cola, unsigned pos_inicial, unsigned pos_final, bool jugador_humano) {
+    t_movimiento mov;
+    mov.pos_inicial = pos_inicial;
+    mov.pos_final = pos_final;
+    mov.jugador_humano = jugador_humano;
+    return acolar(cola, &mov, sizeof(t_movimiento));
+}
+
+void mover_jugador(t_jugador *jugador, unsigned pasos, t_movimientos *cola_movimientos) {
+    tNodo *actual;
+    unsigned pos_inicial;
+    unsigned pos_final;
+    int direccion;
+
+    if (!jugador || !jugador->pos) {
+        return;
+    }
+
+    actual = jugador->pos;
+    pos_inicial = ((t_casillero *)actual->info)->nro_posicion;
+    direccion = 1;
+
+    while (pasos > 0) {
+        if (direccion > 0 && actual->sig == NULL) {
+            direccion = -1;
+        } else if (direccion < 0 && actual->ant == NULL) {
+            direccion = 1;
+        }
+
+        actual = (direccion > 0) ? actual->sig : actual->ant;
+        pasos--;
+    }
+
+    ((t_casillero *)jugador->pos->info)->presencia_jugador = false;
+    ((t_casillero *)actual->info)->presencia_jugador = true;
+    jugador->pos = actual;
+
+    pos_final = ((t_casillero *)actual->info)->nro_posicion;
+    guardar_movimiento(cola_movimientos, pos_inicial, pos_final, true);
+}
+
+void resolver_casillero_actual(t_jugador *jugador, t_casillero *casillero_actual) {
+    bool caso_oasis = false;
+
+    if (!jugador || !casillero_actual) {
+        return;
+    }
+
+    if (casillero_actual->tipo_casillero == TIPO_OASIS) {
+        jugador->efectoOasis = true;
+    } else if (casillero_actual->tipo_casillero == TIPO_TORMENTA){
+        if(jugador->efectoOasis){
+            caso_oasis = true;
+
+        } else {
+            jugador->efectoTormenta = true;
+        }
+    } else if (casillero_actual->tipo_casillero == TIPO_PREMIO) {
+        jugador->puntos++;
+    } else if (casillero_actual->tipo_casillero == TIPO_VIDA_EXTRA) {
+        jugador->vidas++;
+    } else if (casillero_actual->tipo_casillero != TIPO_TORMENTA && jugador->efectoOasis){
+        jugador->efectoOasis = false;
+        limpiar_pantalla();
+        printf("Pierdes el efecto Oasis.\n");
+        pausa();
+    }
+
+    if (casillero_actual->animacion) {
+        limpiar_pantalla();
+        casillero_actual->animacion();
+
+        if(caso_oasis){
+            caso_oasis = false;
+            printf("El Oasis te protege\n");
+            jugador->efectoOasis = false;
+        }
+
+        pausa();
+    }
+
+
+
+    resolver_bandido_en_casillero(jugador, casillero_actual);
+}
+
+void resolver_bandido_en_casillero(t_jugador *jugador, t_casillero *casillero_actual) {
+    if (!jugador || !casillero_actual) return;
+
+    //No hay bandidos
+    if(!casillero_actual->cant_bandidos) return;
+
+    limpiar_pantalla();
+    printBandido();
+    pausa();
+
+    if (jugador->vidas > 0) {
+        jugador->vidas--;
+        limpiar_pantalla();
+        printf("El bandido te quita 1 vida.\n");
+    }
+
+    casillero_actual->cant_bandidos--; //Elimina al bandido que ataco
+    pausa();
+}
+
+void mover_bandido(t_mapa *mapa, t_movimientos *cola_movimientos) { ///REVISAR ESTA FUNCION, ESTA BASTANTE FEA
+    tNodo *inicio;
+    tNodo *temp;
+    tNodo **nodos;
+    unsigned *cantidades;
+    unsigned cantidad_nodos;
+    unsigned i;
+
+    if (!mapa || !*mapa) {
+        return;
+    }
+
+    inicio = *mapa;
+    while (inicio->ant != NULL) {
+        inicio = inicio->ant;
+    }
+
+    cantidad_nodos = 0;
+    temp = inicio;
+    while (temp != NULL) {
+        cantidad_nodos++;
+        temp = temp->sig;
+    }
+
+    if (cantidad_nodos < 2) {
+        return;
+    }
+
+    nodos = malloc(cantidad_nodos * sizeof(tNodo *));
+    cantidades = malloc(cantidad_nodos * sizeof(unsigned));
+    if (!nodos || !cantidades) {
+        free(nodos);
+        free(cantidades);
+        return;
+    }
+
+    temp = inicio;
+    for (i = 0; i < cantidad_nodos; i++) {
+        nodos[i] = temp;
+        cantidades[i] = ((t_casillero *)temp->info)->cant_bandidos;
+        temp = temp->sig;
+    }
+
+    for (i = 0; i < cantidad_nodos; i++) {
+        unsigned bandido;
+        unsigned destino = (i + 1) % cantidad_nodos;
+        t_casillero *cas_origen = (t_casillero *)nodos[i]->info;
+        t_casillero *cas_destino = (t_casillero *)nodos[destino]->info;
+
+        for (bandido = 0; bandido < cantidades[i]; bandido++) {
+            guardar_movimiento(cola_movimientos, cas_origen->nro_posicion, cas_destino->nro_posicion, false);
+        }
+
+        cas_origen->cant_bandidos -= cantidades[i];
+        cas_destino->cant_bandidos += cantidades[i];
+    }
+
+    free(nodos);
+    free(cantidades);
 }
 
 void poner_bandidos_random(t_casillero *temp, int total, int cantidad) {
@@ -29,34 +272,75 @@ void poner_bandidos_random(t_casillero *temp, int total, int cantidad) {
     }
 }
 
+void poner_tipo_random(t_casillero *temp, int total, unsigned tipo, int cantidad) {
+    int puestos = 0;
+    while (puestos < cantidad) {
+        t_casillero *cas = temp + 1 + rand() % (total - 2);
+
+        if (cas->tipo_casillero == TIPO_NORMAL) {
+            cas->tipo_casillero = tipo;
+
+            // Asignar función de animación según tipo
+            switch(tipo) {
+                case TIPO_OASIS:
+                    cas->animacion = printOasis;
+                    break;
+                case TIPO_TORMENTA:
+                    cas->animacion = printTormenta;
+                    break;
+                case TIPO_PREMIO:
+                    cas->animacion = printPremio;
+                    break;
+                case TIPO_VIDA_EXTRA:
+                    cas->animacion = printVidaExtra;
+                    break;
+                default:
+                    cas->animacion = NULL;
+                    break;
+            }
+
+            puestos++;
+        }
+    }
+}
+
+void poner_casilleros_especiales(t_casillero *temp, int total, t_config *config) {
+    poner_tipo_random(temp, total, TIPO_OASIS, config->maximo_oasis);
+    poner_tipo_random(temp, total, TIPO_TORMENTA, config->maximo_tormentas);
+    poner_tipo_random(temp, total, TIPO_PREMIO, config->maximo_premios);
+    poner_tipo_random(temp, total, TIPO_VIDA_EXTRA, config->maximo_vidas_extra);
+}
+
 int juego_generar_mapa(t_config *config, t_mapa *mapa) {
+    t_casillero *p,
+                *fin;
+    unsigned cant;
+    t_casillero *temp;
+
+    cant = config->cantidad_posiciones;
+    temp = calloc(cant, sizeof(t_casillero));
     crear_lista(mapa);
-    srand(time(NULL));
-    t_casillero *p, *fin;
-    unsigned cant = config->cantidad_posiciones;
-    t_casillero *temp = calloc(cant, sizeof(t_casillero));
+
     if (!temp) return 0;
 
     fin = temp + cant;
-
+    // Inicializar casilleros como normales y sin bandidos
     for (p = temp; p < fin; p++) {
+        p->nro_posicion = p - temp;
         p->tipo_casillero = TIPO_NORMAL;
         p->presencia_jugador = false;
         p->cant_bandidos = 0;
     }
 
+    // Colocar casilleros especiales y bandidos
     temp->tipo_casillero = TIPO_INICIO;
     temp->presencia_jugador = true;
     (temp + cant - 1)->tipo_casillero = TIPO_FIN;
 
-    poner_tipo_random(temp, cant, TIPO_OASIS, config->maximo_oasis);
-    poner_tipo_random(temp, cant, TIPO_TORMENTA, config->maximo_tormentas);
-    poner_tipo_random(temp, cant, TIPO_PREMIO, config->maximo_premios);
-    poner_tipo_random(temp, cant, TIPO_VIDA_EXTRA, config->maximo_vidas_extra);
-
+    poner_casilleros_especiales(temp, cant, config);
     poner_bandidos_random(temp, cant, config->maximo_bandidos);
 
-
+    // Pasar el arreglo a la lista
     for (p = temp; p < fin; p++) {
         if (agregar_final_lista(mapa, p, sizeof(t_casillero))!= 1) {
             free(temp);
@@ -69,22 +353,25 @@ int juego_generar_mapa(t_config *config, t_mapa *mapa) {
 }
 
 int juego_cargar_config(t_config *config) {
+    char clave[MAX_CLAVE_CONFIG];
+    int  valor;
+
+    // Inicializar con valores por defecto (En caso de que al archivo le falte alguna clave, o no exista)
+    config->cantidad_posiciones = CONFIG_CANTIDAD_POSICIONES_DEFAULT;
+    config->vidas_inicio        = CONFIG_VIDAS_INICIO_DEFAULT;
+    config->maximo_bandidos     = CONFIG_MAXIMO_BANDIDOS_DEFAULT;
+    config->maximo_premios      = CONFIG_MAXIMO_PREMIOS_DEFAULT;
+    config->maximo_vidas_extra  = CONFIG_MAXIMO_VIDAS_EXTRA_DEFAULT;
+    config->maximo_oasis        = CONFIG_MAXIMO_OASIS_DEFAULT;
+    config->maximo_tormentas    = CONFIG_MAXIMO_TORMENTAS_DEFAULT;
+
     FILE *f = abrir_txt(ARCHIVO_CONFIG, "r");
     if (!f) {
-        /* Valores por defecto si no existe el archivo */
-        config->cantidad_posiciones = 25;
-        config->vidas_inicio        = 3;
-        config->maximo_bandidos     = 2;
-        config->maximo_premios      = 3;
-        config->maximo_vidas_extra  = 1;
-        config->maximo_oasis        = 2;
-        config->maximo_tormentas    = 3;
-        printf("[Aviso] config.txt no encontrado. Usando valores por defecto.\n");
+        printf("[Aviso] config.txt no encontrado. Se usaran todos los valores por defecto.\n");
         return 0;
     }
-    char clave[64];
-    int  valor;
-    while (fscanf(f, "%63[^:]:%d\n", clave, &valor) == 2) {
+
+    while (fscanf(f, "%63[^:]:%d\n", clave, &valor) == VALORES_POR_LINEA_CONFIG) {
         if      (!strcmp(clave, "cantidad_posiciones")) config->cantidad_posiciones = valor;
         else if (!strcmp(clave, "vidas_inicio"))        config->vidas_inicio        = valor;
         else if (!strcmp(clave, "maximo_bandidos"))     config->maximo_bandidos     = valor;
@@ -126,3 +413,5 @@ int juego_validar_config(t_config *config) {
 
     return 1; // Todo OK
 }
+
+
