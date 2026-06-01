@@ -8,6 +8,8 @@ void jugar_partida(t_mapa *mapa, t_config *config){
     t_jugador jugador;
     t_dado dado;
     t_casillero *casillero_actual;
+    char c_lado;
+    int lado = 1;
 
     limpiar_pantalla();
 
@@ -18,6 +20,7 @@ void jugar_partida(t_mapa *mapa, t_config *config){
     inicializar_jugador(&jugador, config, *mapa);
     pedir_nombre(jugador.nombre); //INICIALIZAR NOMBRE DEL JUGADOR
 
+    limpiar_buffer();
     ///Juego
     while (jugador.vidas && ((t_casillero*)jugador.pos->info)->tipo_casillero != TIPO_FIN) {
         if (jugador.efectoTormenta) {
@@ -36,14 +39,32 @@ void jugar_partida(t_mapa *mapa, t_config *config){
             tirarDado(&dado);
             printf("DADO - Sacaste un: %d\n",dado.cara);
             mostrarFooter();
+            c_lado = 'A';
+            lado = 1;
 
-            ///PARA DEBUGGEAR
+            // PARA DEBUGGEAR
             printf("Ingresa un valor para debuggear el dado y presiona ENTER: ");
             scanf("%d", &dado.cara);
-            limpiar_buffer();
 
+            // ((t_casillero*)jugador.pos->info)->nro_posicion) = numero de casillero actual
+            if(dado.cara < (((t_casillero*)jugador.pos->info)->nro_posicion) +1){
+                do{
+                    printf("\nIngresa 'A' para avanzar y 'R' para retroceder y presiona ENTER: ");
+                    limpiar_buffer();
+                    scanf("%c", &c_lado);
+
+                    if(c_lado != 'A' && c_lado != 'R')
+                            printf("\nIngrese un término válido.");
+                } while(c_lado != 'A' && c_lado != 'R');
+            }
+
+            if(c_lado == 'R')
+                lado *= -1;
+
+            limpiar_buffer();
             pausa();
-            mover_jugador(&jugador, dado.cara, &cola_movimientos);
+
+            mover_jugador(&jugador, dado.cara, &cola_movimientos, lado);
 
             casillero_actual = (t_casillero*)jugador.pos->info;
 
@@ -98,11 +119,10 @@ int guardar_movimiento(t_movimientos *cola, unsigned pos_inicial, unsigned pos_f
     return acolar(cola, &mov, sizeof(t_movimiento));
 }
 
-void mover_jugador(t_jugador *jugador, unsigned pasos, t_movimientos *cola_movimientos) {
+void mover_jugador(t_jugador *jugador, unsigned pasos, t_movimientos *cola_movimientos, int lado) {
     tNodo *actual;
     unsigned pos_inicial;
     unsigned pos_final;
-    int direccion;
 
     if (!jugador || !jugador->pos) {
         return;
@@ -110,16 +130,12 @@ void mover_jugador(t_jugador *jugador, unsigned pasos, t_movimientos *cola_movim
 
     actual = jugador->pos;
     pos_inicial = ((t_casillero *)actual->info)->nro_posicion;
-    direccion = 1;
 
-    while (pasos > 0) {
-        if (direccion > 0 && actual->sig == NULL) {
-            direccion = -1;
-        } else if (direccion < 0 && actual->ant == NULL) {
-            direccion = 1;
-        }
+    while (pasos != 0) {
+        if (actual->sig == NULL)
+            lado *= -1;
 
-        actual = (direccion > 0) ? actual->sig : actual->ant;
+        actual = ( lado > 0 ) ? actual->sig : actual->ant;
         pasos--;
     }
 
