@@ -73,8 +73,7 @@ void pausa() {
 }
 
 void limpiar_buffer(void) {
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF);
+    fflush(stdin);
 }
 
 void pedir_nombre(char *nombre) {
