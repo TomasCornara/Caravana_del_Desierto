@@ -73,14 +73,15 @@ void pausa() {
 }
 
 void limpiar_buffer(void) {
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF);
+    fflush(stdin);
 }
 
 void pedir_nombre(char *nombre) {
     size_t len;
     size_t i;
     int letras;
+
+    limpiar_buffer();
 
     do {
         printf("Ingrese su nombre (al menos 3 letras): ");
@@ -94,8 +95,6 @@ void pedir_nombre(char *nombre) {
         if (len > 0 && nombre[len - 1] == '\n') {
             nombre[len - 1] = '\0';
             len--;
-        } else {
-            limpiar_buffer();
         }
 
         // Verificar que se haya escrito algo
