@@ -197,7 +197,7 @@ void resolver_casillero_actual(t_jugador *jugador, t_casillero *casillero_actual
         pausa();
     }
 
-    //Se restablece el casillero después de mostrar su animación
+    //Cuando el jugador cae en un casillero, lo normnaliza
     if(casillero_actual->tipo_casillero != TIPO_INICIO && casillero_actual->tipo_casillero != TIPO_FIN){
         casillero_actual->tipo_casillero = TIPO_NORMAL;
         casillero_actual->animacion = NULL;
