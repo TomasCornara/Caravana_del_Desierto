@@ -31,19 +31,17 @@ void jugar_partida(t_mapa *mapa, t_config *config){
 
     ///Juego
     while (jugador.vidas && ((t_casillero*)jugador.pos->info)->tipo_casillero != TIPO_FIN) {
+        limpiar_pantalla();
+        mostrarEstadisticas(jugador.vidas, jugador.puntos, jugador.nombre);
+        printCaravana(stdout, mapa);
+
         if (jugador.efectoTormenta) {
-                jugador.efectoTormenta = false;
-                limpiar_pantalla();
-                mostrarEstadisticas(jugador.vidas, jugador.puntos, jugador.nombre);
-                printCaravana(stdout, mapa);
-                printf("La tormenta te hace perder este turno.\n");
-                mostrarFooter();
-                pausa();
+            jugador.efectoTormenta = false;
+            printf("La tormenta te hace perder este turno.\n");
+            mostrarFooter();
+            pausa();
 
         } else {
-            limpiar_pantalla();
-            mostrarEstadisticas(jugador.vidas, jugador.puntos, jugador.nombre);
-            printCaravana(stdout, mapa);
             tirarDado(&dado);
             printf("DADO - Sacaste un: %d\n",dado.cara);
             mostrarFooter();
@@ -88,7 +86,7 @@ void jugar_partida(t_mapa *mapa, t_config *config){
     ///Fin del juego
     limpiar_pantalla();
     if(jugador.vidas){
-       victoria(); //Ganaste
+       victoria();
     } else {
         gameOver();
     }

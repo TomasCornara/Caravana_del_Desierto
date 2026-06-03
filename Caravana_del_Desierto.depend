@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1780507820 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\consola.c
+1780507885 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\consola.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
