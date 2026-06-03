@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1780506633 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\consola.c
+1780507820 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\consola.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -93,7 +93,7 @@
 	<stdio.h>
 	<stdlib.h>
 
-1780507044 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\juego.c
+1780507331 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\juego.c
 	"juego.h"
 	"manejo_archivos.h"
 	"dado.h"
