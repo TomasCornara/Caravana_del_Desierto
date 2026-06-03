@@ -13,8 +13,8 @@
 #define VALORES_POR_LINEA_CONFIG 2
 #define MAX_CLAVE_CONFIG 64
 #define ARCHIVO_CONFIG "config.txt"
+#define ARCHIVO_MAPA "caravana.txt"
 #define ARCHIVO_RANKING "ranking.txt"
-#define ARCHIVO_MAPA "mapa.txt"
 #define CARAS_DADO 6
 
 //Valores del juego

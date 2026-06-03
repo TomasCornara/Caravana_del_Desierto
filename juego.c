@@ -23,7 +23,7 @@ void jugar_partida(t_mapa *mapa, t_config *config){
     limpiar_buffer();
 
     // Generacion caravana.txt
-    FILE *archivo_caravana = abrir_txt("caravana.txt", "w");
+    FILE *archivo_caravana = abrir_txt(ARCHIVO_MAPA, "w");
     if (archivo_caravana) {
         printCaravana(archivo_caravana, mapa);
         fclose(archivo_caravana);
@@ -197,7 +197,11 @@ void resolver_casillero_actual(t_jugador *jugador, t_casillero *casillero_actual
         pausa();
     }
 
-
+    //Se restablece el casillero después de mostrar su animación
+    if(casillero_actual->tipo_casillero != TIPO_INICIO && casillero_actual->tipo_casillero != TIPO_FIN){
+        casillero_actual->tipo_casillero = TIPO_NORMAL;
+        casillero_actual->animacion = NULL;
+    }
 
     resolver_bandido_en_casillero(jugador, casillero_actual, cola_movimientos);
 }
