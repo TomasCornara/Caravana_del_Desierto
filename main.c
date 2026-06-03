@@ -24,6 +24,7 @@ int main() {
     printf("MAXIME ESTA VENTANA PARA PODER VISUALIZAR EL JUEGO CORRECTAMENTE\n");
 
     pausa();
+    limpiar_buffer();
     limpiar_pantalla();
 
     // Cargar configuracion y validar
@@ -91,12 +92,9 @@ void limpiar_buffer_entrada(void) {
 
 int leer_opcion_menu(void) {
     int opcion;
-
     if (scanf("%d", &opcion) != 1) {
         opcion = 0;
+        limpiar_buffer_entrada();
     }
-
-    limpiar_buffer_entrada();
-
     return opcion;
 }

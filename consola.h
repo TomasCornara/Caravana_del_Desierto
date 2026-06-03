@@ -13,7 +13,7 @@ void mostrarEstadisticas(unsigned vidas, unsigned puntos, char* nombre);
 void pausa();
 void mostrar_menu();
 void pedir_nombre(char *nombre);
-void limpiar_buffer(void);
+void limpiar_buffer(void);;
 
 
 //Pantallas
