@@ -94,7 +94,6 @@ void mover_jugador(t_jugador *jugador, unsigned pasos, t_movimientos *cola_movim
 void mover_bandido(t_mapa *mapa, t_movimientos *cola_movimientos);
 void resolver_casillero_actual(t_jugador *jugador, t_casillero *casillero_actual, t_movimientos *cola_movimientos);
 void resolver_bandido_en_casillero(t_jugador *jugador, t_casillero *casillero_actual, t_movimientos *cola_movimientos);
-void mostrarMapa(t_mapa *mapa);
-
+void printCaravana(FILE *archivo, t_mapa *mapa);
 
 #endif // JUEGO_H_INCLUDED

@@ -21,13 +21,21 @@ void jugar_partida(t_mapa *mapa, t_config *config){
     pedir_nombre(jugador.nombre); //INICIALIZAR NOMBRE DEL JUGADOR
 
     limpiar_buffer();
+
+    // Generacion caravana.txt
+    FILE *archivo_caravana = abrir_txt("caravana.txt", "w");
+    if (archivo_caravana) {
+        printCaravana(archivo_caravana, mapa);
+        fclose(archivo_caravana);
+    }
+
     ///Juego
     while (jugador.vidas && ((t_casillero*)jugador.pos->info)->tipo_casillero != TIPO_FIN) {
         if (jugador.efectoTormenta) {
                 jugador.efectoTormenta = false;
                 limpiar_pantalla();
                 mostrarEstadisticas(jugador.vidas, jugador.puntos, jugador.nombre);
-                mostrarMapa(mapa);
+                printCaravana(stdout, mapa);
                 printf("La tormenta te hace perder este turno.\n");
                 mostrarFooter();
                 pausa();
@@ -35,7 +43,7 @@ void jugar_partida(t_mapa *mapa, t_config *config){
         } else {
             limpiar_pantalla();
             mostrarEstadisticas(jugador.vidas, jugador.puntos, jugador.nombre);
-            mostrarMapa(mapa);
+            printCaravana(stdout, mapa);
             tirarDado(&dado);
             printf("DADO - Sacaste un: %d\n",dado.cara);
             mostrarFooter();
@@ -80,7 +88,7 @@ void jugar_partida(t_mapa *mapa, t_config *config){
     ///Fin del juego
     limpiar_pantalla();
     if(jugador.vidas){
-       printCaravana(); //Ganaste
+       victoria(); //Ganaste
     } else {
         gameOver();
     }
@@ -433,4 +441,61 @@ int juego_validar_config(t_config *config) {
     return 1; // Todo OK
 }
 
+void printCaravana(FILE *archivo, t_mapa *mapa) {
+    tNodo *temp;
+    t_casillero *cas;
+    unsigned pos;
 
+    if (!archivo || !mapa || !*mapa) return;
+
+    temp = *mapa;
+    while (temp->ant != NULL) {
+        temp = temp->ant;
+    }
+
+    while (temp != NULL) {
+        cas = (t_casillero *)temp->info;
+        pos = cas->nro_posicion;
+
+        int num_elems = 0;
+        char elems[20][3];
+
+        if (cas->tipo_casillero != TIPO_NORMAL || (!cas->presencia_jugador && cas->cant_bandidos == 0)) {
+            switch (cas->tipo_casillero) {
+                case TIPO_INICIO: strcpy(elems[num_elems++], "I"); break;
+                case TIPO_FIN: strcpy(elems[num_elems++], "F"); break;
+                case TIPO_NORMAL: strcpy(elems[num_elems++], "."); break;
+                case TIPO_OASIS: strcpy(elems[num_elems++], "O"); break;
+                case TIPO_TORMENTA: strcpy(elems[num_elems++], "T"); break;
+                case TIPO_VIDA_EXTRA: strcpy(elems[num_elems++], "V"); break;
+                case TIPO_PREMIO: strcpy(elems[num_elems++], "P"); break;
+                default: strcpy(elems[num_elems++], "?"); break;
+            }
+        }
+
+        if (cas->presencia_jugador) {
+            strcpy(elems[num_elems++], "J");
+        }
+
+        for (unsigned i = 0; i < cas->cant_bandidos; i++) {
+            if (num_elems < 20) strcpy(elems[num_elems++], "B");
+        }
+
+        fprintf(archivo, "%02u", pos);
+        if (num_elems == 1) {
+            fprintf(archivo, ":%s\n", elems[0]);
+        } else if (num_elems > 1) {
+            fprintf(archivo, ":[");
+            for (int i = 0; i < num_elems; i++) {
+                fprintf(archivo, "%s%s", elems[i], i == num_elems - 1 ? "" : " ");
+            }
+            fprintf(archivo, "]\n");
+        } else {
+            fprintf(archivo, ":.\n");
+        }
+
+        temp = temp->sig;
+    }
+
+    fprintf(archivo, "\n");
+}

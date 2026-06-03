@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1780347685 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\consola.c
+1780506346 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\consola.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -7,14 +7,15 @@
 	"consola.h"
 	"juego.h"
 
-1780347473 c:\users\tomas\onedrive\desktop\caravana_del_desierto\consola.h
+1780506319 c:\users\tomas\onedrive\desktop\caravana_del_desierto\consola.h
+	<stdio.h>
 
 1780347802 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\main.c
 	<stdio.h>
 	<stdlib.h>
 	"juego.h"
 
-1780347307 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\dado.c
+1780347986 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\dado.c
 	<stdlib.h>
 	"dado.h"
 
@@ -91,13 +92,13 @@
 	<stdio.h>
 	<stdlib.h>
 
-1780347560 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\juego.c
+1780506349 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\juego.c
 	"juego.h"
 	"manejo_archivos.h"
 	"dado.h"
 	"consola.h"
 
-1780347315 c:\users\tomas\onedrive\desktop\caravana_del_desierto\juego.h
+1780506331 c:\users\tomas\onedrive\desktop\caravana_del_desierto\juego.h
 	<stdbool.h>
 	<time.h>
 	<stdlib.h>

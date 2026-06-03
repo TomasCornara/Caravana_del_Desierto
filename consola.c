@@ -5,66 +5,7 @@
 #include "consola.h"
 #include "juego.h"
 
-void mostrarMapa(t_mapa *mapa) {
-    tNodo *temp;
-    t_casillero *cas;
-    unsigned pos;
 
-    if (!mapa || !*mapa) return;
-
-    temp = *mapa;
-    while (temp->ant != NULL) {
-        temp = temp->ant;
-    }
-
-    printf("\n=== MAPA DE LA CARAVANA ===\n");
-
-    while (temp != NULL) {
-        cas = (t_casillero *)temp->info;
-        pos = cas->nro_posicion;
-
-        int num_elems = 0;
-        char elems[20][3];
-
-        if (cas->tipo_casillero != TIPO_NORMAL || (!cas->presencia_jugador && cas->cant_bandidos == 0)) {
-            switch (cas->tipo_casillero) {
-                case TIPO_INICIO: strcpy(elems[num_elems++], "I"); break;
-                case TIPO_FIN: strcpy(elems[num_elems++], "F"); break;
-                case TIPO_NORMAL: strcpy(elems[num_elems++], "."); break;
-                case TIPO_OASIS: strcpy(elems[num_elems++], "O"); break;
-                case TIPO_TORMENTA: strcpy(elems[num_elems++], "T"); break;
-                case TIPO_VIDA_EXTRA: strcpy(elems[num_elems++], "V"); break;
-                case TIPO_PREMIO: strcpy(elems[num_elems++], "P"); break;
-                default: strcpy(elems[num_elems++], "?"); break;
-            }
-        }
-
-        if (cas->presencia_jugador) {
-            strcpy(elems[num_elems++], "J");
-        }
-
-        for (unsigned i = 0; i < cas->cant_bandidos; i++) {
-            if (num_elems < 20) strcpy(elems[num_elems++], "B");
-        }
-
-        printf("%02u", pos);
-        if (num_elems == 1) {
-            printf(":%s\n", elems[0]);
-        } else if (num_elems > 1) {
-            printf(":[");
-            for (int i = 0; i < num_elems; i++) {
-                printf("%s%s", elems[i], i == num_elems - 1 ? "" : " ");
-            }
-            printf("]\n");
-        } else {
-            printf(":.\n");
-        }
-
-        temp = temp->sig;
-    }
-
-    printf("\n");
-}
 
 void pausa() {
     int c;
@@ -180,7 +121,7 @@ void gameOver(void){
 }
 
 
-void printCaravana(void){
+void victoria(void){
     printf(
     "                                                                                                                          \n"
     "                                         sSSSSSs                                                                          \n"
