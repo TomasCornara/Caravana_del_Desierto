@@ -191,7 +191,7 @@
 	"arbolBinario.h"
 	"consola.h"
 
-1780776323 c:\users\ulaza\onedrive\escritorio\tpalgo\caravana_del_desierto\lista_circular_doble.h
+1780783553 c:\users\ulaza\onedrive\escritorio\tpalgo\caravana_del_desierto\lista_circular_doble.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -207,7 +207,7 @@
 1780684673 source:c:\users\ulaza\onedrive\escritorio\tpalgo\caravana_del_desierto\lista_circular_doble.c
 	"lista_circular_doble.h"
 
-1780667612 source:c:\users\ulaza\onedrive\escritorio\tpalgo\caravana_del_desierto\main.c
+1780779736 source:c:\users\ulaza\onedrive\escritorio\tpalgo\caravana_del_desierto\main.c
 	<stdio.h>
 	<stdlib.h>
 	"juego.h"

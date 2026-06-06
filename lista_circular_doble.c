@@ -20,21 +20,22 @@ void vaciar_lista(tLista *pl)
     return;
 }
 
-void recorrer_adelante_accion(tLista *pl, tAccion accion, void*parametro_extra)
+void map_lista(const tLista* pl, tAccion accion, void* parms)
 {
-    tNodo *actual = (*pl);
-    if( NULL == (*pl) ){
-        return;
-    }
+    tNodo *act,
+          *primero;
 
-    while(actual->sig != (*pl))
+    if(!pl || !*pl) return;
+
+    primero = *pl;
+    act = primero;
+
+    do
     {
-        accion(actual->info,parametro_extra);
-        actual = actual->sig;
+        accion(act->info, parms);
+        act = act->sig;
     }
-    if(actual->sig == (*pl)){
-        accion(actual->info,parametro_extra);
-    }
+    while(act != primero);
 }
 
 //Busca el casillero segun la clave y cuando la encuentra haces algo con la accion y el parametro extra
@@ -148,6 +149,30 @@ int agregar_ord_en_lista(tLista * pl, void * dato, unsigned tam, tCmp cmp){
    return 1;
 }
 
+void vaciar_lista_doble(tLista *pl)
+{
+    tNodo *act,
+          *aux,
+          *primero;
 
+    if(!pl || !*pl) return;
+
+    primero = *pl;
+    act = primero->sig;
+
+    while(act != primero)
+    {
+        aux = act;
+        act = act->sig;
+
+        free(aux->info);
+        free(aux);
+    }
+
+    free(primero->info);
+    free(primero);
+
+    *pl = NULL;
+}
 
 
