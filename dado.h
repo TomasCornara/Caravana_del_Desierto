@@ -8,7 +8,7 @@ typedef struct{
 
 void crearDado(t_dado* d, unsigned cnt_lados);
 unsigned contraCara(const t_dado* d);
-unsigned tirarDado(t_dado* d);
+unsigned tirarDado(t_dado* d);//era unsigned
 void destruirDado(t_dado* d);
 
 #endif // DADO_H_INCLUDED

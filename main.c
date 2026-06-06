@@ -10,7 +10,6 @@
 void limpiar_buffer_entrada(void);
 int leer_opcion_menu(void);
 
-
 int main() {
     srand(time(NULL));
 
@@ -38,7 +37,6 @@ int main() {
     printf("Configuracion cargada correctamente.\n");
     printf("Casilleros: %u | Vidas: %u | Bandidos: %u\n",
            config.cantidad_posiciones, config.vidas_inicio, config.maximo_bandidos);
-    juego_generar_mapa(&config,&mapa);
 
     pausa();
     limpiar_pantalla();

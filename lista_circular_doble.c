@@ -87,6 +87,7 @@ int ver_dato_lista(const tLista *pl, void* dato, unsigned tam) {
 int agregar_final_lista(tLista *pl, const void *dato, unsigned tam)
 {
     tNodo *nue, *ult;
+    tNodo *inicio = (*pl);
 
     nue = (tNodo*)malloc(sizeof(tNodo));
     if(nue == NULL) return 0;
@@ -102,16 +103,20 @@ int agregar_final_lista(tLista *pl, const void *dato, unsigned tam)
     nue->sig = NULL;
 
     if(*pl == NULL) {
-        nue->ant = NULL;
+        nue->ant = nue;
+        nue->sig = nue;
         *pl = nue;
     } else {
         ult = *pl;
-        while(ult->sig != NULL) {
+        while(ult->sig != (inicio)) {
             ult = ult->sig;
         }
+        nue->sig = ult->sig;
         ult->sig = nue;
         nue->ant = ult;
-        *pl = nue;
+        inicio->ant = nue;
+        //*pl = nue;
+        (*pl) = inicio;
     }
     return 1;
 }
@@ -218,6 +223,18 @@ void recorrer_adelante(tLista *pl)
         printf("%d\n", dato);
         nue = nue->sig;
     }
+}
+void recorrer_adelante_accion(tLista *pl, tAccion accion, void*parametro_extra)
+{
+    tNodo *nue = (*pl);
+    tNodo *inicio = (*pl);
+
+    while(nue->sig != inicio)
+    {
+        accion(nue->info,parametro_extra);
+        nue = nue->sig;
+    }
+    (*pl) = inicio;
 }
 
 void recorrer_atras(tLista *pl)

@@ -26,6 +26,8 @@
 #define TIPO_TORMENTA 5
 #define TIPO_VIDA_EXTRA 6
 #define TIPO_PREMIO 7
+#define AVANZAR 'A'
+#define RETROCEDER 'R'
 
 // Valores por defecto para la configuración del juego
 #define CONFIG_CANTIDAD_POSICIONES_DEFAULT 25
@@ -35,6 +37,8 @@
 #define CONFIG_MAXIMO_VIDAS_EXTRA_DEFAULT 1
 #define CONFIG_MAXIMO_OASIS_DEFAULT 2
 #define CONFIG_MAXIMO_TORMENTAS_DEFAULT 3
+
+
 
 typedef t_Arbol t_raking;
 typedef tLista t_mapa;
@@ -48,7 +52,7 @@ typedef struct{
     unsigned puntos;
     bool efectoTormenta;
     bool efectoOasis;
-    t_pos pos;
+    unsigned pos_en_mapa;
 }t_jugador;
 
 typedef struct{
@@ -64,6 +68,15 @@ typedef struct{
     unsigned pos_final;
     bool jugador_humano;
 }t_movimiento;
+/*
+typedef struct{
+    unsigned pos_inicial; // 0
+    unsigned cantidad_movimiento; // 5
+    unsigned pos_final; // 5
+    char orientacion; // F
+    bool jugador_humano; // TRUE
+}t_movimiento;
+*/
 
 typedef struct{
     char puesto;
@@ -90,10 +103,14 @@ int juego_validar_config(t_config *config);
 void jugar_partida(t_mapa *mapa, t_config *config);
 void inicializar_jugador(t_jugador *jugador, t_config *config, t_mapa mapa);
 int guardar_movimiento(t_movimientos *cola, unsigned pos_inicial, unsigned pos_final, bool jugador_humano);
-void mover_jugador(t_jugador *jugador, unsigned pasos, t_movimientos *cola_movimientos, int lado);
+void mover_jugador(t_jugador *jugador, unsigned pasos, int lado);
 void mover_bandido(t_mapa *mapa, t_movimientos *cola_movimientos);
 void resolver_casillero_actual(t_jugador *jugador, t_casillero *casillero_actual, t_movimientos *cola_movimientos);
 void resolver_bandido_en_casillero(t_jugador *jugador, t_casillero *casillero_actual, t_movimientos *cola_movimientos);
 void printCaravana(FILE *archivo, t_mapa *mapa);
 
+
+int calcular_pos_final( t_jugador * jugador, unsigned pasos, int lado);
+void calcular_bandidos(t_mapa * mapa, t_movimientos * cola);
+void situar_bandidos(void * a, void * parametro_extra);
 #endif // JUEGO_H_INCLUDED
