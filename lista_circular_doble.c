@@ -175,4 +175,29 @@ void vaciar_lista_doble(tLista *pl)
     *pl = NULL;
 }
 
+int obtener_de_lista(const tLista* pl,const void* key, void* buffer, unsigned tam_dato, tCmp cmp)
+{
+    tNodo *act,
+          *primero;
+
+    if(!pl || !*pl || !buffer || !cmp)
+        return 0;
+
+    primero = *pl;
+    act = primero;
+
+    do //Como la lista no puede estar vacia
+    {
+        if(cmp(key, act->info) == 0) //Si coincide, se copia
+        {
+            memcpy(buffer, act->info, MIN(tam_dato, act->tamInfo));
+            return 1;
+        }
+
+        act = act->sig; //Sino sigo al siguiente
+    }
+    while(act != primero); //Si estos coinciden, di toda la vuelta
+
+    return 0;
+}
 

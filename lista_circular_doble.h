@@ -27,5 +27,5 @@ void map_lista(const tLista* pl, tAccion accion, void* parms);
 void modificar_elemento_segun_clave(tLista * pl, void * clave,tCmp cmp, tAccion accion, void * parametro_extra);
 int agregar_ord_en_lista(tLista * pl, void * dato, unsigned tam, tCmp cmp);
 void vaciar_lista_doble(tLista *pl);
-
+int obtener_de_lista(const tLista* pl,const void* key, void* buffer, unsigned tam_dato, tCmp cmp);
 #endif // LISTA_CIRCULAR_DOBLE_H_INCLUDED
