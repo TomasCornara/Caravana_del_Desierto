@@ -2,7 +2,7 @@
 
 void crear_lista(tLista* pl)
 {
-    *pl = NULL;
+    (*pl) = NULL;
 }
 
 int lista_vacia(const tLista* pl)
@@ -15,267 +15,139 @@ int lista_llena(const tLista* pl)
     return 0;
 }
 
-int agregar_ord_lista(tLista *pl, void* dato, unsigned tam, int(*comparar)(const void*a,const void*b))
-{
-    tNodo *actual, *aux_ant, *aux_sig;
-    if(*pl != NULL)
-    {
-       actual = *pl;
-       while(comparar(dato, actual->info) > 0 && (actual->sig != NULL))
-       {
-            actual = actual->sig;
-       }
-       while(comparar(dato, actual->info) < 0 && (actual->ant != NULL))
-       {
-            actual = actual->ant;
-       }
-       if(comparar(dato, actual->info) == 0)
-       {
-           return 1; // Duplicado
-       }
-       if(comparar(dato, actual->info) > 0)
-       {
-        aux_sig = actual->sig;
-        aux_ant = actual;
-       } else {
-        aux_sig = actual;
-        aux_ant = actual->ant;
-       }
-    } else {
-        aux_ant = *pl;
-        aux_sig = *pl;
-    }
-    tNodo *nue = (tNodo*)malloc(sizeof(tNodo));
-    if(nue == NULL)
-    {
-        return 1;
-    }
-    nue->info = malloc(tam);
-    if(nue->info == NULL)
-    {
-        free(nue);
-        return 1;
-    }
-    memcpy(nue->info, dato, tam);
-    nue->tamInfo = tam;
-    nue->ant = aux_ant;
-    nue->sig = aux_sig;
-    if(aux_ant != NULL)
-    {
-        aux_ant->sig = nue;
-    }
-    if(aux_sig != NULL)
-    {
-        aux_sig->ant = nue;
-    }
-    *pl = nue;
-    return 0;
-}
-
-int ver_dato_lista(const tLista *pl, void* dato, unsigned tam) {
-    tNodo * top = *pl;
-
-    if(top == NULL)
-    {
-        return 0;
-    }
-
-    memcpy(dato, top->info, MIN(tam, top->tamInfo));
-    return 1;
-}
-
-int agregar_final_lista(tLista *pl, const void *dato, unsigned tam)
-{
-    tNodo *nue, *ult;
-    tNodo *inicio = (*pl);
-
-    nue = (tNodo*)malloc(sizeof(tNodo));
-    if(nue == NULL) return 0;
-
-    nue->info = malloc(tam);
-    if(nue->info == NULL) {
-        free(nue);
-        return 0;
-    }
-
-    memcpy(nue->info, dato, tam);
-    nue->tamInfo = tam;
-    nue->sig = NULL;
-
-    if(*pl == NULL) {
-        nue->ant = nue;
-        nue->sig = nue;
-        *pl = nue;
-    } else {
-        ult = *pl;
-        while(ult->sig != (inicio)) {
-            ult = ult->sig;
-        }
-        nue->sig = ult->sig;
-        ult->sig = nue;
-        nue->ant = ult;
-        inicio->ant = nue;
-        //*pl = nue;
-        (*pl) = inicio;
-    }
-    return 1;
-}
-
-int agregar_inicio_lista(tLista *pl, const void *dato, unsigned tam)
-{
-    tNodo *nue, *pri;
-
-    nue = (tNodo*)malloc(sizeof(tNodo));
-    if(nue == NULL) return 0;
-
-    nue->info = malloc(tam);
-    if(nue->info == NULL) {
-        free(nue);
-        return 0;
-    }
-
-    memcpy(nue->info, dato, tam);
-    nue->tamInfo = tam;
-    nue->ant = NULL;
-
-    if(*pl == NULL) {
-        nue->sig = NULL;
-        *pl = nue;
-    } else {
-        pri = *pl;
-        while(pri->ant != NULL) {
-            pri = pri->ant;
-        }
-        pri->ant = nue;
-        nue->sig = pri;
-        *pl = nue;
-    }
-    return 1;
-}
-
-int eliminar_lista(tLista *pl, void *dato, unsigned tam, int (*comparar)(const void*, const void*))
-{
-    tNodo *act;
-    if(*pl == NULL) return 0;
-
-    act = *pl;
-    // Busco hacia adelante
-    while(act->sig != NULL && comparar(act->info, dato) != 0) {
-        act = act->sig;
-    }
-    // Si no lo encontré, busco hacia atrás
-    if(comparar(act->info, dato) != 0) {
-        act = *pl;
-        while(act->ant != NULL && comparar(act->info, dato) != 0) {
-            act = act->ant;
-        }
-    }
-
-    if(comparar(act->info, dato) != 0) return 0; // No existe
-
-    if(dato != NULL)
-        memcpy(dato, act->info, MIN(tam, act->tamInfo));
-
-    if(act->ant != NULL)
-        act->ant->sig = act->sig;
-    if(act->sig != NULL)
-        act->sig->ant = act->ant;
-
-    // Muevo el cursor de la lista
-    if(act->sig != NULL)
-        *pl = act->sig;
-    else if(act->ant != NULL)
-        *pl = act->ant;
-    else
-        *pl = NULL;
-
-    free(act->info);
-    free(act);
-    return 1;
-}
-
 void vaciar_lista(tLista *pl)
 {
-    tNodo *act, *aux;
-    if(*pl == NULL) return;
-
-    act = *pl;
-    // Voy al primero
-    while(act->ant != NULL) {
-        act = act->ant;
-    }
-    // Borro todo hacia adelante
-    while(act != NULL) {
-        aux = act->sig;
-        free(act->info);
-        free(act);
-        act = aux;
-    }
-    *pl = NULL;
+    return;
 }
 
-void recorrer_adelante(tLista *pl)
-{
-    tNodo *nue = *pl;
-    while(nue != NULL)
-    {
-        int dato = *(int*)nue->info;
-        printf("%d\n", dato);
-        nue = nue->sig;
-    }
-}
 void recorrer_adelante_accion(tLista *pl, tAccion accion, void*parametro_extra)
 {
-    tNodo *nue = (*pl);
-    tNodo *inicio = (*pl);
-
-    while(nue->sig != inicio)
-    {
-        accion(nue->info,parametro_extra);
-        nue = nue->sig;
+    tNodo *actual = (*pl);
+    if( NULL == (*pl) ){
+        return;
     }
-    (*pl) = inicio;
-}
 
-void recorrer_atras(tLista *pl)
-{
-    tNodo *nue = *pl;
-    while(nue != NULL)
+    while(actual->sig != (*pl))
     {
-        int dato = *(int*)nue->info;
-        printf("%d\n", dato);
-        nue = nue->ant;
+        accion(actual->info,parametro_extra);
+        actual = actual->sig;
+    }
+    if(actual->sig == (*pl)){
+        accion(actual->info,parametro_extra);
     }
 }
 
-void recorrer_todoasc(tLista *pl)
-{
-    if(*pl == NULL) return;
-    tNodo *nue = *pl;
-    while(nue->ant != NULL)
-    {
-        nue = nue->ant;
-    }
-    while(nue != NULL)
-    {
-        int dato = *(int*)nue->info;
-        printf("%d\n", dato);
-        nue = nue->sig;
-    }
+//Busca el casillero segun la clave y cuando la encuentra haces algo con la accion y el parametro extra
+void modificar_elemento_segun_clave(tLista * pl, void * clave,tCmp cmp, tAccion accion, void * parametro_extra){
+   tNodo * inicio = (*pl);
+   tNodo * actual = (*pl);
+
+   if(NULL == inicio){
+     return;
+   }
+
+   while(actual->sig != inicio){
+     if( cmp(clave,actual->info) == 0 ){
+        accion(actual->info,parametro_extra);
+        return;
+     }
+     actual = actual->sig;
+   }
+
+   if( actual->sig == inicio){
+     if(cmp(clave,actual->info) == 0){
+        accion(actual->info,parametro_extra);
+     }
+   }
 }
 
-void recorrer_tododes(tLista *pl)
-{
-    if(*pl == NULL) return;
-    tNodo *nue = *pl;
-    while(nue->sig != NULL)
-    {
-        nue = nue->sig;
-    }
-    while(nue != NULL)
-    {
-        int dato = *(int*)nue->info;
-        printf("%d\n", dato);
-        nue = nue->ant;
-    }
+unsigned cantidad_elementos_lista(tLista * pl){
+  tNodo * inicio = (*pl);
+  tNodo * actual = (*pl);
+  unsigned acumulador = 0;
+
+  if( NULL == inicio ){
+    return acumulador;
+  }
+
+  if( actual->sig == inicio){
+    return acumulador;
+  }
+
+  do{
+   acumulador++;
+   actual = actual->sig;
+  }while(actual->sig != inicio);
+
+  return acumulador;
 }
+
+int agregar_ord_en_lista(tLista * pl, void * dato, unsigned tam, tCmp cmp){
+   tNodo * inicio = (*pl);
+   tNodo * actual = (*pl);
+   tNodo * nuevo_nodo;
+
+   if( actual == NULL ){
+      nuevo_nodo = (tNodo*)malloc(sizeof(tNodo));
+      if(!nuevo_nodo){
+         return -1;
+      }
+      nuevo_nodo->info = malloc(tam);
+
+      if(!nuevo_nodo->info){
+        free(nuevo_nodo);
+        return -1;
+      }
+      nuevo_nodo->tamInfo = tam;
+      memcpy(nuevo_nodo->info,dato,tam);
+
+      nuevo_nodo->ant = nuevo_nodo;
+      nuevo_nodo->sig = nuevo_nodo;
+      (*pl) = nuevo_nodo;
+
+      return 1;
+   }
+
+   while(actual->ant->sig != inicio && cmp(dato,actual->info) < 0){
+        actual = actual->ant;
+   }
+
+   while( actual->sig != inicio && cmp(dato,actual->sig->info) > 0){
+        actual= actual->sig;
+   }
+
+   nuevo_nodo = (tNodo*)malloc(sizeof(tNodo));
+   if(!nuevo_nodo){
+      return -1;
+   }
+   nuevo_nodo->info = malloc(tam);
+
+   if(!nuevo_nodo->info){
+      free(nuevo_nodo);
+      return -1;
+   }
+   nuevo_nodo->tamInfo = tam;
+   memcpy(nuevo_nodo->info,dato,tam);
+
+   if( cmp(dato,actual->info) < 0 ){
+    nuevo_nodo->ant = actual->ant;
+    nuevo_nodo->sig = actual;
+    actual->ant->sig = nuevo_nodo;
+    actual->ant = nuevo_nodo;
+
+    (*pl) = nuevo_nodo;
+
+   }else{
+    nuevo_nodo->ant = actual;
+    nuevo_nodo->sig = actual->sig;
+
+    actual->sig->ant = nuevo_nodo;
+    actual->sig = nuevo_nodo;
+   }
+
+   return 1;
+}
+
+
+
+

@@ -19,29 +19,12 @@ typedef tNodo* tLista;
 typedef void (*tAccion)(void*a, void * parametro_extra);
 typedef int (*tCmp)(void*a, void *b);
 
-
 void crear_lista(tLista* pl);
 int lista_vacia(const tLista* pl);
 int lista_llena(const tLista* pl);
-
-int agregar_ord_lista(tLista *pl, void *dato, unsigned tam, int(*comparar)(const void*a,const void*b));
-
-
-int agregar_final_lista(tLista *pl, const void *dato, unsigned tam);
-
-int agregar_inicio_lista(tLista *pl, const void *dato, unsigned tam);
-
-int eliminar_lista(tLista *pl, void *dato, unsigned tam, int (*comparar)(const void*, const void*));
-
 void vaciar_lista(tLista *pl);
-
-int ver_dato_lista(const tLista *pl, void *dato, unsigned tam);
-
-void recorrer_adelante(tLista *pl);
-void recorrer_atras(tLista *pl);
-void recorrer_todoasc(tLista *pl);
-void recorrer_tododes(tLista *pl);
-
-
 void recorrer_adelante_accion(tLista *pl, tAccion accion, void*parametro_extra);
+void modificar_elemento_segun_clave(tLista * pl, void * clave,tCmp cmp, tAccion accion, void * parametro_extra);
+int agregar_ord_en_lista(tLista * pl, void * dato, unsigned tam, tCmp cmp);
+
 #endif // LISTA_CIRCULAR_DOBLE_H_INCLUDED
