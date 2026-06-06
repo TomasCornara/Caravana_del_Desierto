@@ -220,37 +220,40 @@ void mover_jugador(t_jugador *jugador, unsigned pasos, int lado)
 //de nodos que hay(posicion final).. la posicion a desplazar el jugador, tener en cuenta
 //que el jugador no puede retroceder desde inicio y el jugador rebota en el final.
 
-int calcular_pos_final( t_jugador * jugador, unsigned cantidad_nodos_lista)
-{
-    tNodo *actual;
-    tNodo *inicial;
-    //int pos_inicial;
-    int pos_final;
+int calcular_pos_final_del_jugador(int pos_inicial_del_jugador,
+                                   int cantidad_nodos_lista,
+                                   int cantidad_pasos,
+                                   int direccion){
+    int pos;
 
-    if (!jugador || !jugador->pos)
+    if(cantidad_nodos_lista<=0 || pos_inicial_del_jugador < 1 || pos_inicial_del_jugador > cantidad_nodos_lista || (direccion != 1 && direccion != -1))
     {
         return -1;
     }
-    inicial = jugador->pos;
-    actual = jugador->pos;
-    //pos_inicial = ((t_casillero *)actual->info)->nro_posicion;
 
-    while (pasos != 0)
+    pos = pos_inicial_del_jugador;
+
+    while(cantidad_pasos > 0)
     {
-        if (actual->sig == NULL)
-            lado *= -1;
-
-        actual = ( lado > 0 ) ? actual->sig : actual->ant;
-        pasos--;
+        if(direccion == 1) //si llega 1 va para adelante
+        {
+            if(pos == cantidad_nodos_lista){
+                direccion = -1; //Aca rebota
+                pos--;
+            }
+            else{
+                pos++;
+            }
+        }
+        else //Va para atras si no llega 1
+        {
+            if(pos>1)
+                pos--;
+            //Si pos es 1 se queda ahí
+        }
+        cantidad_pasos--;
     }
-
-    //((t_casillero *)jugador->pos->info)->presencia_jugador = false;
-    //((t_casillero *)actual->info)->presencia_jugador = true;
-    //jugador->pos = actual;
-    jugador->pos = inicial;
-    pos_final = ((t_casillero *)actual->info)->nro_posicion;
-
-    return pos_final;
+    return pos;
 }
 
 void resolver_casillero_actual(t_jugador *jugador, t_casillero *casillero_actual, t_movimientos *cola_movimientos)
