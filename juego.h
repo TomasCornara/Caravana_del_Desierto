@@ -8,7 +8,6 @@
 #include "manejo_archivos.h"
 #include "cola_dinamica.h"
 #include "arbolBinario.h"
-#include "consola.h"
 
 #define VALORES_POR_LINEA_CONFIG 2
 #define MAX_CLAVE_CONFIG 64
@@ -18,6 +17,8 @@
 #define CARAS_DADO 6
 
 //Valores del juego
+#define ANCHO_CONSOLA 120
+#define ALTO_CONSOLA 30
 #define MAX_NOMBRE 4
 #define TIPO_INICIO 1
 #define TIPO_FIN 2
@@ -94,6 +95,8 @@ typedef struct {
     int maximo_tormentas;
 } t_config;
 
+
+//Funciones logica de juego
 void poner_tipo_random(t_casillero *temp, int total, unsigned tipo, int cantidad);
 void poner_bandidos_random(t_casillero *temp, int total, int cantidad);
 void poner_casilleros_especiales(t_casillero *temp, int total, t_config *config);
@@ -113,4 +116,28 @@ void printCaravana(FILE *archivo, t_mapa *mapa);
 int calcular_pos_final_del_jugador(int pos_inicial_del_jugador,int cantidad_nodos_lista,int cantidad_pasos,int direccion);
 void calcular_bandidos(t_mapa * mapa, t_movimientos * cola);
 void situar_bandidos(void * a, void * parametro_extra);
+
+//Funciones consola
+
+//Utiles
+void limpiar_pantalla();
+void mostrarHeader(void);
+void mostrarFooter(void);
+void mostrarEstadisticas(unsigned vidas, unsigned puntos, char* nombre);
+void pausa();
+void mostrar_menu();
+void pedir_nombre(char *nombre);
+void limpiar_buffer(void);;
+
+
+//Pantallas
+void mostrarBienvenida(void);
+void printBandido(void);
+void printTormenta(void);
+void victoria(void);
+void printOasis(void);
+void printPremio(void);
+void printVidaExtra(void);
+void gameOver(void);
+
 #endif // JUEGO_H_INCLUDED
