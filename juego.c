@@ -92,12 +92,9 @@ void jugar_partida(t_mapa *mapa, t_config *config)
                 while(direccion != AVANZAR && direccion != RETROCEDER);
             }
 
-
-
             pos_final_j = calcular_pos_final_del_jugador(jugador.pos_en_mapa, cantidad_casilleros, dado.cara, direccion);
             guardar_movimiento(&cola_movimientos_jugador, jugador.pos_en_mapa, pos_final_j, true);
             guardar_movimiento(&cola_turno, jugador.pos_en_mapa, pos_final_j, true);
-            calcular_bandidos(mapa,&cola_turno);
 
             #if DEBUG_ACTIVO
                 printf("DEBUG - Direccion calculada/elegida: %c\n", direccion);
@@ -105,26 +102,14 @@ void jugar_partida(t_mapa *mapa, t_config *config)
             #endif // DEBUG_ACTIVO
 
             pausa();
-
-
-            /*
-            while(!colaVacia(&cola_movimientos_jugador)){
-                desacolar(&cola_movimientos_jugador,&movi,sizeof(t_movimiento));
-                printf("\nINI: %d ", movi.pos_inicial);
-                printf("FIN: %d\n", movi.pos_final);
-            }*/
-
-            //mover_jugador(&jugador, movi);
-
-            //casillero_actual = (t_casillero*)jugador.pos->info;
-
-            //Aplica los los buffeos y debuffos + bandidos
-            //resolver_casillero_actual(&jugador, casillero_actual, &cola_movimientos);
             limpiar_pantalla();
         }
 
-        ///Logica del bandido
-        // mover_bandido(mapa, &cola_movimientos);
+        ///Logica de los bandidos
+        //calcular_bandidos(mapa,&cola_turno);
+
+        ///Logica del turno - ACA FALTARIA IMPLEMENTAR ESTA FUNCION (CREO QUE SERIA ALGO ASI)
+        //resolver_turno(mapa,&cola_turno,%jugador);
     }
 
     ///Fin del juego
