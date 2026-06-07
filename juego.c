@@ -3,24 +3,34 @@
 #include "dado.h"
 #include "lista_circular_doble.h"
 
+#define DEBUG_ACTIVO 1
+
 void jugar_partida(t_mapa *mapa, t_config *config)
 {
-    t_movimientos cola_movimientos;
+    #if DEBUG_ACTIVO
+        unsigned numero_turno = 0;
+    #endif // DEBUG_ACTIVO
+
+    t_movimientos cola_movimientos_jugador;
+    t_movimientos cola_turno;
     //t_movimiento movi;
     t_jugador jugador;
     t_dado dado;
     //t_casillero *casillero_actual;
-    char c_lado;
-    int lado = 1;
-    int cantidad_casilleros = cantidad_elementos_lista(mapa);
+    char direccion;
+    unsigned cantidad_casilleros,
+             posicion_salida;
 
     limpiar_pantalla();
 
     //Inicializacion
-    crearCola(&cola_movimientos);
+    cantidad_casilleros = cantidad_elementos_lista(mapa);
+    posicion_salida = (config->cantidad_posiciones) - 1;
+    crearCola(&cola_movimientos_jugador);
+    crearCola(&cola_turno);
     crearDado(&dado, CARAS_DADO);
     inicializar_jugador(&jugador, config);
-    pedir_nombre(jugador.nombre); //INICIALIZAR NOMBRE DEL JUGADOR
+    pedir_nombre(jugador.nombre);
 
     // Generacion caravana.txt
     FILE *archivo_caravana = abrir_txt(ARCHIVO_MAPA, "w");
@@ -31,9 +41,14 @@ void jugar_partida(t_mapa *mapa, t_config *config)
     }
 
     ///Juego
-    while (  (jugador.vidas > 0) &&  (jugador.pos_en_mapa != (config->cantidad_posiciones) - 1)  )
+    while ((jugador.vidas > 0) && (jugador.pos_en_mapa != posicion_salida))
     {
         limpiar_pantalla();
+        #if DEBUG_ACTIVO
+            printf("DEBUG - Numero de turno: %d\n",numero_turno);
+            numero_turno++;
+        #endif // DEBUG_ACTIVO
+
         mostrarEstadisticas(jugador.vidas, jugador.puntos, jugador.nombre);
         printCaravana(stdout, mapa);
 
@@ -47,55 +62,57 @@ void jugar_partida(t_mapa *mapa, t_config *config)
         }
         else
         {
+            int pos_final_j;
+            direccion = AVANZAR; //Por defecto se avanza
+
             tirarDado(&dado);
             printf("DADO - Sacaste un: %d\n",dado.cara);
             mostrarFooter();
-            c_lado = 'A';
-            lado = 1;
 
-            // PARA DEBUGGEAR
-            printf("Ingresa un valor para debuggear el dado y presiona ENTER: ");
-            scanf("%d", &dado.cara);
+            #if DEBUG_ACTIVO
+                printf("DEBUG - Estado jugador:\n jugador.pos_en_mapa: %d\n jugador.efecto_tormenta: %s\n jugador.efecto_oasis: %s\n",
+                    jugador.pos_en_mapa, jugador.efectoTormenta ? "VERDADERO" : "FALSO", jugador.efectoOasis ? "VERDADERO" : "FALSO");
+                printf("DEBUG - Sobreescribir valor del dado. Ingrese un valor y presione ENTER: ");
+                scanf("%d", &dado.cara);
+                limpiar_buffer();
+            #endif // DEBUG_ACTIVO
 
-            // (((t_casillero*)jugador.pos->info)->nro_posicion) = numero de casillero actual del jugador
-            if(dado.cara < (jugador.pos_en_mapa +1) )
+            //Si hay lugar suficiente, se le permite al usuario regresar
+            if(dado.cara < jugador.pos_en_mapa + 1)
             {
                 do
                 {
                     printf("\nIngresa 'A' para avanzar y 'R' para retroceder y presiona ENTER: ");
+                    scanf("%c", &direccion);
                     limpiar_buffer();
-                    scanf("%c", &c_lado);
 
-                    if(c_lado != 'A' && c_lado != 'R')
+                    if(direccion != AVANZAR && direccion != RETROCEDER)
                         printf("\nIngrese un término válido.");
                 }
-                while(c_lado != 'A' && c_lado != 'R');
+                while(direccion != AVANZAR && direccion != RETROCEDER);
             }
 
-            if(c_lado == 'R')
-                lado *= -1;
 
-            limpiar_buffer();
+
+            pos_final_j = calcular_pos_final_del_jugador(jugador.pos_en_mapa, cantidad_casilleros, dado.cara, direccion);
+            guardar_movimiento(&cola_movimientos_jugador, jugador.pos_en_mapa, pos_final_j, true);
+            guardar_movimiento(&cola_turno, jugador.pos_en_mapa, pos_final_j, true);
+            calcular_bandidos(mapa,&cola_turno);
+
+            #if DEBUG_ACTIVO
+                printf("DEBUG - Direccion calculada/elegida: %c\n", direccion);
+                printf("DEBUG - Posición final calculada para el jugador: %d\n", pos_final_j);
+            #endif // DEBUG_ACTIVO
+
             pausa();
 
-            int pos_final_j = calcular_pos_final_del_jugador(jugador.pos_en_mapa,
-                                                              cantidad_casilleros,
-                                                              dado.cara,
-                                                              lado);
-
-            guardar_movimiento(&cola_movimientos,jugador.pos_en_mapa,
-                               pos_final_j,true);
-
-
-            calcular_bandidos(mapa,&cola_movimientos);
 
             /*
-            while( colaVacia(&cola_movimientos)!=OK ){
-                desacolar(&cola_movimientos,&movi,sizeof(t_movimiento));
+            while(!colaVacia(&cola_movimientos_jugador)){
+                desacolar(&cola_movimientos_jugador,&movi,sizeof(t_movimiento));
                 printf("\nINI: %d ", movi.pos_inicial);
                 printf("FIN: %d\n", movi.pos_final);
-            }
-            */
+            }*/
 
             //mover_jugador(&jugador, movi);
 
@@ -112,22 +129,20 @@ void jugar_partida(t_mapa *mapa, t_config *config)
 
     ///Fin del juego
     limpiar_pantalla();
-    if(jugador.vidas)
-    {
-        victoria();
-    }
-    else
-    {
-        gameOver();
-    }
+    jugador.vidas?  victoria() : gameOver();
+
 
     printf("Puntos: %d\n",jugador.puntos);
+    #if DEBUG_ACTIVO
+        printf("DEBUG - Ingrese cuantos puntos quiere tener: ");
+        scanf("%d", &jugador.puntos);
+    #endif // DEBUG_ACTIVO
 
     ///ACA FALTA BAJAR LOS RESULTADOS AL INDICE Y LOS MOVIMIENTOS A UN ARCHIVO
 
     //Limpiar estructuras
-    vaciarCola(&cola_movimientos);
-    vaciarCola(&cola_movimientos);
+    vaciarCola(&cola_movimientos_jugador);
+    vaciarCola(&cola_turno);
     destruirDado(&dado);
 
     return;
@@ -138,7 +153,7 @@ void calcular_bandidos(t_mapa * mapa, t_movimientos * cola)
     //recorrer_adelante_accion(mapa,situar_bandidos, (void*)cola);
 }
 
-void situar_bandidos(void * a, void * parametro_extra)
+void situar_bandidos(void* a, void* parametro_extra)
 {
     tNodo * nodoactual = (tNodo*)a;
     t_casillero casillero_lista = *(t_casillero*)nodoactual->info;
@@ -192,13 +207,15 @@ void mover_jugador(t_jugador *jugador, unsigned pasos, int lado)
 {
 
 }
-int calcular_pos_final_del_jugador(int pos_inicial_del_jugador,
-                                   int cantidad_nodos_lista,
-                                   int cantidad_pasos,
-                                   int direccion){
-    int pos;
+int calcular_pos_final_del_jugador(unsigned pos_inicial_del_jugador,
+                                   unsigned cantidad_nodos_lista,
+                                   unsigned cantidad_pasos,
+                                   char direccion){
+    unsigned pos;
 
-    if(cantidad_nodos_lista<=0 || pos_inicial_del_jugador < 0 || pos_inicial_del_jugador > cantidad_nodos_lista || (direccion != 1 && direccion != -1))
+
+
+    if(!cantidad_nodos_lista || pos_inicial_del_jugador > cantidad_nodos_lista || (direccion != AVANZAR && direccion != RETROCEDER))
     {
         return -1;
     }
@@ -207,10 +224,10 @@ int calcular_pos_final_del_jugador(int pos_inicial_del_jugador,
 
     while(cantidad_pasos > 0)
     {
-        if(direccion == 1) //si llega 1 va para adelante
+        if(direccion == AVANZAR)
         {
             if(pos == cantidad_nodos_lista){
-                direccion = -1; //Aca rebota
+                direccion = RETROCEDER; //Aca rebota
                 pos--;
             }
             else{
@@ -760,9 +777,8 @@ int comparar_clave_casillero(const void* elem_a,const void* elem_b){
 
 ///FUNCIONES DE CONSOLA
 void pausa() {
-    int c;
     printf("\n  Presione ENTER para continuar...");
-    while ((c = getchar()) != '\n' && c != EOF);
+    limpiar_buffer();
 }
 
 void limpiar_buffer(void) {

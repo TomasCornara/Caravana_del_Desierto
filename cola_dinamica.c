@@ -1,5 +1,6 @@
 #include "cola_dinamica.h"
 
+#define MIN(A,B) ((A > B)? (B):(A))
 
 void crearCola(t_cola* cola)
 {
@@ -9,104 +10,89 @@ void crearCola(t_cola* cola)
 
 int colaVacia(const t_cola* cola)
 {
-    return NULL == cola->pPrimero ? OK : ERROR;
+    return !cola->pPrimero;
 }
 
 int colaLlena(const  t_cola* cola, unsigned tamElemento)
 {
-    return OK;
+    return 1;
 }
 
 int acolar(t_cola * cola,const void * elemento, unsigned tamElemento)
 {
-    tNodoCola * bufferNodo = malloc(sizeof(tNodoCola));
-    if(!bufferNodo)
-    {
-        return ERROR;
+    tNodoCola* nue;
+
+    nue = malloc(sizeof(tNodoCola));
+    if(!nue || !(nue->elemento = malloc(tamElemento))){
+        free(nue);
+        return 0;
     }
 
-    void * bufferDato = malloc(tamElemento);
-    if(!bufferDato)
-    {
-        free(bufferNodo);
-        return ERROR;
-    }
+    memcpy(nue->elemento,elemento,tamElemento);
+    nue->tamElemento = tamElemento;
+    nue->sig = NULL;
 
-    memcpy(bufferDato, elemento, tamElemento);
-    bufferNodo->elemento = bufferDato;
-    bufferNodo->tamElemento = tamElemento;
-    bufferNodo->sig = NULL;
-
-    if(cola->pPrimero == NULL)
+    if(!cola->pPrimero)
     {
-        cola->pPrimero = bufferNodo;
+        cola->pPrimero = nue;
+    } else {
+        cola->pUltimo->sig = nue;
     }
-    else
-    {
-        cola->pUltimo->sig = bufferNodo;
-    }
-    cola->pUltimo = bufferNodo;
+    cola->pUltimo = nue;
 
-    return OK;
+    return 1;
 }
 
 int desacolar(t_cola* cola, void* destino, unsigned tamanio)
 {
-    tNodoCola * nodoeliminado;
-    int minimo;
+    tNodoCola * elim;
 
-    if(cola->pPrimero == NULL)
-    {
-        return ERROR;
-    }
+    if(!cola || !cola->pPrimero) return 0;
 
-    nodoeliminado = (tNodoCola *)cola->pPrimero;
-    minimo = MIN(tamanio, nodoeliminado->tamElemento);
-    memcpy(destino, nodoeliminado->elemento, minimo);
+    elim = cola->pPrimero;
+    memcpy(destino, elim->elemento,MIN(elim->tamElemento,tamanio));
 
-    cola->pPrimero = nodoeliminado->sig;
+    cola->pPrimero = elim->sig;
 
-    if(cola->pPrimero == NULL)
+    if(!cola->pPrimero)
     {
         cola->pUltimo = NULL;
     }
 
-    free(nodoeliminado->elemento);
-    free(nodoeliminado);
+    free(elim->elemento);
+    free(elim);
 
-    return OK;
+    return 1;
 }
 
 void vaciarCola(t_cola* cola)
 {
-    tNodoCola * nodoeliminado;
+    tNodoCola* nodoeliminado;
 
-    while(cola->pPrimero != NULL)
+    if (!cola) {
+        return;
+    }
+
+    while (cola->pPrimero != NULL)
     {
-        nodoeliminado = (tNodoCola *)cola->pPrimero;
+        nodoeliminado = cola->pPrimero;
         cola->pPrimero = nodoeliminado->sig;
 
         free(nodoeliminado->elemento);
         free(nodoeliminado);
     }
+
     cola->pUltimo = NULL;
 }
 
 int verTopeCola(const t_cola * cola, void* destino, unsigned tamanio)
 {
-    int minimo;
-    if( colaVacia(cola) == OK )
-    {
-        return ERROR;
-    }
+    if (!cola || !cola->pPrimero) return 0;
 
-    minimo = MIN( tamanio, (cola->pPrimero->tamElemento));
+    memcpy(destino, cola->pPrimero->elemento, MIN(cola->pPrimero->tamElemento, tamanio));
 
-    memcpy(destino,cola->pPrimero->elemento,minimo);
-
-    return OK;
+    return 1;
 }
-
 
 
 

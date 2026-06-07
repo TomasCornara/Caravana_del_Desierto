@@ -5,9 +5,6 @@
 #include <string.h>
 #include "globales.h"
 
-#define OK 1
-#define ERROR 0
-
 typedef struct sNodoCola
 {
     struct sNodoCola* sig;
@@ -23,10 +20,10 @@ typedef struct
 
 void crearCola(t_cola* cola);
 int colaVacia(const t_cola* cola);
-int colaLlena(const t_cola* cola, unsigned tamElemento);
+int colaLlena(const  t_cola* cola, unsigned tamElemento);
 int acolar(t_cola * cola,const void * elemento, unsigned tamElemento);
-int desacolar(t_cola* cola, void*destino, unsigned tamanio);
+int desacolar(t_cola* cola, void* destino, unsigned tamanio);
 void vaciarCola(t_cola* cola);
-int verTopeCola(const t_cola * cola, void*destino, unsigned tamanio);
+int verTopeCola(const t_cola * cola, void* destino, unsigned tamanio);
 
 #endif // COLADINAMICA_H_INCLUDED

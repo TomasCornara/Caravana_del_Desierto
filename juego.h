@@ -114,7 +114,10 @@ void resolver_bandido_en_casillero(t_jugador *jugador, t_casillero *casillero_ac
 void printCaravana(FILE *archivo, t_mapa *mapa);
 
 
-int calcular_pos_final_del_jugador(int pos_inicial_del_jugador,int cantidad_nodos_lista,int cantidad_pasos,int direccion);
+int calcular_pos_final_del_jugador(unsigned pos_inicial_del_jugador,
+                                   unsigned cantidad_nodos_lista,
+                                   unsigned cantidad_pasos,
+                                   char direccion);
 void calcular_bandidos(t_mapa * mapa, t_movimientos * cola);
 void situar_bandidos(void * a, void * parametro_extra);
 

@@ -1,4 +1,5 @@
 #include "lista_circular_doble.h"
+#define MIN(A,B) ((A > B)? (B):(A))
 
 void crear_lista(tLista* pl)
 {

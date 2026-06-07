@@ -7,7 +7,6 @@
 #define RANKING 2
 
 //Funciones auxiliares para el menu
-void limpiar_buffer_entrada(void);
 int leer_opcion_menu(void);
 
 int main() {
@@ -83,16 +82,11 @@ int main() {
     return 0;
 }
 
-void limpiar_buffer_entrada(void) {
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF);
-}
-
 int leer_opcion_menu(void) {
     int opcion;
     if (scanf("%d", &opcion) != 1) {
         opcion = 0;
-        limpiar_buffer_entrada();
+        limpiar_buffer();
     }
     return opcion;
 }
