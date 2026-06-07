@@ -181,7 +181,7 @@
 	"dado.h"
 	"consola.h"
 
-1780786249 c:\users\ulaza\onedrive\escritorio\tpalgo\caravana_del_desierto\juego.h
+1780798366 c:\users\ulaza\onedrive\escritorio\tpalgo\caravana_del_desierto\juego.h
 	<stdbool.h>
 	<time.h>
 	<stdlib.h>
@@ -189,7 +189,6 @@
 	"manejo_archivos.h"
 	"cola_dinamica.h"
 	"arbolBinario.h"
-	"consola.h"
 
 1780786290 c:\users\ulaza\onedrive\escritorio\tpalgo\caravana_del_desierto\lista_circular_doble.h
 	<stdio.h>
@@ -204,7 +203,7 @@
 1780594526 c:\users\ulaza\onedrive\escritorio\tpalgo\caravana_del_desierto\consola.h
 	<stdio.h>
 
-1780684673 source:c:\users\ulaza\onedrive\escritorio\tpalgo\caravana_del_desierto\lista_circular_doble.c
+1780786273 source:c:\users\ulaza\onedrive\escritorio\tpalgo\caravana_del_desierto\lista_circular_doble.c
 	"lista_circular_doble.h"
 
 1780779736 source:c:\users\ulaza\onedrive\escritorio\tpalgo\caravana_del_desierto\main.c

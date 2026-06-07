@@ -416,12 +416,18 @@ void mover_bandido(t_mapa *mapa, t_movimientos *cola_movimientos)   ///REVISAR E
     free(cantidades);
 }
 
-void poner_bandidos_random(t_casillero *temp, int total, int cantidad)
+void poner_bandidos_random(t_mapa *mapa, int total, int cantidad)
 {
+    t_dado dado;
+
+    crearDado(&dado,total);
+    int valor_random;
     int puestos = 0;
+
     while (puestos < cantidad)
     {
-        t_casillero *cas = temp + 1 + rand() % (total - 2);
+        valor_random = tirarDado(&dado);
+        t_casillero *cas = obtener_de_lista_dir_dato(mapa,&valor_random,comparar_clave_casillero);
 
         if (cas->tipo_casillero!= TIPO_INICIO &&
                 cas->tipo_casillero!= TIPO_FIN &&
@@ -434,12 +440,17 @@ void poner_bandidos_random(t_casillero *temp, int total, int cantidad)
     }
 }
 
-void poner_tipo_random(t_casillero *temp, int total, unsigned tipo, int cantidad)
+void poner_tipo_random(t_mapa *mapa, int total, unsigned tipo, int cantidad)
 {
+    t_dado dado;
     int puestos = 0;
+    int valor_random;
+    crearDado(&dado,total);
+
     while (puestos < cantidad)
     {
-        t_casillero *cas = temp + 1 + rand() % (total - 2);
+        valor_random = tirarDado(&dado);
+        t_casillero *cas = obtener_de_lista_dir_dato(mapa,&valor_random,comparar_clave_casillero);
 
         if (cas->tipo_casillero == TIPO_NORMAL)
         {
@@ -470,72 +481,42 @@ void poner_tipo_random(t_casillero *temp, int total, unsigned tipo, int cantidad
     }
 }
 
-void poner_casilleros_especiales(t_casillero *temp, t_config *config)
+void poner_casilleros_especiales(t_mapa *mapa, t_config *config)
 {
-    poner_tipo_random(temp, config->cantidad_posiciones, TIPO_OASIS, config->maximo_oasis);
-    poner_tipo_random(temp, config->cantidad_posiciones, TIPO_TORMENTA, config->maximo_tormentas);
-    poner_tipo_random(temp, config->cantidad_posiciones, TIPO_PREMIO, config->maximo_premios);
-    poner_tipo_random(temp, config->cantidad_posiciones, TIPO_VIDA_EXTRA, config->maximo_vidas_extra);
-}
-                     //
-int comparar_posicion(const void* elem_a, const void* elem_b){
-    t_casillero casillero_a = *(t_casillero*)elem_a;
-    t_casillero casillero_b = *(t_casillero*)elem_b;
-
-    return casillero_b.nro_posicion - casillero_a.nro_posicion;
-}
-
-int comparar_clave_casillero(const void* elem_a, const void* elem_b){
-
-    unsigned clave = *(unsigned*)a;
-    t_casillero casillero_b = *(t_casillero*)elem_b;
-
-    return clave - casillero_b.nro_posicion;
+    poner_tipo_random(mapa, config->cantidad_posiciones, TIPO_OASIS, config->maximo_oasis);
+    poner_tipo_random(mapa, config->cantidad_posiciones, TIPO_TORMENTA, config->maximo_tormentas);
+    poner_tipo_random(mapa, config->cantidad_posiciones, TIPO_PREMIO, config->maximo_premios);
+    poner_tipo_random(mapa, config->cantidad_posiciones, TIPO_VIDA_EXTRA, config->maximo_vidas_extra);
 }
 
 int juego_generar_mapa(t_config *config, t_mapa *mapa)
 {
-    t_casillero *p,
-                *fin;
-    unsigned cant;
-    t_casillero *temp;
-
-    cant = config->cantidad_posiciones;
-    temp = calloc(cant, sizeof(t_casillero));
+    t_casillero nuevo_casillero;
     crear_lista(mapa);
+    unsigned nro_casillero = 0;
 
-    if (!temp) return 0;
+    nuevo_casillero.cant_bandidos = 0;
+    nuevo_casillero.nro_posicion = nro_casillero;
+    nuevo_casillero.presencia_jugador = false;
+    nuevo_casillero.tipo_casillero = TIPO_NORMAL;
 
-    fin = temp + cant;
-    // Inicializar casilleros como normales y sin bandidos
-    for (p = temp; p < fin; p++)
-    {
-        p->nro_posicion = p - temp;
-        p->tipo_casillero = TIPO_NORMAL;
-        p->presencia_jugador = false;
-        p->cant_bandidos = 0;
+    while( nro_casillero < config->cantidad_posiciones ){
+        if(nro_casillero == 0){
+            nuevo_casillero.tipo_casillero = TIPO_INICIO;
+        }
+        if(nro_casillero == (config->cantidad_posiciones - 1) ){
+            nuevo_casillero.tipo_casillero = TIPO_FIN;
+        }
+        agregar_ord_en_lista(mapa,&nuevo_casillero,sizeof(t_casillero),comparar_posicion_casilleros);
+
+        nro_casillero++;
+        nuevo_casillero.tipo_casillero = TIPO_NORMAL;
+        nuevo_casillero.nro_posicion = nro_casillero;
     }
 
-    // Colocar casilleros especiales y bandidos
-    temp->tipo_casillero = TIPO_INICIO;
-    temp->presencia_jugador = true;
-    (temp + cant - 1)->tipo_casillero = TIPO_FIN;
-
-    poner_casilleros_especiales(temp, cant, config);
+    poner_casilleros_especiales(mapa, cant, config);
     poner_bandidos_random(temp, cant, config->maximo_bandidos);
 
-    // Pasar el arreglo a la lista
-    for (p = temp; p < fin; p++)
-    {
-        //sizeof(t_casillero) != 1
-        if (agregar_final_lista(mapa, p, sizeof(t_casillero))!= 1)
-        {
-            free(temp);
-            return 0;
-        }
-    }
-
-    free(temp);
     return 1;
 }
 
@@ -698,7 +679,22 @@ void printCaravana(FILE *archivo, t_mapa *mapa)
     (*mapa) = inicio;
     fprintf(archivo, "\n");
 }
+///FUNCIONES DE COMPARACION
 
+int comparar_posicion_casilleros(const void* elem_a, const void* elem_b){
+    t_casillero casillero_a = *(t_casillero*)elem_a;
+    t_casillero casillero_b = *(t_casillero*)elem_b;
+
+    return casillero_b.nro_posicion - casillero_a.nro_posicion;
+}
+
+int comparar_clave_casillero(const void* elem_a, const void* elem_b){
+
+    unsigned clave = *(unsigned*)a;
+    t_casillero casillero_b = *(t_casillero*)elem_b;
+
+    return clave - casillero_b.nro_posicion;
+}
 
 ///FUNCIONES DE CONSOLA
 void pausa() {

@@ -97,9 +97,9 @@ typedef struct {
 
 
 //Funciones logica de juego
-void poner_tipo_random(t_casillero *temp, int total, unsigned tipo, int cantidad);
-void poner_bandidos_random(t_casillero *temp, int total, int cantidad);
-void poner_casilleros_especiales(t_casillero *temp, int total, t_config *config);
+void poner_tipo_random(t_mapa *mapa, int total, unsigned tipo, int cantidad);
+void poner_bandidos_random(t_mapa *mapa, int total, int cantidad);
+void poner_casilleros_especiales(t_mapa *mapa, t_config *config);
 int juego_generar_mapa(t_config *config, t_mapa *mapa);
 int juego_cargar_config(t_config *config);
 int juego_validar_config(t_config *config);
@@ -117,6 +117,9 @@ int calcular_pos_final_del_jugador(int pos_inicial_del_jugador,int cantidad_nodo
 void calcular_bandidos(t_mapa * mapa, t_movimientos * cola);
 void situar_bandidos(void * a, void * parametro_extra);
 
+
+int comparar_posicion_casilleros(const void* elem_a, const void* elem_b);
+int comparar_clave_casillero(const void* elem_a, const void* elem_b);
 //Funciones consola
 
 //Utiles
