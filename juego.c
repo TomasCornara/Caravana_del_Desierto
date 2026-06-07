@@ -514,8 +514,8 @@ int juego_generar_mapa(t_config *config, t_mapa *mapa)
         nuevo_casillero.nro_posicion = nro_casillero;
     }
 
-    poner_casilleros_especiales(mapa, cant, config);
-    poner_bandidos_random(temp, cant, config->maximo_bandidos);
+    poner_casilleros_especiales(mapa, config);
+    poner_bandidos_random(mapa, config->cantidad_posiciones, config->maximo_bandidos);
 
     return 1;
 }
