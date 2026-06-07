@@ -29,4 +29,5 @@ int agregar_ord_en_lista(tLista * pl, void * dato, unsigned tam, tCmp cmp);
 void vaciar_lista_doble(tLista *pl);
 int obtener_de_lista(const tLista* pl,const void* key, void* buffer, unsigned tam_dato, tCmp cmp);
 void * obtener_de_lista_dir_dato(const tLista* pl,const void* key, tCmp cmp);
+unsigned cantidad_elementos_lista(tLista * pl);
 #endif // LISTA_CIRCULAR_DOBLE_H_INCLUDED

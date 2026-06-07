@@ -168,29 +168,30 @@
 	<string.h>
 	"globales.h"
 
-1780681117 source:c:\users\ulaza\onedrive\escritorio\tpalgo\caravana_del_desierto\dado.c
+1780854161 source:c:\users\ulaza\onedrive\escritorio\tpalgo\caravana_del_desierto\dado.c
 	<stdlib.h>
 	<time.h>
 	"dado.h"
 
 1780681199 c:\users\ulaza\onedrive\escritorio\tpalgo\caravana_del_desierto\dado.h
 
-1780684415 source:c:\users\ulaza\onedrive\escritorio\tpalgo\caravana_del_desierto\juego.c
+1780854322 source:c:\users\ulaza\onedrive\escritorio\tpalgo\caravana_del_desierto\juego.c
 	"juego.h"
 	"manejo_archivos.h"
 	"dado.h"
-	"consola.h"
+	"lista_circular_doble.h"
 
-1780798366 c:\users\ulaza\onedrive\escritorio\tpalgo\caravana_del_desierto\juego.h
+1780853338 c:\users\ulaza\onedrive\escritorio\tpalgo\caravana_del_desierto\juego.h
 	<stdbool.h>
 	<time.h>
 	<stdlib.h>
+	<ctype.h>
 	"lista_circular_doble.h"
 	"manejo_archivos.h"
 	"cola_dinamica.h"
 	"arbolBinario.h"
 
-1780786290 c:\users\ulaza\onedrive\escritorio\tpalgo\caravana_del_desierto\lista_circular_doble.h
+1780852794 c:\users\ulaza\onedrive\escritorio\tpalgo\caravana_del_desierto\lista_circular_doble.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -203,7 +204,7 @@
 1780594526 c:\users\ulaza\onedrive\escritorio\tpalgo\caravana_del_desierto\consola.h
 	<stdio.h>
 
-1780786273 source:c:\users\ulaza\onedrive\escritorio\tpalgo\caravana_del_desierto\lista_circular_doble.c
+1780799167 source:c:\users\ulaza\onedrive\escritorio\tpalgo\caravana_del_desierto\lista_circular_doble.c
 	"lista_circular_doble.h"
 
 1780779736 source:c:\users\ulaza\onedrive\escritorio\tpalgo\caravana_del_desierto\main.c

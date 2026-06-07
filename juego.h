@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <time.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 #include "lista_circular_doble.h"
 #include "manejo_archivos.h"
@@ -104,7 +105,7 @@ int juego_generar_mapa(t_config *config, t_mapa *mapa);
 int juego_cargar_config(t_config *config);
 int juego_validar_config(t_config *config);
 void jugar_partida(t_mapa *mapa, t_config *config);
-void inicializar_jugador(t_jugador *jugador, t_config *config, t_mapa mapa);
+void inicializar_jugador(t_jugador *jugador, t_config *config);
 int guardar_movimiento(t_movimientos *cola, unsigned pos_inicial, unsigned pos_final, bool jugador_humano);
 void mover_jugador(t_jugador *jugador, unsigned pasos, int lado);
 void mover_bandido(t_mapa *mapa, t_movimientos *cola_movimientos);
@@ -118,8 +119,8 @@ void calcular_bandidos(t_mapa * mapa, t_movimientos * cola);
 void situar_bandidos(void * a, void * parametro_extra);
 
 
-int comparar_posicion_casilleros(const void* elem_a, const void* elem_b);
-int comparar_clave_casillero(const void* elem_a, const void* elem_b);
+int comparar_posicion_casilleros(void* elem_a,void* elem_b);
+int comparar_clave_casillero(void* elem_a,void* elem_b);
 //Funciones consola
 
 //Utiles

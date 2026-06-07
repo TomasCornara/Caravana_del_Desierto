@@ -1,23 +1,25 @@
 #include "juego.h"
 #include "manejo_archivos.h"
 #include "dado.h"
+#include "lista_circular_doble.h"
 
 void jugar_partida(t_mapa *mapa, t_config *config)
 {
     t_movimientos cola_movimientos;
-    t_movimiento movi;
+    //t_movimiento movi;
     t_jugador jugador;
     t_dado dado;
-    t_casillero *casillero_actual;
+    //t_casillero *casillero_actual;
     char c_lado;
     int lado = 1;
+    int cantidad_casilleros = cantidad_elementos_lista(mapa);
 
     limpiar_pantalla();
 
     //Inicializacion
     crearCola(&cola_movimientos);
     crearDado(&dado, CARAS_DADO);
-    inicializar_jugador(&jugador, config, *mapa);
+    inicializar_jugador(&jugador, config);
     pedir_nombre(jugador.nombre); //INICIALIZAR NOMBRE DEL JUGADOR
 
     limpiar_buffer();
@@ -31,7 +33,7 @@ void jugar_partida(t_mapa *mapa, t_config *config)
     }
 
     ///Juego
-    while (jugador.vidas && ((t_casillero*)jugador.pos->info)->tipo_casillero != TIPO_FIN)
+    while (  (jugador.vidas > 0) &&  (jugador.pos_en_mapa != (config->cantidad_posiciones) - 1)  )
     {
         limpiar_pantalla();
         mostrarEstadisticas(jugador.vidas, jugador.puntos, jugador.nombre);
@@ -58,7 +60,7 @@ void jugar_partida(t_mapa *mapa, t_config *config)
             scanf("%d", &dado.cara);
 
             // (((t_casillero*)jugador.pos->info)->nro_posicion) = numero de casillero actual del jugador
-            if(dado.cara < (((t_casillero*)jugador.pos->info)->nro_posicion) +1)
+            if(dado.cara < (jugador.pos_en_mapa +1) )
             {
                 do
                 {
@@ -78,8 +80,11 @@ void jugar_partida(t_mapa *mapa, t_config *config)
             limpiar_buffer();
             pausa();
 
-            guardar_movimiento(&cola_movimientos,((t_casillero *)jugador.pos->info)->nro_posicion,
-                               calcular_pos_final(&jugador,dado.cara,lado),true);
+            guardar_movimiento(&cola_movimientos,jugador.pos_en_mapa,
+                               calcular_pos_final_del_jugador(jugador.pos_en_mapa,
+                                                              cantidad_casilleros,
+                                                              dado.cara,
+                                                              lado),true);
 
 
             calcular_bandidos(mapa,&cola_movimientos);
@@ -92,12 +97,12 @@ void jugar_partida(t_mapa *mapa, t_config *config)
             }
             */
 
-            mover_jugador(&jugador, movi);
+            //mover_jugador(&jugador, movi);
 
-            casillero_actual = (t_casillero*)jugador.pos->info;
+            //casillero_actual = (t_casillero*)jugador.pos->info;
 
             //Aplica los los buffeos y debuffos + bandidos
-            resolver_casillero_actual(&jugador, casillero_actual, &cola_movimientos);
+            //resolver_casillero_actual(&jugador, casillero_actual, &cola_movimientos);
             limpiar_pantalla();
         }
 
@@ -130,7 +135,7 @@ void jugar_partida(t_mapa *mapa, t_config *config)
 
 void calcular_bandidos(t_mapa * mapa, t_movimientos * cola)
 {
-    recorrer_adelante_accion(mapa,situar_bandidos, (void*)cola);
+    //recorrer_adelante_accion(mapa,situar_bandidos, (void*)cola);
 }
 
 void situar_bandidos(void * a, void * parametro_extra)
@@ -164,15 +169,14 @@ void situar_bandidos(void * a, void * parametro_extra)
 }
 
 
-void inicializar_jugador(t_jugador *jugador, t_config *config, t_mapa mapa)
+void inicializar_jugador(t_jugador *jugador, t_config *config)
 {
     strcpy(jugador->nombre, "");
     jugador->vidas = config->vidas_inicio;
     jugador->puntos = 0;
     jugador->efectoTormenta = false;
     jugador->efectoOasis = false;
-    jugador->pos = mapa;
-   // jugador->pos_en_mapa = 0;
+    jugador->pos_en_mapa = 0;
 }
 
 int guardar_movimiento(t_movimientos *cola, unsigned pos_inicial, unsigned pos_final, bool jugador_humano)
@@ -186,6 +190,7 @@ int guardar_movimiento(t_movimientos *cola, unsigned pos_inicial, unsigned pos_f
 
 void mover_jugador(t_jugador *jugador, unsigned pasos, int lado)
 {
+    /*
     tNodo *actual;
     // unsigned pos_inicial;
     // unsigned pos_final;
@@ -212,13 +217,8 @@ void mover_jugador(t_jugador *jugador, unsigned pasos, int lado)
     jugador->pos = actual;
 
     //pos_final = ((t_casillero *)actual->info)->nro_posicion;
+    */
 }
-
-// 1    -    24...
-// hay que calcular en base a la posicion inicial del jugador y en base a la cantidad
-//de nodos que hay(posicion final).. la posicion a desplazar el jugador, tener en cuenta
-//que el jugador no puede retroceder desde inicio y el jugador rebota en el final.
-
 int calcular_pos_final_del_jugador(int pos_inicial_del_jugador,
                                    int cantidad_nodos_lista,
                                    int cantidad_pasos,
@@ -339,7 +339,7 @@ void resolver_bandido_en_casillero(t_jugador *jugador, t_casillero *casillero_ac
         jugador->vidas--;
         limpiar_pantalla();
         printf("El bandido te quita 1 vida.\n");
-        mover_jugador(jugador, ((t_casillero*)jugador->pos->info)->nro_posicion, -1);
+        //mover_jugador(jugador, ((t_casillero*)jugador->pos->info)->nro_posicion, -1);
     }
 
     casillero_actual->cant_bandidos--; //Elimina al bandido que ataco
@@ -419,18 +419,18 @@ void mover_bandido(t_mapa *mapa, t_movimientos *cola_movimientos)   ///REVISAR E
 void poner_bandidos_random(t_mapa *mapa, int total, int cantidad)
 {
     t_dado dado;
-
-    crearDado(&dado,total);
+    t_casillero *cas;
+    crearDado(&dado,(total - 1));
     int valor_random;
     int puestos = 0;
 
     while (puestos < cantidad)
     {
         valor_random = tirarDado(&dado);
-        t_casillero *cas = obtener_de_lista_dir_dato(mapa,&valor_random,comparar_clave_casillero);
+        cas = obtener_de_lista_dir_dato(mapa,&valor_random,comparar_clave_casillero);
 
-        if (cas->tipo_casillero!= TIPO_INICIO &&
-                cas->tipo_casillero!= TIPO_FIN &&
+        if (cas->tipo_casillero != TIPO_INICIO &&
+                cas->tipo_casillero != TIPO_FIN &&
                 cas->cant_bandidos == 0)
         {
 
@@ -445,7 +445,7 @@ void poner_tipo_random(t_mapa *mapa, int total, unsigned tipo, int cantidad)
     t_dado dado;
     int puestos = 0;
     int valor_random;
-    crearDado(&dado,total);
+    crearDado(&dado, (total - 1) );
 
     while (puestos < cantidad)
     {
@@ -503,6 +503,7 @@ int juego_generar_mapa(t_config *config, t_mapa *mapa)
     while( nro_casillero < config->cantidad_posiciones ){
         if(nro_casillero == 0){
             nuevo_casillero.tipo_casillero = TIPO_INICIO;
+            nuevo_casillero.presencia_jugador = true;
         }
         if(nro_casillero == (config->cantidad_posiciones - 1) ){
             nuevo_casillero.tipo_casillero = TIPO_FIN;
@@ -511,6 +512,7 @@ int juego_generar_mapa(t_config *config, t_mapa *mapa)
 
         nro_casillero++;
         nuevo_casillero.tipo_casillero = TIPO_NORMAL;
+        nuevo_casillero.presencia_jugador = false;
         nuevo_casillero.nro_posicion = nro_casillero;
     }
 
@@ -589,7 +591,93 @@ int juego_validar_config(t_config *config)
 
     return 1; // Todo OK
 }
+///MI PRINT CARAVANA
+void printCaravana(FILE *archivo, t_mapa *mapa)
+{
+    t_casillero *cas;
+    unsigned pos;
+    //t_casillero casillero_actual;
 
+    if (!archivo || !mapa || !*mapa) return;
+
+    int contador_casilleros = 0;
+    int cantidad_casilleros = cantidad_elementos_lista(mapa);
+
+    while (contador_casilleros <= cantidad_casilleros )
+    {
+
+        //obtener_de_lista(mapa,&contador_casilleros,&casillero_actual,sizeof(t_casillero),comparar_clave_casillero);
+
+        cas = obtener_de_lista_dir_dato(mapa,&contador_casilleros,comparar_clave_casillero);
+        pos = cas->nro_posicion;
+
+        int num_elems = 0;
+        char elems[20][3];
+
+        if (cas->tipo_casillero != TIPO_NORMAL || (!cas->presencia_jugador && cas->cant_bandidos == 0))
+        {
+            switch (cas->tipo_casillero)
+            {
+            case TIPO_INICIO:
+                strcpy(elems[num_elems++], "I");
+                break;
+            case TIPO_FIN:
+                strcpy(elems[num_elems++], "S");
+                break;
+            case TIPO_NORMAL:
+                strcpy(elems[num_elems++], ".");
+                break;
+            case TIPO_OASIS:
+                strcpy(elems[num_elems++], "O");
+                break;
+            case TIPO_TORMENTA:
+                strcpy(elems[num_elems++], "T");
+                break;
+            case TIPO_VIDA_EXTRA:
+                strcpy(elems[num_elems++], "V");
+                break;
+            case TIPO_PREMIO:
+                strcpy(elems[num_elems++], "P");
+                break;
+            default:
+                strcpy(elems[num_elems++], "?");
+                break;
+            }
+        }
+
+        if (cas->presencia_jugador)
+        {
+            strcpy(elems[num_elems++], "J");
+        }
+
+        for (unsigned i = 0; i < cas->cant_bandidos; i++)
+        {
+            if (num_elems < 20) strcpy(elems[num_elems++], "B");
+        }
+
+        fprintf(archivo, "%02u", pos);
+        if (num_elems == 1)
+        {
+            fprintf(archivo, ":%s\n", elems[0]);
+        }
+        else if (num_elems > 1)
+        {
+            fprintf(archivo, ":[");
+            for (int i = 0; i < num_elems; i++)
+            {
+                fprintf(archivo, "%s%s", elems[i], i == num_elems - 1 ? "" : " ");
+            }
+            fprintf(archivo, "]\n");
+        }
+        else
+        {
+            fprintf(archivo, ":.\n");
+        }
+        contador_casilleros++;
+    }
+    fprintf(archivo, "\n");
+}
+/*
 void printCaravana(FILE *archivo, t_mapa *mapa)
 {
     tNodo *temp;
@@ -679,18 +767,19 @@ void printCaravana(FILE *archivo, t_mapa *mapa)
     (*mapa) = inicio;
     fprintf(archivo, "\n");
 }
+*/
 ///FUNCIONES DE COMPARACION
 
-int comparar_posicion_casilleros(const void* elem_a, const void* elem_b){
+int comparar_posicion_casilleros(void* elem_a,void* elem_b){
     t_casillero casillero_a = *(t_casillero*)elem_a;
     t_casillero casillero_b = *(t_casillero*)elem_b;
 
     return casillero_b.nro_posicion - casillero_a.nro_posicion;
 }
 
-int comparar_clave_casillero(const void* elem_a, const void* elem_b){
+int comparar_clave_casillero(void* elem_a, void* elem_b){
 
-    unsigned clave = *(unsigned*)a;
+    unsigned clave = *(unsigned*)elem_a;
     t_casillero casillero_b = *(t_casillero*)elem_b;
 
     return clave - casillero_b.nro_posicion;
