@@ -775,8 +775,6 @@ void pedir_nombre(char *nombre) {
     size_t i;
     int letras;
 
-    limpiar_buffer();
-
     do {
         printf("Ingrese su nombre (al menos 3 letras): ");
         if (fgets(nombre, MAX_NOMBRE, stdin) == NULL) {

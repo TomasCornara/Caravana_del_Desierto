@@ -47,6 +47,7 @@ int main() {
         limpiar_pantalla();
         mostrar_menu();
         opcion = leer_opcion_menu();
+        limpiar_buffer();
 
         switch (opcion) {
             case JUGAR:
