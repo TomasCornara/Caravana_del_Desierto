@@ -80,11 +80,13 @@ void jugar_partida(t_mapa *mapa, t_config *config)
             limpiar_buffer();
             pausa();
 
-            guardar_movimiento(&cola_movimientos,jugador.pos_en_mapa,
-                               calcular_pos_final_del_jugador(jugador.pos_en_mapa,
+            int pos_final_j = calcular_pos_final_del_jugador(jugador.pos_en_mapa,
                                                               cantidad_casilleros,
                                                               dado.cara,
-                                                              lado),true);
+                                                              lado);
+
+            guardar_movimiento(&cola_movimientos,jugador.pos_en_mapa,
+                               pos_final_j,true);
 
 
             calcular_bandidos(mapa,&cola_movimientos);
@@ -190,34 +192,7 @@ int guardar_movimiento(t_movimientos *cola, unsigned pos_inicial, unsigned pos_f
 
 void mover_jugador(t_jugador *jugador, unsigned pasos, int lado)
 {
-    /*
-    tNodo *actual;
-    // unsigned pos_inicial;
-    // unsigned pos_final;
 
-    if (!jugador || !jugador->pos)
-    {
-        return;
-    }
-
-    actual = jugador->pos;
-    //pos_inicial = ((t_casillero *)actual->info)->nro_posicion;
-
-    while (pasos != 0)
-    {
-        if (actual->sig == NULL)
-            lado *= -1;
-
-        actual = ( lado > 0 ) ? actual->sig : actual->ant;
-        pasos--;
-    }
-
-    ((t_casillero *)jugador->pos->info)->presencia_jugador = false;
-    ((t_casillero *)actual->info)->presencia_jugador = true;
-    jugador->pos = actual;
-
-    //pos_final = ((t_casillero *)actual->info)->nro_posicion;
-    */
 }
 int calcular_pos_final_del_jugador(int pos_inicial_del_jugador,
                                    int cantidad_nodos_lista,
@@ -225,7 +200,7 @@ int calcular_pos_final_del_jugador(int pos_inicial_del_jugador,
                                    int direccion){
     int pos;
 
-    if(cantidad_nodos_lista<=0 || pos_inicial_del_jugador < 1 || pos_inicial_del_jugador > cantidad_nodos_lista || (direccion != 1 && direccion != -1))
+    if(cantidad_nodos_lista<=0 || pos_inicial_del_jugador < 0 || pos_inicial_del_jugador > cantidad_nodos_lista || (direccion != 1 && direccion != -1))
     {
         return -1;
     }
