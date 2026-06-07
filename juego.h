@@ -119,8 +119,8 @@ void calcular_bandidos(t_mapa * mapa, t_movimientos * cola);
 void situar_bandidos(void * a, void * parametro_extra);
 
 
-int comparar_posicion_casilleros(void* elem_a,void* elem_b);
-int comparar_clave_casillero(void* elem_a,void* elem_b);
+int comparar_posicion_casilleros(const void* elem_a,const void* elem_b);
+int comparar_clave_casillero(const void* elem_a,const void* elem_b);
 //Funciones consola
 
 //Utiles

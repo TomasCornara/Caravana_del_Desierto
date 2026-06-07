@@ -17,7 +17,7 @@ typedef struct sNodo {
 typedef tNodo* tLista;
 
 typedef void (*tAccion)(void*a, void * parametro_extra);
-typedef int (*tCmp)(void*a, void *b);
+typedef int (*tCmp)(const void*a,const void *b);
 
 void crear_lista(tLista* pl);
 int lista_vacia(const tLista* pl);

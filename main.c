@@ -23,7 +23,6 @@ int main() {
     printf("MAXIME ESTA VENTANA PARA PODER VISUALIZAR EL JUEGO CORRECTAMENTE\n");
 
     pausa();
-    limpiar_buffer();
     limpiar_pantalla();
 
     // Cargar configuracion y validar

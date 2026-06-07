@@ -22,8 +22,6 @@ void jugar_partida(t_mapa *mapa, t_config *config)
     inicializar_jugador(&jugador, config);
     pedir_nombre(jugador.nombre); //INICIALIZAR NOMBRE DEL JUGADOR
 
-    limpiar_buffer();
-
     // Generacion caravana.txt
     FILE *archivo_caravana = abrir_txt(ARCHIVO_MAPA, "w");
     if (archivo_caravana)
@@ -745,14 +743,14 @@ void printCaravana(FILE *archivo, t_mapa *mapa)
 */
 ///FUNCIONES DE COMPARACION
 
-int comparar_posicion_casilleros(void* elem_a,void* elem_b){
+int comparar_posicion_casilleros(const void* elem_a,const void* elem_b){
     t_casillero casillero_a = *(t_casillero*)elem_a;
     t_casillero casillero_b = *(t_casillero*)elem_b;
 
     return casillero_b.nro_posicion - casillero_a.nro_posicion;
 }
 
-int comparar_clave_casillero(void* elem_a, void* elem_b){
+int comparar_clave_casillero(const void* elem_a,const void* elem_b){
 
     unsigned clave = *(unsigned*)elem_a;
     t_casillero casillero_b = *(t_casillero*)elem_b;
@@ -768,7 +766,8 @@ void pausa() {
 }
 
 void limpiar_buffer(void) {
-    fflush(stdin);
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
 }
 
 void pedir_nombre(char *nombre) {
@@ -790,6 +789,8 @@ void pedir_nombre(char *nombre) {
         if (len > 0 && nombre[len - 1] == '\n') {
             nombre[len - 1] = '\0';
             len--;
+        } else {
+            limpiar_buffer();
         }
 
         // Verificar que se haya escrito algo
@@ -801,7 +802,7 @@ void pedir_nombre(char *nombre) {
         }
 
         if (letras < 3) {
-            printf("Nombre invalido: ingrese al menos 3 letras.\n");
+            printf("\nNombre invalido: ingrese al menos 3 letras.\n");
         }
     } while (letras < 3);
 

@@ -10,17 +10,17 @@
 1780507061 c:\users\tomas\onedrive\desktop\caravana_del_desierto\consola.h
 	<stdio.h>
 
-1780506633 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\main.c
+1780858061 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\main.c
 	<stdio.h>
 	<stdlib.h>
 	"juego.h"
 
-1780506633 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\dado.c
+1780855904 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\dado.c
 	<stdlib.h>
 	<time.h>
 	"dado.h"
 
-1776874860 c:\users\tomas\onedrive\desktop\caravana_del_desierto\dado.h
+1780780896 c:\users\tomas\onedrive\desktop\caravana_del_desierto\dado.h
 
 1779820372 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\manejo_archivos.c
 	<string.h>
@@ -93,21 +93,21 @@
 	<stdio.h>
 	<stdlib.h>
 
-1780507331 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\juego.c
+1780858013 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\juego.c
 	"juego.h"
 	"manejo_archivos.h"
 	"dado.h"
-	"consola.h"
+	"lista_circular_doble.h"
 
-1780506792 c:\users\tomas\onedrive\desktop\caravana_del_desierto\juego.h
+1780857180 c:\users\tomas\onedrive\desktop\caravana_del_desierto\juego.h
 	<stdbool.h>
 	<time.h>
 	<stdlib.h>
+	<ctype.h>
 	"lista_circular_doble.h"
 	"manejo_archivos.h"
 	"cola_dinamica.h"
 	"arbolBinario.h"
-	"consola.h"
 
 1779821749 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\cola_dinamica.c
 	"cola_dinamica.h"
@@ -128,13 +128,13 @@
 	"lista_circular_doble.h"
 	"manejo_archivos.h"
 
-1779821749 c:\users\tomas\onedrive\desktop\caravana_del_desierto\lista_circular_doble.h
+1780857001 c:\users\tomas\onedrive\desktop\caravana_del_desierto\lista_circular_doble.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	"globales.h"
 
-1779821922 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\lista_circular_doble.c
+1780857105 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\lista_circular_doble.c
 	"lista_circular_doble.h"
 
 1779819617 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\arbolbinario.c

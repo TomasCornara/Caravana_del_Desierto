@@ -201,7 +201,7 @@ int obtener_de_lista(const tLista* pl,const void* key, void* buffer, unsigned ta
     return 0;
 }
 
-void * obtener_de_lista_dir_dato(const tLista* pl,const void* key, tCmp cmp)
+void* obtener_de_lista_dir_dato(const tLista* pl,const void* key, tCmp cmp)
 {
     tNodo *act,
           *primero;
