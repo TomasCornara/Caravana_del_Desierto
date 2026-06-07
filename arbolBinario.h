@@ -1,6 +1,5 @@
 #ifndef ARBOLBINARIO_H_INCLUDED
 #define ARBOLBINARIO_H_INCLUDED
-#include "globales.h"
 
 typedef struct sNodoA{
     void* dato;
