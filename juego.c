@@ -13,13 +13,13 @@ void jugar_partida(t_mapa *mapa, t_config *config)
 
     t_movimientos cola_movimientos_jugador;
     t_movimientos cola_turno;
-    //t_movimiento movi;
+    t_movimiento movi;
     t_jugador jugador;
     t_dado dado;
     //t_casillero *casillero_actual;
     char direccion;
     unsigned cantidad_casilleros,
-             posicion_salida;
+            posicion_salida;
 
     limpiar_pantalla();
 
@@ -40,7 +40,7 @@ void jugar_partida(t_mapa *mapa, t_config *config)
         fclose(archivo_caravana);
     }
 
-    ///Juego
+
     while ((jugador.vidas > 0) && (jugador.pos_en_mapa != posicion_salida))
     {
         limpiar_pantalla();
@@ -62,7 +62,7 @@ void jugar_partida(t_mapa *mapa, t_config *config)
         }
         else
         {
-            int pos_final_j;
+            unsigned pos_final_j;
             direccion = AVANZAR; //Por defecto se avanza
 
             tirarDado(&dado);
@@ -92,9 +92,11 @@ void jugar_partida(t_mapa *mapa, t_config *config)
                 while(direccion != AVANZAR && direccion != RETROCEDER);
             }
 
-            pos_final_j = calcular_pos_final_del_jugador(jugador.pos_en_mapa, cantidad_casilleros, dado.cara, direccion);
-            guardar_movimiento(&cola_movimientos_jugador, jugador.pos_en_mapa, pos_final_j, true);
-            guardar_movimiento(&cola_turno, jugador.pos_en_mapa, pos_final_j, true);
+            pos_final_j = calcular_pos_final_del_jugador(jugador.pos_en_mapa, cantidad_casilleros,dado.cara,direccion);
+            guardar_movimiento(&cola_movimientos_jugador, jugador.pos_en_mapa,pos_final_j,direccion,dado.cara,true);
+            guardar_movimiento(&cola_turno, jugador.pos_en_mapa,pos_final_j,dado.cara,direccion,true);
+            desacolar(&cola_movimientos_jugador,&movi,sizeof(t_movimiento));
+            mover_jugador(mapa,&jugador,&movi);
 
             #if DEBUG_ACTIVO
                 printf("DEBUG - Direccion calculada/elegida: %c\n", direccion);
@@ -133,6 +135,53 @@ void jugar_partida(t_mapa *mapa, t_config *config)
     return;
 }
 
+unsigned calcular_pos_final_del_jugador(unsigned pos_inicial_del_jugador,
+                                   unsigned cantidad_nodos_lista,
+                                   unsigned cantidad_pasos,
+                                   char direccion){
+    unsigned pos;
+
+    if(!cantidad_nodos_lista ||
+       pos_inicial_del_jugador > cantidad_nodos_lista ||
+       (direccion != AVANZAR && direccion != RETROCEDER))
+    {
+        return cantidad_nodos_lista;
+    }
+
+    pos = pos_inicial_del_jugador;
+
+    while(cantidad_pasos > 0)
+    {
+        if(direccion == AVANZAR)
+        {
+            if(pos == cantidad_nodos_lista)
+            {
+                direccion = RETROCEDER;
+                pos--;
+            }
+            else
+            {
+                pos++;
+            }
+        }
+        else
+        {
+            if(pos == 0)
+            {
+                direccion = AVANZAR;
+                pos++;
+            }
+            else
+            {
+                pos--;
+            }
+        }
+        cantidad_pasos--;
+    }
+
+    return pos;
+}
+
 void calcular_bandidos(t_mapa * mapa, t_movimientos * cola)
 {
     //recorrer_adelante_accion(mapa,situar_bandidos, (void*)cola);
@@ -140,32 +189,7 @@ void calcular_bandidos(t_mapa * mapa, t_movimientos * cola)
 
 void situar_bandidos(void* a, void* parametro_extra)
 {
-    tNodo * nodoactual = (tNodo*)a;
-    t_casillero casillero_lista = *(t_casillero*)nodoactual->info;
 
-    tNodo * pivot = (tNodo*)a;
-    t_casillero casillero_pivot;
-
-    t_dado dado;
-    int signo;
-    int contador = 0;
-
-    if(casillero_lista.cant_bandidos < 1) return;
-
-    crearDado(&dado,CARAS_DADO);
-    signo = tirarDado(&dado);
-
-
-    casillero_pivot = *(t_casillero*)pivot->info;
-
-    while(signo > contador)
-    {
-        pivot = (signo%2 == 0) ? pivot->sig : pivot->ant;
-        casillero_pivot = *(t_casillero*)pivot->info;
-        contador++;
-    }
-
-    guardar_movimiento((t_movimientos*)parametro_extra,casillero_lista.nro_posicion,casillero_pivot.nro_posicion,false);
 }
 
 
@@ -179,19 +203,64 @@ void inicializar_jugador(t_jugador *jugador, t_config *config)
     jugador->pos_en_mapa = 0;
 }
 
-int guardar_movimiento(t_movimientos *cola, unsigned pos_inicial, unsigned pos_final, bool jugador_humano)
+int guardar_movimiento(t_movimientos *cola, unsigned pos_inicial, unsigned pos_final,char orientacion,unsigned cant_movimiento,bool jugador_humano)
 {
     t_movimiento mov;
     mov.pos_inicial = pos_inicial;
     mov.pos_final = pos_final;
     mov.jugador_humano = jugador_humano;
+    mov.orientacion = orientacion;
+    mov.cantidad_movimiento = cant_movimiento;
     return acolar(cola, &mov, sizeof(t_movimiento));
 }
 
-void mover_jugador(t_jugador *jugador, unsigned pasos, int lado)
+void mover_jugador(t_mapa*mapa,t_jugador *jugador,t_movimiento* movimiento)
 {
+  modificar_elemento_segun_clave(mapa, &(jugador->pos_en_mapa),
+                                 comparar_posicion_del_jugador_en_mapa,
+                                 quitar_jugador, NULL);
+
+  jugador->pos_en_mapa = movimiento->pos_final;
+
+  modificar_elemento_segun_clave(mapa, &(jugador->pos_en_mapa),
+                                 comparar_posicion_del_jugador_en_mapa,
+                                 ponerlo_jugador, NULL);
 
 }
+
+//comparar la posicion en mapa, o si jugador = true;
+ int comparar_posicion_del_jugador_en_mapa(const void * a,const void * b){
+   unsigned posicion = *(unsigned*)a;
+   t_casillero casillero = *(t_casillero*)b;
+
+   return posicion - casillero.nro_posicion;
+ }
+
+void quitar_jugador(void* a,void* parametro_extra){
+    t_casillero* casillero = (t_casillero*)a;
+    casillero->presencia_jugador = false;
+    return;
+}
+
+void ponerlo_jugador(void* a,void* parametro_extra){
+    t_casillero* casillero = (t_casillero*)a;
+    casillero->presencia_jugador = true;
+    return;
+}
+/*
+void poner_bandido(void* a, void* parametro_extra){
+    t_casillero casillero = (t_casillero)a;
+    casillero->cant_bandidos++;
+    return;
+}
+
+void quitar_bandido(void a, void* parametro_extra){
+    t_casillero casillero = (t_casillero*)a;
+    casillero->cant_bandidos--;
+    return;
+}
+*/
+/*
 int calcular_pos_final_del_jugador(unsigned pos_inicial_del_jugador,
                                    unsigned cantidad_nodos_lista,
                                    unsigned cantidad_pasos,
@@ -229,7 +298,7 @@ int calcular_pos_final_del_jugador(unsigned pos_inicial_del_jugador,
     }
     return pos;
 }
-
+*/
 void resolver_casillero_actual(t_jugador *jugador, t_casillero *casillero_actual, t_movimientos *cola_movimientos)
 {
     bool caso_oasis = false;
@@ -380,7 +449,8 @@ void mover_bandido(t_mapa *mapa, t_movimientos *cola_movimientos)   ///REVISAR E
 
         for (bandido = 0; bandido < cantidades[i]; bandido++)
         {
-            guardar_movimiento(cola_movimientos, cas_origen->nro_posicion, cas_destino->nro_posicion, false);
+           // guardar_movimiento(cola_movimientos, cas_origen->nro_posicion, cas_destino->nro_posicion, false);
+           // guardar_movimiento(cola_movimientos, cas_origen->nro_posicion, cas_destino->nro_posicion, false);
         }
 
         cas_origen->cant_bandidos -= cantidades[i];

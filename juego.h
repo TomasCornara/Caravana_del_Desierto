@@ -65,20 +65,15 @@ typedef struct{
     animCasillero animacion;
 }t_casillero;
 
+
 typedef struct{
     unsigned pos_inicial;
+    unsigned cantidad_movimiento;
     unsigned pos_final;
+    char orientacion;
     bool jugador_humano;
 }t_movimiento;
-/*
-typedef struct{
-    unsigned pos_inicial; // 0
-    unsigned cantidad_movimiento; // 5
-    unsigned pos_final; // 5
-    char orientacion; // F
-    bool jugador_humano; // TRUE
-}t_movimiento;
-*/
+
 
 typedef struct{
     char puesto;
@@ -106,24 +101,28 @@ int juego_cargar_config(t_config *config);
 int juego_validar_config(t_config *config);
 void jugar_partida(t_mapa *mapa, t_config *config);
 void inicializar_jugador(t_jugador *jugador, t_config *config);
-int guardar_movimiento(t_movimientos *cola, unsigned pos_inicial, unsigned pos_final, bool jugador_humano);
-void mover_jugador(t_jugador *jugador, unsigned pasos, int lado);
+int guardar_movimiento(t_movimientos *cola, unsigned pos_inicial, unsigned pos_final,char orientacion,unsigned cant_movimiento,bool jugador_humano);
+void mover_jugador(t_mapa*mapa,t_jugador *jugador,t_movimiento* movimiento);
 void mover_bandido(t_mapa *mapa, t_movimientos *cola_movimientos);
 void resolver_casillero_actual(t_jugador *jugador, t_casillero *casillero_actual, t_movimientos *cola_movimientos);
 void resolver_bandido_en_casillero(t_jugador *jugador, t_casillero *casillero_actual, t_movimientos *cola_movimientos);
 void printCaravana(FILE *archivo, t_mapa *mapa);
 
 
-int calcular_pos_final_del_jugador(unsigned pos_inicial_del_jugador,
+unsigned calcular_pos_final_del_jugador(unsigned pos_inicial_del_jugador,
                                    unsigned cantidad_nodos_lista,
                                    unsigned cantidad_pasos,
                                    char direccion);
+
 void calcular_bandidos(t_mapa * mapa, t_movimientos * cola);
 void situar_bandidos(void * a, void * parametro_extra);
 
 
 int comparar_posicion_casilleros(const void* elem_a,const void* elem_b);
 int comparar_clave_casillero(const void* elem_a,const void* elem_b);
+int comparar_posicion_del_jugador_en_mapa(const void * a,const void * b);
+void quitar_jugador(void* a,void* parametro_extra);
+void ponerlo_jugador(void* a,void* parametro_extra);
 //Funciones consola
 
 //Utiles
