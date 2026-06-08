@@ -125,13 +125,15 @@ void jugar_partida(t_mapa *mapa, t_config *config)
 
                 if(movi.jugador_humano){
                     mover_jugador(mapa,&jugador,&movi);
-                 //   printf("\nHAY JUGADOR");
+                    resolver_casillero_actual(mapa,&jugador);
                 }else{
+                    t_casillero *casillero_jugador;
                     mover_bandido(mapa,&movi);
-                 //   printf("\nHAY BANDIDO");
-                }
 
-               resolver_casillero_actual(mapa,&jugador);
+                    //Le paso donde esta el jugador para que pueda chequear si le puede hacer daño
+                    casillero_jugador = obtener_de_lista_dir_dato(mapa, &(jugador.pos_en_mapa), comparar_clave_casillero);
+                    resolver_bandido_en_casillero(mapa, &jugador, casillero_jugador);
+                }
             }
 
             #if DEBUG_JUGADOR
