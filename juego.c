@@ -519,6 +519,7 @@ int juego_generar_mapa(t_config *config, t_mapa *mapa)
     nuevo_casillero.nro_posicion = nro_casillero;
     nuevo_casillero.presencia_jugador = false;
     nuevo_casillero.tipo_casillero = TIPO_NORMAL;
+    nuevo_casillero.animacion = NULL;
 
     while( nro_casillero < config->cantidad_posiciones ){
         if(nro_casillero == 0){
