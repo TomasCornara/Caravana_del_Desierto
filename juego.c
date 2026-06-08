@@ -22,6 +22,7 @@ void jugar_partida(t_mapa *mapa, t_config *config)
     char direccion;
     unsigned cantidad_casilleros,
             posicion_salida;
+    FILE *archivo_caravana;
 
     limpiar_pantalla();
 
@@ -35,7 +36,7 @@ void jugar_partida(t_mapa *mapa, t_config *config)
     pedir_nombre(jugador.nombre);
 
     // Generacion caravana.txt
-    FILE *archivo_caravana = abrir_txt(ARCHIVO_MAPA, "w");
+    archivo_caravana = abrir_txt(ARCHIVO_MAPA, "w");
     if (archivo_caravana)
     {
         printCaravana(archivo_caravana, mapa);
@@ -280,15 +281,18 @@ void mover_jugador(t_mapa*mapa,t_jugador *jugador,t_movimiento* movimiento)
 
 //comparar la posicion en mapa, o si jugador = true;
  int comparar_posicion_del_jugador_en_mapa(const void * a,const void * b){
-   unsigned posicion = *(unsigned*)a;
-   t_casillero casillero = *(t_casillero*)b;
+   unsigned posicion;
+   t_casillero casillero;
 
+   posicion = *(unsigned*)a;
+   casillero = *(t_casillero*)b;
    return posicion - casillero.nro_posicion;
  }
 
 void quitar_jugador(void* a,void* parametro_extra){
-    t_casillero* casillero = (t_casillero*)a;
+    t_casillero* casillero;
 
+    casillero = (t_casillero*)a;
     if(casillero->presencia_jugador){
         casillero->presencia_jugador = false;
     }
@@ -297,7 +301,9 @@ void quitar_jugador(void* a,void* parametro_extra){
 }
 
 void ponerlo_jugador(void* a,void* parametro_extra){
-    t_casillero* casillero = (t_casillero*)a;
+    t_casillero* casillero;
+
+    casillero = (t_casillero*)a;
     casillero->presencia_jugador = true;
     return;
 }
@@ -305,8 +311,9 @@ void ponerlo_jugador(void* a,void* parametro_extra){
 void resolver_casillero_actual(t_mapa * mapa,t_jugador *jugador)
 {
     bool caso_oasis = false;
-    t_casillero * casillero_actual = obtener_de_lista_dir_dato(mapa,&(jugador->pos_en_mapa),comparar_clave_casillero);
+    t_casillero* casillero_actual;
 
+    casillero_actual = obtener_de_lista_dir_dato(mapa,&(jugador->pos_en_mapa),comparar_clave_casillero);
     if (!jugador || !casillero_actual)
     {
         return;
@@ -401,6 +408,7 @@ void resolver_bandido_en_casillero(t_mapa*mapa,t_jugador *jugador, t_casillero *
 
 void mover_bandido(t_mapa *mapa, t_movimiento* movimiento_bandido)
 {
+    t_casillero *bandido_pos_inicial;
     int cantidad_nodo,
         pos_final;
 
@@ -419,8 +427,8 @@ void mover_bandido(t_mapa *mapa, t_movimiento* movimiento_bandido)
     }
 
     //Compruebo que haya un bandido vivo que mover
-    t_casillero *cas_inicial = obtener_de_lista_dir_dato(mapa, &(movimiento_bandido->pos_inicial), comparar_clave_casillero);
-    if (cas_inicial && cas_inicial->cant_bandidos > 0) {
+    bandido_pos_inicial = obtener_de_lista_dir_dato(mapa, &(movimiento_bandido->pos_inicial), comparar_clave_casillero);
+    if (bandido_pos_inicial && bandido_pos_inicial->cant_bandidos > 0) {
         modificar_elemento_segun_clave(mapa, &(movimiento_bandido->pos_inicial),
                                      comparar_clave_casillero,
                                      quitar_bandido, NULL);
@@ -433,13 +441,17 @@ void mover_bandido(t_mapa *mapa, t_movimiento* movimiento_bandido)
 }
 
 void poner_bandido(void* a, void* parametro_extra){
-    t_casillero *casillero = (t_casillero*)a;
+    t_casillero *casillero;
+
+    casillero = (t_casillero*)a;
     casillero->cant_bandidos++;
     return;
 }
 
 void quitar_bandido(void *a, void* parametro_extra){
-    t_casillero *casillero = (t_casillero*)a;
+    t_casillero *casillero;
+
+    casillero = (t_casillero*)a;
 
     if(casillero->cant_bandidos){
        casillero->cant_bandidos--;
@@ -558,6 +570,7 @@ int juego_generar_mapa(t_config *config, t_mapa *mapa)
 
 int juego_cargar_config(t_config *config)
 {
+    FILE *f;
     char clave[MAX_CLAVE_CONFIG];
     int  valor;
 
@@ -570,7 +583,7 @@ int juego_cargar_config(t_config *config)
     config->maximo_oasis        = CONFIG_MAXIMO_OASIS_DEFAULT;
     config->maximo_tormentas    = CONFIG_MAXIMO_TORMENTAS_DEFAULT;
 
-    FILE *f = abrir_txt(ARCHIVO_CONFIG, "r");
+    f = abrir_txt(ARCHIVO_CONFIG, "r");
     if (!f)
     {
         printf("[Aviso] config.txt no encontrado. Se usaran todos los valores por defecto.\n");
@@ -593,8 +606,11 @@ int juego_cargar_config(t_config *config)
 
 int juego_validar_config(t_config *config)
 {
-    int total_especiales = config->maximo_oasis + config->maximo_tormentas +
+    int total_especiales;
+
+    total_especiales = config->maximo_oasis + config->maximo_tormentas +
                            config->maximo_premios + config->maximo_vidas_extra;
+
     if (config->cantidad_posiciones < 2)
     {
         printf("Error: cantidad_posiciones debe ser mayor a 2. Valor actual: %u\n",
@@ -630,23 +646,24 @@ void printCaravana(FILE *archivo, t_mapa *mapa)
 {
     t_casillero *cas;
     unsigned pos;
+    int contador_casilleros;
+    int cantidad_casilleros;
+
     //t_casillero casillero_actual;
 
     if (!archivo || !mapa || !*mapa) return;
 
-    int contador_casilleros = 0;
-    int cantidad_casilleros = cantidad_elementos_lista(mapa);
+    contador_casilleros = 0;
+    cantidad_casilleros = cantidad_elementos_lista(mapa);
     printf("\n");
     while (contador_casilleros <= cantidad_casilleros )
     {
-
+        int num_elems = 0;
+        char elems[20][3];
         //obtener_de_lista(mapa,&contador_casilleros,&casillero_actual,sizeof(t_casillero),comparar_clave_casillero);
 
         cas = obtener_de_lista_dir_dato(mapa,&contador_casilleros,comparar_clave_casillero);
         pos = cas->nro_posicion;
-
-        int num_elems = 0;
-        char elems[20][3];
 
         if (cas->tipo_casillero != TIPO_NORMAL || (!cas->presencia_jugador && cas->cant_bandidos == 0))
         {
@@ -723,8 +740,11 @@ int comparar_posicion_casilleros(const void* elem_a,const void* elem_b){
 
 int comparar_clave_casillero(const void* elem_a,const void* elem_b){
 
-    unsigned clave = *(unsigned*)elem_a;
-    t_casillero casillero_b = *(t_casillero*)elem_b;
+    unsigned clave;
+    t_casillero casillero_b;
+
+    clave = *(unsigned*)elem_a;
+    casillero_b = *(t_casillero*)elem_b;
 
     return clave - casillero_b.nro_posicion;
 }
