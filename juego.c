@@ -373,7 +373,6 @@ void resolver_casillero_actual(t_mapa * mapa,t_jugador *jugador)
 
 void resolver_bandido_en_casillero(t_mapa*mapa,t_jugador *jugador, t_casillero *casillero_actual)
 {
-
     if (!jugador || !casillero_actual) return;
 
     //No hay bandidos
@@ -402,10 +401,12 @@ void resolver_bandido_en_casillero(t_mapa*mapa,t_jugador *jugador, t_casillero *
 
 void mover_bandido(t_mapa *mapa, t_movimiento* movimiento_bandido)
 {
-    int cantidad_nodo = cantidad_elementos_lista(mapa);
+    int cantidad_nodo,
+        pos_final;
 
-    int pos_final = movimiento_bandido->cantidad_movimiento + movimiento_bandido->pos_inicial;
 
+    cantidad_nodo = cantidad_elementos_lista(mapa);
+    pos_final = movimiento_bandido->cantidad_movimiento + movimiento_bandido->pos_inicial;
 
     if(pos_final == cantidad_nodo){
         pos_final++;
@@ -417,15 +418,17 @@ void mover_bandido(t_mapa *mapa, t_movimiento* movimiento_bandido)
         pos_final++;
     }
 
-    modificar_elemento_segun_clave(mapa, &(movimiento_bandido->pos_inicial),
-                                 comparar_clave_casillero,
-                                 quitar_bandido, NULL);
+    //Compruebo que haya un bandido vivo que mover
+    t_casillero *cas_inicial = obtener_de_lista_dir_dato(mapa, &(movimiento_bandido->pos_inicial), comparar_clave_casillero);
+    if (cas_inicial && cas_inicial->cant_bandidos > 0) {
+        modificar_elemento_segun_clave(mapa, &(movimiento_bandido->pos_inicial),
+                                     comparar_clave_casillero,
+                                     quitar_bandido, NULL);
 
-
-
-    modificar_elemento_segun_clave(mapa, &pos_final,
-                                 comparar_clave_casillero,
-                                 poner_bandido, NULL);
+        modificar_elemento_segun_clave(mapa, &pos_final,
+                                     comparar_clave_casillero,
+                                     poner_bandido, NULL);
+    }
 
 }
 
