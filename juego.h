@@ -103,9 +103,9 @@ void jugar_partida(t_mapa *mapa, t_config *config);
 void inicializar_jugador(t_jugador *jugador, t_config *config);
 int guardar_movimiento(t_movimientos *cola, unsigned pos_inicial, unsigned pos_final,char orientacion,unsigned cant_movimiento,bool jugador_humano);
 void mover_jugador(t_mapa*mapa,t_jugador *jugador,t_movimiento* movimiento);
-void mover_bandido(t_mapa *mapa, t_movimientos *cola_movimientos);
-void resolver_casillero_actual(t_jugador *jugador, t_casillero *casillero_actual, t_movimientos *cola_movimientos);
-void resolver_bandido_en_casillero(t_jugador *jugador, t_casillero *casillero_actual, t_movimientos *cola_movimientos);
+void mover_bandido(t_mapa *mapa, t_movimiento* movimiento_bandido);
+void resolver_casillero_actual(t_mapa * mapa,t_jugador *jugador);
+void resolver_bandido_en_casillero(t_mapa*mapa,t_jugador *jugador, t_casillero *casillero_actual);
 void printCaravana(FILE *archivo, t_mapa *mapa);
 
 
@@ -123,6 +123,10 @@ int comparar_clave_casillero(const void* elem_a,const void* elem_b);
 int comparar_posicion_del_jugador_en_mapa(const void * a,const void * b);
 void quitar_jugador(void* a,void* parametro_extra);
 void ponerlo_jugador(void* a,void* parametro_extra);
+void poner_bandido(void* a, void* parametro_extra);
+void quitar_bandido(void *a, void* parametro_extra);
+
+
 //Funciones consola
 
 //Utiles
