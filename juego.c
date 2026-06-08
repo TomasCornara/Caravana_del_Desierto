@@ -811,6 +811,69 @@ void pedir_nombre(char *nombre) {
     }
 }
 
+int comparar_rankeo(const void* a, const void* b) {
+    const t_rankeo *ra = (const t_rankeo*)a;
+    const t_rankeo *rb = (const t_rankeo*)b;
+    if (ra->puntos > rb->puntos) return  1;
+    if (ra->puntos < rb->puntos) return -1;
+    return strcmp(ra->nombre, rb->nombre);
+}
+
+void imprimir_rankeo(const void* dato, int puesto) {
+    const t_rankeo *r = (const t_rankeo*)dato;
+    printf("\t%d - %-20s %6u puntos\n", puesto, r->nombre, r->puntos);
+}
+
+void actualizar_ranking(t_raking *arbol, const char* nombre, unsigned puntos) {
+    t_rankeo busqueda;
+    t_rankeo nuevo;
+
+    strncpy(busqueda.nombre, nombre, MAX_NOMBRE - 1);
+    *(busqueda.nombre + MAX_NOMBRE - 1) = '\0';
+    busqueda.puntos = 0;
+
+    if (buscarEnArbol(arbol, &busqueda, sizeof(t_rankeo), comparar_rankeo)) {
+        busqueda.puntos += puntos;
+        eliminarNodo(arbol, &busqueda, comparar_rankeo);
+        ponerEnArbol(arbol, &busqueda, sizeof(t_rankeo), comparar_rankeo);
+    } else {
+        strncpy(nuevo.nombre, nombre, MAX_NOMBRE - 1);
+        *(nuevo.nombre + MAX_NOMBRE - 1) = '\0';
+        nuevo.puntos = puntos;
+        ponerEnArbol(arbol, &nuevo, sizeof(t_rankeo), comparar_rankeo);
+    }
+}
+
+// función máscara, lo que hace el laburo en serio es rankear
+void mostrar_ranking(const t_raking *arbol) {
+    if (!arbol || !(*arbol)) {
+        printf("  No hay jugadores registrados todavia.\n");
+        return;
+    }
+
+    rankear(arbol, 1);
+}
+
+int rankear(const t_raking *arbol, int puesto){    
+    int puesto_new = puesto;
+
+    // if(*arbol == NULL) return 0;
+    // 1 - ya verificamos en mostrar_ranking que existe el árbol
+    // 2 - si en los próximos nodos no hay árbol (nodos HOJA), los IFs atrapan ese error antes de que ocurra
+
+    if((*arbol)->der)
+        puesto_new = rankear(&(*arbol)->der, puesto_new);
+
+    imprimir_rankeo((*arbol)->dato, puesto_new);
+
+    puesto_new++;
+
+    if((*arbol)->izq)
+        puesto_new = rankear(&(*arbol)->izq, puesto_new);
+
+    return puesto_new;
+}
+
 void mostrar_menu() {
     printf("\n"
            "  ------------------------------------\n"

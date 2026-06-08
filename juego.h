@@ -96,6 +96,10 @@ typedef struct {
     int maximo_tormentas;
 } t_config;
 
+typedef struct{
+    char nombre[MAX_NOMBRE];
+    unsigned puntos;
+}t_rankeo;
 
 //Funciones logica de juego
 void poner_tipo_random(t_mapa *mapa, int total, unsigned tipo, int cantidad);
@@ -136,6 +140,19 @@ void mostrar_menu();
 void pedir_nombre(char *nombre);
 void limpiar_buffer(void);;
 
+//Arbol
+int  comparar_rankeo(const void* a, const void* b);
+void imprimir_rankeo(const void* dato, int puesto);
+void callback_recolectar(const void *dato);
+void actualizar_ranking(t_raking *arbol, const char* nombre, unsigned puntos);
+void mostrar_ranking(const t_raking *arbol);
+int rankear(const t_raking *arbol, int puesto);
+
+/* Persistencia */
+void guardar_ranking_bin(const t_raking* arbol, const char* archivo);
+void cargar_ranking_bin(t_raking* arbol, const char* archivo);
+void mostrar_movimientos(t_movimientos *cola, const char* nombre_jugador);
+void guardar_mapa_txt(t_mapa *mapa, const char* nombre_jugador, int vidas, int puntos, int turno, const char* archivo);
 
 //Pantallas
 void mostrarBienvenida(void);

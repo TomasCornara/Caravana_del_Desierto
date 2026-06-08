@@ -4,8 +4,6 @@
 
 #include "arbolBinario.h"
 
-#define ABS(X) ((X >= 0)? (X):((X) * (-1)))
-
 
 void crearArbol(t_Arbol* arbol) {
     *arbol = NULL;
@@ -23,7 +21,7 @@ int grabarEnArchivoRecursivo(const t_Arbol* arbol, FILE* destino, unsigned cantB
     if (*arbol == NULL) return 1;
 
     fwrite((*arbol)->dato, cantBytes, 1, destino);
-
+    
     grabarEnArchivoRecursivo(&(*arbol)->izq, destino, cantBytes);
     grabarEnArchivoRecursivo(&(*arbol)->der, destino, cantBytes);
 
@@ -270,4 +268,9 @@ int esAVL2(const t_Arbol* arbol){
     return(esAVL2(&(*arbol)->izq) && esAVL2(&(*arbol)->der));
 }
 
-
+void recorrerInOrden(const t_Arbol* arbol, ptrFunc ptr) {
+    if (!arbol || !(*arbol)) return;
+    recorrerInOrden(&(*arbol)->izq, ptr);
+    ptr((*arbol)->dato);
+    recorrerInOrden(&(*arbol)->der, ptr);
+}
