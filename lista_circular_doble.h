@@ -29,6 +29,5 @@ void vaciar_lista_doble(tLista *pl);
 int obtener_de_lista(const tLista* pl,const void* key, void* buffer, unsigned tam_dato, tCmp cmp);
 void * obtener_de_lista_dir_dato(const tLista* pl,const void* key, tCmp cmp);
 unsigned cantidad_elementos_lista(tLista * pl);
-typedef void(*ptrFunc)(const void* elem);
-void recorrerInOrden(const t_Arbol* arbol, ptrFunc ptr);
+
 #endif // LISTA_CIRCULAR_DOBLE_H_INCLUDED

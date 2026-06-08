@@ -32,4 +32,9 @@ int eliminarNodo(t_Arbol* arbol, const void* key, comFunc cmp);
 int cargarDesdeArchivo(t_Arbol* arbol, unsigned ce,unsigned cantBytes, FILE* origen);
 int esAVL2(const t_Arbol* arbol);
 
+void guardarArbolBin(const t_Arbol *arbol, FILE *f, unsigned cantBytes);
+void cargarArbolBin(t_Arbol *arbol, FILE *f, unsigned cantBytes, comFunc cmp);
+
+typedef void(*ptrFunc)(const void* elem);
+void recorrerInOrden(const t_Arbol* arbol, ptrFunc ptr);
 #endif // ARBOLBINARIO_H_INCLUDED

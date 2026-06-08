@@ -45,11 +45,12 @@
 
 1778524780 c:\algoritmo\caravana_del_desierto\consola.h
 
-1778524780 source:c:\algoritmo\caravana_del_desierto\dado.c
+1780940852 source:c:\algoritmo\caravana_del_desierto\dado.c
 	<stdlib.h>
+	<time.h>
 	"dado.h"
 
-1778524780 c:\algoritmo\caravana_del_desierto\dado.h
+1780940852 c:\algoritmo\caravana_del_desierto\dado.h
 
 1778527359 source:c:\algoritmo\caravana_del_desierto\funciones_auxiliares.c
 	"funciones_auxiliares.h"
@@ -66,25 +67,26 @@
 
 1778524780 c:\algoritmo\caravana_del_desierto\lista_circular_simple.h
 
-1779819134 source:c:\algoritmo\caravana_del_desierto\main.c
+1780960768 source:c:\algoritmo\caravana_del_desierto\main.c
 	<stdio.h>
 	<stdlib.h>
-	"manejo_archivos.h"
-	"consola.h"
-	"funciones_auxiliares.h"
 	"juego.h"
 
-1779819134 c:\algoritmo\caravana_del_desierto\manejo_archivos.h
+1780961349 c:\algoritmo\caravana_del_desierto\manejo_archivos.h
 	<stdio.h>
+	"juego.h"
 
-1779819134 source:c:\algoritmo\caravana_del_desierto\manejo_archivos.c
+1780961479 source:c:\algoritmo\caravana_del_desierto\manejo_archivos.c
 	<string.h>
 	"manejo_archivos.h"
 
-1779295147 source:c:\algoritmo\caravana_del_desierto\lista_circular_doble.c
+1780940852 source:c:\algoritmo\caravana_del_desierto\lista_circular_doble.c
 	"lista_circular_doble.h"
 
-1779295191 c:\algoritmo\caravana_del_desierto\lista_circular_doble.h
+1780960860 c:\algoritmo\caravana_del_desierto\lista_circular_doble.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
 
 1778529388 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\funciones_auxiliares.c
 	"funciones_auxiliares.h"
@@ -117,15 +119,21 @@
 	<stdlib.h>
 	<string.h>
 
-1779817130 source:c:\algoritmo\caravana_del_desierto\juego.c
+1780961494 source:c:\algoritmo\caravana_del_desierto\juego.c
 	"juego.h"
+	"manejo_archivos.h"
+	"dado.h"
+	"lista_circular_doble.h"
 
-1779819218 c:\algoritmo\caravana_del_desierto\juego.h
+1780961349 c:\algoritmo\caravana_del_desierto\juego.h
 	<stdbool.h>
 	<time.h>
 	<stdlib.h>
+	<ctype.h>
 	"lista_circular_doble.h"
 	"manejo_archivos.h"
+	"cola_dinamica.h"
+	"arbolBinario.h"
 
 1780866037 c:\users\tomas\onedrive\desktop\caravana_del_desierto\lista_circular_doble.h
 	<stdio.h>
@@ -294,4 +302,20 @@
 	<ctype.h>
 	"consola.h"
 	"juego.h"
+
+1780960768 source:c:\algoritmo\caravana_del_desierto\arbolbinario.c
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	"arbolBinario.h"
+
+1780960860 c:\algoritmo\caravana_del_desierto\arbolbinario.h
+
+1780940852 source:c:\algoritmo\caravana_del_desierto\cola_dinamica.c
+	"cola_dinamica.h"
+
+1780940852 c:\algoritmo\caravana_del_desierto\cola_dinamica.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
 

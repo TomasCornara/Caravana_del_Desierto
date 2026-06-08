@@ -17,6 +17,12 @@
 #define ARCHIVO_RANKING "ranking.txt"
 #define CARAS_DADO 6
 
+#define ARCHIVO_JUGADORES "jugadores.dat"
+#define ARCHIVO_PARTIDAS  "partidas.dat"
+#define ARCHIVO_INDICE    "jugadores.idx"
+#define TOP_RANKING       5
+#define OK 1
+
 //Valores del juego
 #define ANCHO_CONSOLA 120
 #define ALTO_CONSOLA 30
@@ -47,6 +53,28 @@ typedef tLista t_mapa;
 typedef t_mapa t_pos;
 typedef void(*animCasillero)(void);
 typedef t_cola t_movimientos;
+
+typedef struct {
+    unsigned id;
+    char     nombre[MAX_NOMBRE];
+} t_reg_jugador;
+
+typedef struct {
+    unsigned id_jugador;
+    unsigned puntos;
+    unsigned cant_movimientos;
+} t_reg_partida;
+
+typedef struct {
+    char     nombre[MAX_NOMBRE];
+    long     posicion;
+} t_reg_indice;
+
+typedef struct {
+    unsigned id;
+    unsigned puntos_totales;
+    unsigned cant_movimientos_t;
+} t_acum;
 
 typedef struct{
     char nombre[MAX_NOMBRE];
@@ -80,12 +108,6 @@ typedef struct{
 }t_movimiento;
 */
 
-typedef struct{
-    char puesto;
-    char nombre[MAX_NOMBRE];
-    unsigned puntos;
-}t_rankeo;
-
 typedef struct {
     int cantidad_posiciones;
     int vidas_inicio;
@@ -96,10 +118,6 @@ typedef struct {
     int maximo_tormentas;
 } t_config;
 
-typedef struct{
-    char nombre[MAX_NOMBRE];
-    unsigned puntos;
-}t_rankeo;
 
 //Funciones logica de juego
 void poner_tipo_random(t_mapa *mapa, int total, unsigned tipo, int cantidad);
@@ -151,7 +169,7 @@ int rankear(const t_raking *arbol, int puesto);
 /* Persistencia */
 void guardar_ranking_bin(const t_raking* arbol, const char* archivo);
 void cargar_ranking_bin(t_raking* arbol, const char* archivo);
-void mostrar_movimientos(t_movimientos *cola, const char* nombre_jugador);
+int mostrar_movimientos(t_movimientos *cola, const char* nombre_jugador);
 void guardar_mapa_txt(t_mapa *mapa, const char* nombre_jugador, int vidas, int puntos, int turno, const char* archivo);
 
 //Pantallas
@@ -164,4 +182,17 @@ void printPremio(void);
 void printVidaExtra(void);
 void gameOver(void);
 
+unsigned jugadores_proximo_id(void);
+int      jugadores_agregar(unsigned id, const char *nombre);
+int      jugadores_buscar_nombre(unsigned id, char *nombre_dest);
+
+int      indice_comparar(const void *a, const void *b);
+int      indice_buscar(t_raking *arbol, const char *nombre, t_reg_indice *dest);
+void     indice_insertar(t_raking *arbol, t_reg_indice *reg);
+void     indice_guardar(t_raking *arbol);
+void     indice_cargar(t_raking *arbol);
+
+int      partidas_agregar(unsigned id_jugador, unsigned puntos, unsigned cant_movimientos);
+unsigned buscar_id(t_reg_indice* punt);
+void     ranking_mostrar(void);
 #endif // JUEGO_H_INCLUDED

@@ -21,7 +21,7 @@ int grabarEnArchivoRecursivo(const t_Arbol* arbol, FILE* destino, unsigned cantB
     if (*arbol == NULL) return 1;
 
     fwrite((*arbol)->dato, cantBytes, 1, destino);
-    
+
     grabarEnArchivoRecursivo(&(*arbol)->izq, destino, cantBytes);
     grabarEnArchivoRecursivo(&(*arbol)->der, destino, cantBytes);
 
@@ -273,4 +273,34 @@ void recorrerInOrden(const t_Arbol* arbol, ptrFunc ptr) {
     recorrerInOrden(&(*arbol)->izq, ptr);
     ptr((*arbol)->dato);
     recorrerInOrden(&(*arbol)->der, ptr);
+}
+
+void guardarArbolBin(const t_Arbol *arbol, FILE *f, unsigned cantBytes) {
+    unsigned char marca;
+    if (!arbol || !(*arbol)) {
+        marca = 0;
+        fwrite(&marca, sizeof(unsigned char), 1, f);
+        return;
+    }
+    marca = 1;
+    fwrite(&marca, sizeof(unsigned char), 1, f);
+    fwrite((*arbol)->dato, cantBytes, 1, f);
+    guardarArbolBin(&(*arbol)->izq, f, cantBytes);
+    guardarArbolBin(&(*arbol)->der, f, cantBytes);
+}
+
+void cargarArbolBin(t_Arbol *arbol, FILE *f, unsigned cantBytes, comFunc cmp) {
+    unsigned char marca;
+    void *dato;
+    if (fread(&marca, sizeof(unsigned char), 1, f) != 1 || marca == 0) {
+        *arbol = NULL;
+        return;
+    }
+    dato = malloc(cantBytes);
+    if (!dato) return;
+    fread(dato, cantBytes, 1, f);
+    ponerEnArbol(arbol, dato, cantBytes, cmp);
+    free(dato);
+    cargarArbolBin(&(*arbol)->izq, f, cantBytes, cmp);
+    cargarArbolBin(&(*arbol)->der, f, cantBytes, cmp);
 }

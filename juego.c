@@ -20,7 +20,10 @@ void jugar_partida(t_mapa *mapa, t_config *config)
     char direccion;
     unsigned cantidad_casilleros,
              posicion_salida;
-
+    unsigned      cant_movs = 0;
+    t_raking      arbol_indice;
+    t_reg_indice  reg_idx;
+    unsigned      id_jugador;
     limpiar_pantalla();
 
     //Inicializacion
@@ -123,8 +126,28 @@ void jugar_partida(t_mapa *mapa, t_config *config)
         scanf("%d", &jugador.puntos);
     #endif // DEBUG_ACTIVO
 
-    ///ACA FALTA BAJAR LOS RESULTADOS AL INDICE Y LOS MOVIMIENTOS A UN ARCHIVO
+    cant_movs=mostrar_movimientos(&cola_movimientos_jugador, jugador.nombre);
 
+    crearArbol(&arbol_indice);
+    indice_cargar(&arbol_indice);
+    ///SI LO ENCUENTRA NOS DEVUELVE 1 SINO 0
+    if (indice_buscar(&arbol_indice, jugador.nombre, &reg_idx)) {
+        ///id_jugador = reg_idx.id;
+        id_jugador=buscar_id(&reg_idx);
+        printf("%u",id_jugador);
+    } else {
+        id_jugador        = jugadores_proximo_id();
+        reg_idx.posicion   = (long)((id_jugador - 1) * sizeof(t_reg_jugador));
+        strncpy(reg_idx.nombre, jugador.nombre, MAX_NOMBRE - 1);
+        *(reg_idx.nombre + MAX_NOMBRE - 1) = '\0';
+        jugadores_agregar(id_jugador, jugador.nombre);
+        indice_insertar(&arbol_indice, &reg_idx);
+        indice_guardar(&arbol_indice);
+        printf("%u",id_jugador);
+    }
+
+    partidas_agregar(id_jugador, jugador.puntos, cant_movs);
+    destruirArbol(&arbol_indice);
     //Limpiar estructuras
     vaciarCola(&cola_movimientos_jugador);
     vaciarCola(&cola_turno);
@@ -811,68 +834,14 @@ void pedir_nombre(char *nombre) {
     }
 }
 
-int comparar_rankeo(const void* a, const void* b) {
-    const t_rankeo *ra = (const t_rankeo*)a;
-    const t_rankeo *rb = (const t_rankeo*)b;
-    if (ra->puntos > rb->puntos) return  1;
-    if (ra->puntos < rb->puntos) return -1;
-    return strcmp(ra->nombre, rb->nombre);
-}
 
-void imprimir_rankeo(const void* dato, int puesto) {
-    const t_rankeo *r = (const t_rankeo*)dato;
-    printf("\t%d - %-20s %6u puntos\n", puesto, r->nombre, r->puntos);
-}
 
-void actualizar_ranking(t_raking *arbol, const char* nombre, unsigned puntos) {
-    t_rankeo busqueda;
-    t_rankeo nuevo;
 
-    strncpy(busqueda.nombre, nombre, MAX_NOMBRE - 1);
-    *(busqueda.nombre + MAX_NOMBRE - 1) = '\0';
-    busqueda.puntos = 0;
 
-    if (buscarEnArbol(arbol, &busqueda, sizeof(t_rankeo), comparar_rankeo)) {
-        busqueda.puntos += puntos;
-        eliminarNodo(arbol, &busqueda, comparar_rankeo);
-        ponerEnArbol(arbol, &busqueda, sizeof(t_rankeo), comparar_rankeo);
-    } else {
-        strncpy(nuevo.nombre, nombre, MAX_NOMBRE - 1);
-        *(nuevo.nombre + MAX_NOMBRE - 1) = '\0';
-        nuevo.puntos = puntos;
-        ponerEnArbol(arbol, &nuevo, sizeof(t_rankeo), comparar_rankeo);
-    }
-}
 
-// función máscara, lo que hace el laburo en serio es rankear
-void mostrar_ranking(const t_raking *arbol) {
-    if (!arbol || !(*arbol)) {
-        printf("  No hay jugadores registrados todavia.\n");
-        return;
-    }
 
-    rankear(arbol, 1);
-}
 
-int rankear(const t_raking *arbol, int puesto){    
-    int puesto_new = puesto;
 
-    // if(*arbol == NULL) return 0;
-    // 1 - ya verificamos en mostrar_ranking que existe el árbol
-    // 2 - si en los próximos nodos no hay árbol (nodos HOJA), los IFs atrapan ese error antes de que ocurra
-
-    if((*arbol)->der)
-        puesto_new = rankear(&(*arbol)->der, puesto_new);
-
-    imprimir_rankeo((*arbol)->dato, puesto_new);
-
-    puesto_new++;
-
-    if((*arbol)->izq)
-        puesto_new = rankear(&(*arbol)->izq, puesto_new);
-
-    return puesto_new;
-}
 
 void mostrar_menu() {
     printf("\n"
@@ -1098,3 +1067,192 @@ void limpiar_pantalla() {
     #endif
 }
 
+int mostrar_movimientos(t_movimientos *cola, const char* nombre_jugador) {
+    t_movimiento mov;
+    int total = 0;
+    int col   = 0;
+
+    printf("\n=== Movimientos de %s ===\n", nombre_jugador);
+
+    while (desacolar(cola, &mov, sizeof(t_movimiento)) == OK) {
+        if (mov.jugador_humano) {
+            int delta = (int)mov.pos_final - (int)mov.pos_inicial;
+            char tipo  = (delta >= 0) ? 'F' : 'B';
+            int  pasos = (delta >= 0) ? delta : -delta;
+            printf("%c%d ", tipo, pasos);
+            total++;
+            col++;
+            if (col % 15 == 0) printf("\n");
+        }
+    }
+    printf("\nTotal: %d movimientos\n", total);
+    return total;
+}
+unsigned buscar_id(t_reg_indice* punt)
+{
+    t_reg_jugador reg;
+    // Inicializamos por seguridad en caso de que falle la lectura
+    reg.id = 0;
+
+    FILE *f = abrir_bin(ARCHIVO_JUGADORES, "rb");
+
+    // 1. Validar que el archivo se abrió con éxito
+    if (f == NULL) {
+        printf("Error: No se pudo abrir el archivo de jugadores.\n");
+        return 0;
+    }
+
+    // 2. Posicionarse y leer
+    fseek(f, punt->posicion, SEEK_SET);
+
+    // Validar si realmente se pudo leer el registro completo
+    if (fread(&reg, sizeof(t_reg_jugador), 1, f) != 1) {
+        printf("Error: No se pudo leer el registro en la posicion %ld\n", punt->posicion);
+    }
+
+    // 3. ¡SIEMPRE cerrar el archivo!
+    fclose(f);
+
+    printf("%u dentro de funcion\n", reg.id);
+    return reg.id;
+}
+
+unsigned jugadores_proximo_id(void) {
+    FILE *f = abrir_bin(ARCHIVO_JUGADORES, "rb");
+    unsigned cant = 0;
+    fseek(f, 0, SEEK_END);
+    cant = ftell(f) / sizeof(t_reg_jugador);
+    fclose(f);
+    return cant + 1;
+}
+int jugadores_agregar(unsigned id, const char *nombre) {
+    t_reg_jugador reg;
+    FILE *f = abrir_bin(ARCHIVO_JUGADORES, "ab");
+    if (!f) return 0;
+    reg.id = id;
+    strncpy(reg.nombre, nombre, MAX_NOMBRE - 1);
+    *(reg.nombre + MAX_NOMBRE - 1) = '\0';
+    fwrite(&reg, sizeof(t_reg_jugador), 1, f);
+    fclose(f);
+    return 1;
+}
+int jugadores_buscar_nombre(unsigned id, char *nombre_dest) {
+    t_reg_jugador reg;
+    FILE *f = abrir_bin(ARCHIVO_JUGADORES, "rb");
+    if (!f) return 0;
+    while (fread(&reg, sizeof(t_reg_jugador), 1, f) == 1) {
+        if (reg.id == id) {
+            strncpy(nombre_dest, reg.nombre, MAX_NOMBRE - 1);
+            *(nombre_dest + MAX_NOMBRE - 1) = '\0';
+            fclose(f);
+            return 1;
+        }
+    }
+    fclose(f);
+    return 0;
+}
+int indice_comparar(const void *a, const void *b) {
+    const t_reg_indice *ra = (const t_reg_indice*)a;
+    const t_reg_indice *rb = (const t_reg_indice*)b;
+    return strcmp(ra->nombre, rb->nombre);
+}
+int indice_buscar(t_raking *arbol, const char *nombre, t_reg_indice *dest) {
+    t_reg_indice busq;
+    strncpy(busq.nombre, nombre, MAX_NOMBRE - 1);
+    *(busq.nombre + MAX_NOMBRE - 1) = '\0';
+    busq.posicion = 0;
+    if (!buscarEnArbol(arbol, &busq, sizeof(t_reg_indice), indice_comparar))
+        return 0;
+    *dest = busq;
+    return 1;
+}
+void indice_insertar(t_raking *arbol, t_reg_indice *reg) {
+    ponerEnArbol(arbol, reg, sizeof(t_reg_indice), indice_comparar);
+}
+void indice_guardar(t_raking *arbol) {
+    FILE *f = abrir_bin(ARCHIVO_INDICE, "wb");
+    if (!f) { perror("indice_guardar"); return; }///modificar fprintf (stderr,"error");
+    guardarArbolBin(arbol, f, sizeof(t_reg_indice));
+    fclose(f);
+}
+
+void indice_cargar(t_raking *arbol) {
+    FILE *f = abrir_bin(ARCHIVO_INDICE, "rb");
+    if (!f) return;
+    cargarArbolBin(arbol, f, sizeof(t_reg_indice), indice_comparar);
+    fclose(f);
+}
+int partidas_agregar(unsigned id_jugador, unsigned puntos, unsigned cant_movimientos) {
+    t_reg_partida reg;
+    FILE *f = abrir_bin(ARCHIVO_PARTIDAS, "ab");
+    if (!f) return 0;
+    reg.id_jugador       = id_jugador;
+    reg.puntos           = puntos;
+    reg.cant_movimientos = cant_movimientos;
+    fwrite(&reg, sizeof(t_reg_partida), 1, f);
+    fclose(f);
+    return 1;
+}
+void ranking_mostrar(void) {
+    FILE *f;
+    t_reg_partida reg;
+    t_acum acum[512];
+    int cant_acum = 0;
+    int i, j, k;
+    t_acum top[TOP_RANKING];
+    int cant_top;
+    char nombre[MAX_NOMBRE];
+
+    f = abrir_bin(ARCHIVO_PARTIDAS, "rb");
+    if (!f) {
+        printf("  No hay partidas registradas todavia.\n");
+        return;
+    }
+
+    while (fread(&reg, sizeof(t_reg_partida), 1, f) == 1) {
+        int encontrado = 0;
+        for (i = 0; i < cant_acum; i++) {
+            if ((acum + i)->id == reg.id_jugador) {
+                (acum + i)->puntos_totales += reg.puntos;
+                (acum + i)->cant_movimientos_t += reg.cant_movimientos;
+                encontrado = 1;
+                break;
+            }
+        }
+        if (!encontrado && cant_acum < 512) {
+            (acum + cant_acum)->id             = reg.id_jugador;
+            (acum + cant_acum)->puntos_totales = reg.puntos;
+            (acum + cant_acum)->cant_movimientos_t=reg.cant_movimientos;
+            cant_acum++;
+        }
+    }
+    fclose(f);
+
+    if (cant_acum == 0) {
+        printf("  No hay partidas registradas todavia.\n");
+        return;
+    }
+
+    cant_top = (cant_acum < TOP_RANKING) ? cant_acum : TOP_RANKING;
+    for (i = 0; i < cant_top; i++) {
+        int idx_max = 0;
+        for (j = 1; j < cant_acum; j++) {
+            if ((acum + j)->puntos_totales > (acum + idx_max)->puntos_totales)
+                idx_max = j;
+        }
+        *(top + i) = *(acum + idx_max);
+        (acum + idx_max)->puntos_totales = 0;
+        (acum + idx_max)->id = 0;
+        (acum + idx_max)->cant_movimientos_t=0;
+    }
+
+    printf("\n  %-4s %-20s %8s %8s\n", "Pos.", "Jugador", "Puntos", "T_Movs");
+    printf("  %-4s %-20s %8s  %8s\n", "----", "--------------------", "--------" , "--------");
+    for (k = 0; k < cant_top; k++) {
+        if (jugadores_buscar_nombre((top + k)->id, nombre))
+            printf("  %-4d %-20s %8u %8u\n", k + 1, nombre, (top + k)->puntos_totales,(top + k)->cant_movimientos_t);
+        else
+            printf("  %-4d %-20s %8u\n", k + 1, "???", (top + k)->puntos_totales);
+    }
+    printf("\n");
+}
