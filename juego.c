@@ -3,13 +3,15 @@
 #include "dado.h"
 #include "lista_circular_doble.h"
 
-#define DEBUG_ACTIVO 1
+#define DEBUG_JUGADOR 1
+#define DEBUG_BANDIDOS 0
+#define DEBUG_BANDIDOS_LENTOS 1
 
 void jugar_partida(t_mapa *mapa, t_config *config)
 {
-    #if DEBUG_ACTIVO
+    #if DEBUG_JUGADOR
         unsigned numero_turno = 0;
-    #endif // DEBUG_ACTIVO
+    #endif // DEBUG_JUGADOR
 
     t_movimientos cola_movimientos_jugador;
     t_movimientos cola_turno;
@@ -44,10 +46,10 @@ void jugar_partida(t_mapa *mapa, t_config *config)
     while ((jugador.vidas > 0) && (jugador.pos_en_mapa != posicion_salida))
     {
         limpiar_pantalla();
-        #if DEBUG_ACTIVO
+        #if DEBUG_JUGADOR
             printf("DEBUG - Numero de turno: %d\n",numero_turno);
             numero_turno++;
-        #endif // DEBUG_ACTIVO
+        #endif // DEBUG_JUGADOR
 
         mostrarEstadisticas(jugador.vidas, jugador.puntos, jugador.nombre);
         printCaravana(stdout, mapa);
@@ -69,13 +71,13 @@ void jugar_partida(t_mapa *mapa, t_config *config)
             printf("DADO - Sacaste un: %d\n",dado.cara);
             mostrarFooter();
 
-            #if DEBUG_ACTIVO
+            #if DEBUG_JUGADOR
                 printf("DEBUG - Estado jugador:\n jugador.pos_en_mapa: %d\n jugador.efecto_tormenta: %s\n jugador.efecto_oasis: %s\n",
                     jugador.pos_en_mapa, jugador.efectoTormenta ? "VERDADERO" : "FALSO", jugador.efectoOasis ? "VERDADERO" : "FALSO");
                 printf("DEBUG - Sobreescribir valor del dado. Ingrese un valor y presione ENTER: ");
                 scanf("%d", &dado.cara);
                 limpiar_buffer();
-            #endif // DEBUG_ACTIVO
+            #endif // DEBUG_JUGADOR
 
             //Si hay lugar suficiente, se le permite al usuario regresar
             if(dado.cara < jugador.pos_en_mapa + 1)
@@ -112,10 +114,14 @@ void jugar_partida(t_mapa *mapa, t_config *config)
 
             while(!colaVacia(&cola_turno)){
                 desacolar(&cola_turno,&movi,sizeof(t_movimiento));
-               // printf("\n\nCANTIDAD MOVIMIENTO: %u", movi.cantidad_movimiento);
-               // printf("\nORIENTACION: %c", movi.orientacion);
-               // printf("\nPOS INICIAL: %u", movi.pos_inicial);
-               // printf("\nPOS FINAL: %u", movi.pos_final);
+
+                #if DEBUG_BANDIDOS
+                    printf("\n\nCANTIDAD MOVIMIENTO: %u", movi.cantidad_movimiento);
+                    printf("\nORIENTACION: %c", movi.orientacion);
+                    printf("\nPOS INICIAL: %u", movi.pos_inicial);
+                    printf("\nPOS FINAL: %u", movi.pos_final);
+                #endif // DEBUG_BANDIDOS
+
                 if(movi.jugador_humano){
                     mover_jugador(mapa,&jugador,&movi);
                  //   printf("\nHAY JUGADOR");
@@ -127,22 +133,14 @@ void jugar_partida(t_mapa *mapa, t_config *config)
                resolver_casillero_actual(mapa,&jugador);
             }
 
-           // mover_jugador(mapa,&jugador,&movi);
-
-            #if DEBUG_ACTIVO
+            #if DEBUG_JUGADOR
                 printf("DEBUG - Direccion calculada/elegida: %c\n", direccion);
                 printf("DEBUG - Posición final calculada para el jugador: %d\n", pos_final_j);
-            #endif // DEBUG_ACTIVO
+            #endif // DEBUG_UUGADOR
 
             pausa();
             limpiar_pantalla();
         }
-
-        ///Logica de los bandidos
-        //calcular_bandidos(mapa,&cola_turno);
-
-        ///Logica del turno - ACA FALTARIA IMPLEMENTAR ESTA FUNCION (CREO QUE SERIA ALGO ASI)
-        //resolver_turno(mapa,&cola_turno,%jugador);
     }
 
     ///Fin del juego
@@ -151,10 +149,10 @@ void jugar_partida(t_mapa *mapa, t_config *config)
 
 
     printf("Puntos: %d\n",jugador.puntos);
-    #if DEBUG_ACTIVO
+    #if DEBUG_JUGADOR
         printf("DEBUG - Ingrese cuantos puntos quiere tener: ");
         scanf("%d", &jugador.puntos);
-    #endif // DEBUG_ACTIVO
+    #endif // DEBUG_JUGADOR
 
     ///ACA FALTA BAJAR LOS RESULTADOS AL INDICE Y LOS MOVIMIENTOS A UN ARCHIVO
 
@@ -229,7 +227,11 @@ void situar_bandidos(void* a, void* parametro_extra)
        crearDado(&dado,CARAS_DADO);
 
        signo = tirarDado(&dado);
-       cantidad_movimiento = tirarDado(&dado);
+       #if DEBUG_BANDIDOS_LENTOS
+            cantidad_movimiento = 1;
+       #else
+            cantidad_movimiento = tirarDado(&dado);
+       #endif
 
        movimiento_bandido.orientacion = (signo%2 == 0)? AVANZAR : RETROCEDER;
        movimiento_bandido.cantidad_movimiento = cantidad_movimiento;
@@ -286,7 +288,11 @@ void mover_jugador(t_mapa*mapa,t_jugador *jugador,t_movimiento* movimiento)
 
 void quitar_jugador(void* a,void* parametro_extra){
     t_casillero* casillero = (t_casillero*)a;
-    casillero->presencia_jugador = false;
+
+    if(casillero->presencia_jugador){
+        casillero->presencia_jugador = false;
+    }
+
     return;
 }
 
@@ -431,7 +437,11 @@ void poner_bandido(void* a, void* parametro_extra){
 
 void quitar_bandido(void *a, void* parametro_extra){
     t_casillero *casillero = (t_casillero*)a;
-    casillero->cant_bandidos--;
+
+    if(casillero->cant_bandidos){
+       casillero->cant_bandidos--;
+    }
+
     return;
 }
 
@@ -698,97 +708,7 @@ void printCaravana(FILE *archivo, t_mapa *mapa)
     }
     fprintf(archivo, "\n");
 }
-/*
-void printCaravana(FILE *archivo, t_mapa *mapa)
-{
-    tNodo *temp;
-    tNodo *inicio = (*mapa);
 
-    t_casillero *cas;
-    t_casillero *ultimocasillero = (t_casillero*)(inicio->ant->info);
-    unsigned pos;
-
-    if (!archivo || !mapa || !*mapa) return;
-
-    temp = *mapa;
-
-    int contador_casilleros = 0;
-    int finalcas = ultimocasillero->nro_posicion;
-
-    while (contador_casilleros <= finalcas )
-    {
-        cas = (t_casillero *)temp->info;
-        pos = cas->nro_posicion;
-
-        int num_elems = 0;
-        char elems[20][3];
-
-        if (cas->tipo_casillero != TIPO_NORMAL || (!cas->presencia_jugador && cas->cant_bandidos == 0))
-        {
-            switch (cas->tipo_casillero)
-            {
-            case TIPO_INICIO:
-                strcpy(elems[num_elems++], "I");
-                break;
-            case TIPO_FIN:
-                strcpy(elems[num_elems++], "S");
-                break;
-            case TIPO_NORMAL:
-                strcpy(elems[num_elems++], ".");
-                break;
-            case TIPO_OASIS:
-                strcpy(elems[num_elems++], "O");
-                break;
-            case TIPO_TORMENTA:
-                strcpy(elems[num_elems++], "T");
-                break;
-            case TIPO_VIDA_EXTRA:
-                strcpy(elems[num_elems++], "V");
-                break;
-            case TIPO_PREMIO:
-                strcpy(elems[num_elems++], "P");
-                break;
-            default:
-                strcpy(elems[num_elems++], "?");
-                break;
-            }
-        }
-
-        if (cas->presencia_jugador)
-        {
-            strcpy(elems[num_elems++], "J");
-        }
-
-        for (unsigned i = 0; i < cas->cant_bandidos; i++)
-        {
-            if (num_elems < 20) strcpy(elems[num_elems++], "B");
-        }
-
-        fprintf(archivo, "%02u", pos);
-        if (num_elems == 1)
-        {
-            fprintf(archivo, ":%s\n", elems[0]);
-        }
-        else if (num_elems > 1)
-        {
-            fprintf(archivo, ":[");
-            for (int i = 0; i < num_elems; i++)
-            {
-                fprintf(archivo, "%s%s", elems[i], i == num_elems - 1 ? "" : " ");
-            }
-            fprintf(archivo, "]\n");
-        }
-        else
-        {
-            fprintf(archivo, ":.\n");
-        }
-        contador_casilleros++;
-        temp = temp->sig;
-    }
-    (*mapa) = inicio;
-    fprintf(archivo, "\n");
-}
-*/
 ///FUNCIONES DE COMPARACION
 
 int comparar_posicion_casilleros(const void* elem_a,const void* elem_b){
