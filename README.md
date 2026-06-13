@@ -65,15 +65,15 @@ El segundo parámetro (`Tipo`) varía según las constantes definidas en el jueg
 
 * **`I`** : **Inicio** (`TIPO_INICIO`) — Punto de partida de la caravana.
 
-* **`F`** : **Fin** (`TIPO_FIN`) — Meta o destino final.
+* **`F`** : **Fin** (`TIPO_FIN`) — Meta.
 
-* **`O`** : **Oasis** (`TIPO_OASIS`) — Zona de descanso o reabastecimiento.
+* **`O`** : **Oasis** (`TIPO_OASIS`) — Zona de descanso que protege durante un turno.
 
-* **`T`** : **Tormenta** (`TIPO_TORMENTA`) — Obstáculo o evento climático.
+* **`T`** : **Tormenta** (`TIPO_TORMENTA`) — Tormenta que hace perder el turno.
 
-* **`V`** : **Vida Extra** (`TIPO_VIDA_EXTRA`) — Power-up o bonificación de salud.
+* **`V`** : **Vida Extra** (`TIPO_VIDA_EXTRA`) — Vida extra.
 
-* **`P`** : **Premio** (`TIPO_PREMIO`) — Recompensa o tesoro.
+* **`P`** : **Premio** (`TIPO_PREMIO`) — Punto extra.
 
 * **`.`** : **Casillero Estándar** (`default`) — Terreno neutral sin eventos especiales.
 
