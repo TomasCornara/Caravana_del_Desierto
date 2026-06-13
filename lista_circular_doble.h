@@ -18,6 +18,7 @@ typedef tNodo* tLista;
 typedef void (*tAccion)(void*a, void * parametro_extra);
 typedef int (*tCmp)(const void*a,const void *b);
 
+void map_lista_inverso(const tLista* pl, tAccion accion, void* parms);
 void crear_lista(tLista* pl);
 int lista_vacia(const tLista* pl);
 int lista_llena(const tLista* pl);
@@ -29,4 +30,5 @@ void vaciar_lista_doble(tLista *pl);
 int obtener_de_lista(const tLista* pl,const void* key, void* buffer, unsigned tam_dato, tCmp cmp);
 void * obtener_de_lista_dir_dato(const tLista* pl,const void* key, tCmp cmp);
 unsigned cantidad_elementos_lista(tLista * pl);
+
 #endif // LISTA_CIRCULAR_DOBLE_H_INCLUDED

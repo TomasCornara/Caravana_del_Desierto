@@ -1,4 +1,5 @@
 #include "indice_jugadores.h"
+#include "listaSimple.h"
 
 int cmp_indices_jugadores(const void* elemA, const void* elemB){
     t_indice* indiceA = (t_indice*)elemA;
@@ -215,15 +216,48 @@ int partidas_agregar(unsigned id_jugador, unsigned puntos, unsigned cant_movimie
     fclose(f);
     return 1;
 }
+
+int cmp_id(const void* a, const void* b) {
+    return ((t_acum*)a)->id - ((t_acum*)b)->id;
+}
+
+void acumular_stats(void* destino, const void* origen) {
+    t_acum* dest = (t_acum*)destino;
+    const t_acum* orig = (const t_acum*)origen;
+
+    dest->puntos_totales += orig->puntos_totales;
+    dest->cant_movimientos_t += orig->cant_movimientos_t;
+}
+
+int cmp_puntos_desc(const void* a, const void* b) {
+    const t_acum* actual = (const t_acum*)a;
+    const t_acum* en_lista = (const t_acum*)b;
+    return (int)en_lista->puntos_totales - (int)actual->puntos_totales;
+}
+
+void imprimir_fila_ranking(int pos, const t_acum *datos) {
+    char nombre[MAX_NOMBRE];
+
+    if (jugadores_buscar_nombre(datos->id, nombre)) {
+        printf("  %-4d %-20s %8u %8u\n", pos, nombre, datos->puntos_totales, datos->cant_movimientos_t);
+    } else {
+        printf("  %-4d %-20s %8u %8u\n", pos, "???", datos->puntos_totales, datos->cant_movimientos_t);
+    }
+}
+
+void imprimir_header_ranking(void){
+    printf("\n  %-4s %-20s %8s %8s\n", "Pos.", "Jugador", "Puntos", "T_Movs");
+    printf("  %-4s %-20s %8s  %8s\n", "----", "--------------------", "--------" , "--------");
+}
+
 void ranking_mostrar() {
     FILE *f;
     t_reg_partida reg;
-    t_acum acum[512];
-    int cant_acum = 0;
-    int i, j, k;
-    t_acum top[TOP_RANKING];
-    int cant_top;
-    char nombre[MAX_NOMBRE];
+    t_lista lista_acum;
+    int k;
+    t_acum acum_aux;
+
+    crearLista(&lista_acum);
 
     f = abrir_bin(ARCHIVO_PARTIDAS, "rb");
     if (!f) {
@@ -232,49 +266,96 @@ void ranking_mostrar() {
     }
 
     while (fread(&reg, sizeof(t_reg_partida), 1, f) == 1) {
-        int encontrado = 0;
-        for (i = 0; i < cant_acum; i++) {
-            if ((acum + i)->id == reg.id_jugador) {
-                (acum + i)->puntos_totales += reg.puntos;
-                (acum + i)->cant_movimientos_t += reg.cant_movimientos;
-                encontrado = 1;
-                break;
-            }
-        }
-        if (!encontrado && cant_acum < 512) {
-            (acum + cant_acum)->id             = reg.id_jugador;
-            (acum + cant_acum)->puntos_totales = reg.puntos;
-            (acum + cant_acum)->cant_movimientos_t=reg.cant_movimientos;
-            cant_acum++;
-        }
+        acum_aux.id = reg.id_jugador;
+        acum_aux.puntos_totales = reg.puntos;
+        acum_aux.cant_movimientos_t = reg.cant_movimientos;
+
+        ponerEnLista(&lista_acum, &acum_aux, sizeof(t_acum), cmp_id, acumular_stats);
     }
     fclose(f);
 
-    if (cant_acum == 0) {
+    if (listaVacia(&lista_acum)) {
         printf("  No hay partidas registradas todavia.\n");
         return;
     }
 
-    cant_top = (cant_acum < TOP_RANKING) ? cant_acum : TOP_RANKING;
-    for (i = 0; i < cant_top; i++) {
-        int idx_max = 0;
-        for (j = 1; j < cant_acum; j++) {
-            if ((acum + j)->puntos_totales > (acum + idx_max)->puntos_totales)
-                idx_max = j;
-        }
-        *(top + i) = *(acum + idx_max);
-        (acum + idx_max)->puntos_totales = 0;
-        (acum + idx_max)->id = 0;
-        (acum + idx_max)->cant_movimientos_t=0;
-    }
+    ordenarLista(&lista_acum, cmp_puntos_desc);
 
-    printf("\n  %-4s %-20s %8s %8s\n", "Pos.", "Jugador", "Puntos", "T_Movs");
-    printf("  %-4s %-20s %8s  %8s\n", "----", "--------------------", "--------" , "--------");
-    for (k = 0; k < cant_top; k++) {
-        if (jugadores_buscar_nombre((top + k)->id, nombre))
-            printf("  %-4d %-20s %8u %8u\n", k + 1, nombre, (top + k)->puntos_totales,(top + k)->cant_movimientos_t);
-        else
-            printf("  %-4d %-20s %8u\n", k + 1, "???", (top + k)->puntos_totales);
+    imprimir_header_ranking();
+
+    for (k = 0; k < TOP_RANKING && sacarPrimero(&lista_acum, &acum_aux, sizeof(t_acum)); k++) {
+        imprimir_fila_ranking(k + 1, &acum_aux);
     }
     printf("\n");
+
+    vaciarLista(&lista_acum);
 }
+
+#if DEBUG_GENERAR_PARTIDAS
+int generarRegistros(void){
+    t_reg_jugador jugadores[] =
+        {
+            {1005, "EVA"}, // Puntos totales: 43
+            {1002, "ANA"}, // Puntos totales: 40
+            {1008, "ZOE"}, // Puntos totales: 11
+            {1001, "TOM"}, // Puntos totales: 59
+            {1006, "DAN"}, // Puntos totales: 59
+            {1004, "MAX"}, // Puntos totales: 91
+            {1003, "LUC"}, // Puntos totales: 81
+            {1007, "LEO"}  // Puntos totales: 80
+        };
+
+        t_reg_partida partidas[] =
+        {
+            {1001, 1, 32, 12},
+            {1002, 2, 18,  8},
+            {1003, 3, 45, 17},
+            {1001, 4, 27, 10},
+            {1004, 5, 50, 19},
+            {1005, 6, 14,  6},
+            {1006, 7, 39, 15},
+            {1002, 8, 22,  9},
+            {1007, 9, 47, 18},
+            {1008, 10, 11,  5},
+            {1003, 11, 36, 13},
+            {1005, 12, 29, 11},
+            {1004, 13, 41, 16},
+            {1006, 14, 20,  7},
+            {1007, 15, 33, 14}
+        };
+
+        FILE* f_jugadores = fopen("jugadores.dat", "wb");
+        FILE* f_partidas  = fopen("partidas.dat", "wb");
+
+        if(!f_jugadores || !f_partidas)
+        {
+            if(f_jugadores)
+                fclose(f_jugadores);
+
+            if(f_partidas)
+                fclose(f_partidas);
+
+            fprintf(stderr, "Error al crear archivos de prueba.\n");
+            return 0;
+        }
+
+        fwrite(
+            jugadores,
+            sizeof(t_reg_jugador),
+            sizeof(jugadores) / sizeof(jugadores[0]),
+            f_jugadores
+        );
+
+        fwrite(
+            partidas,
+            sizeof(t_reg_partida),
+            sizeof(partidas) / sizeof(partidas[0]),
+            f_partidas
+        );
+
+        fclose(f_jugadores);
+        fclose(f_partidas);
+
+        return 1;
+}
+#endif

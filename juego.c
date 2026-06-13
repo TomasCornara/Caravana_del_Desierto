@@ -3,9 +3,6 @@
 #include "dado.h"
 #include "lista_circular_doble.h"
 #include "indice_jugadores.h"
-#define DEBUG_JUGADOR 1
-#define DEBUG_BANDIDOS 0
-#define DEBUG_BANDIDOS_LENTOS 1
 
 void jugar_partida(t_mapa *mapa, t_config *config)
 {
@@ -98,6 +95,8 @@ void jugar_partida(t_mapa *mapa, t_config *config)
                 while(direccion != AVANZAR && direccion != RETROCEDER);
             }
 
+            pausa();
+
             pos_final_j = calcular_pos_final_del_jugador(jugador.pos_en_mapa,
                                                          cantidad_casilleros,
                                                          dado.cara,direccion);
@@ -140,11 +139,14 @@ void jugar_partida(t_mapa *mapa, t_config *config)
             }
 
             #if DEBUG_JUGADOR
+                limpiar_pantalla();
                 printf("DEBUG - Direccion calculada/elegida: %c\n", direccion);
-                printf("DEBUG - Posición final calculada para el jugador: %d\n", pos_final_j);
+                printf("DEBUG - Posición%s calculada para el jugador: %d\n",(jugador.pos_en_mapa == pos_final_j)? " final":"", pos_final_j);
+                if(jugador.pos_en_mapa != pos_final_j){
+                    printf("DEBUG - Jugador atacado por una bandido. Retrocede al inicio. Posicion final: %d",jugador.pos_en_mapa);
+                }
+                pausa();
             #endif // DEBUG_UUGADOR
-
-            pausa();
             limpiar_pantalla();
         }
     }
@@ -374,7 +376,6 @@ void resolver_casillero_actual(t_mapa * mapa,t_jugador *jugador)
         limpiar_pantalla();
         printf("Pierdes el efecto Oasis.\n");
         pausa();
-        limpiar_buffer();
     }
 
     if (casillero_actual->animacion)
@@ -387,7 +388,6 @@ void resolver_casillero_actual(t_mapa * mapa,t_jugador *jugador)
             caso_oasis = false;
             printf("El Oasis te protege\n");
             jugador->efectoOasis = false;
-            limpiar_buffer();
         }
 
         pausa();
@@ -417,6 +417,7 @@ void resolver_bandido_en_casillero(t_mapa*mapa,t_jugador *jugador, t_casillero *
 
     if (jugador->vidas > 0)
     {
+        limpiar_pantalla();
         t_movimiento movimiento_jugador;
         jugador->vidas--;
         limpiar_pantalla();
@@ -666,7 +667,37 @@ int juego_validar_config(t_config *config)
 
     return 1; // Todo OK
 }
+
+char inicialTipoCasillero(unsigned tipo)
+{
+    switch(tipo)
+    {
+        case TIPO_INICIO:     return 'I';
+        case TIPO_FIN:        return 'F';
+        case TIPO_OASIS:      return 'O';
+        case TIPO_TORMENTA:   return 'T';
+        case TIPO_VIDA_EXTRA: return 'V';
+        case TIPO_PREMIO:     return 'P';
+        default:              return '.';
+    }
+}
+
+void printCasillero(void* casillero, void* file){
+    FILE* arch = (FILE*)file;
+    t_casillero* cas = (t_casillero*)casillero;
+    fprintf(arch,"[%02d|%c|%c|B:%d]\n",
+            cas->nro_posicion,
+            inicialTipoCasillero(cas->tipo_casillero),
+            (cas->presencia_jugador)? 'J':'.',
+            cas->cant_bandidos);
+}
+
+void printCaravana(FILE* archivo, t_mapa* mapa){
+    map_lista(mapa,printCasillero,archivo);
+}
+
 ///MI PRINT CARAVANA
+/*
 void printCaravana(FILE *archivo, t_mapa *mapa)
 {
     t_casillero *cas;
@@ -752,15 +783,23 @@ void printCaravana(FILE *archivo, t_mapa *mapa)
         contador_casilleros++;
     }
     fprintf(archivo, "\n");
-}
+}*/
 
 ///FUNCIONES DE COMPARACION
 
-int comparar_posicion_casilleros(const void* elem_a,const void* elem_b){
-    t_casillero casillero_a = *(t_casillero*)elem_a;
-    t_casillero casillero_b = *(t_casillero*)elem_b;
+int comparar_posicion_casilleros(const void* elem_a,
+                                 const void* elem_b)
+{
+    const t_casillero* a = elem_a;
+    const t_casillero* b = elem_b;
 
-    return casillero_b.nro_posicion - casillero_a.nro_posicion;
+    if(a->nro_posicion < b->nro_posicion)
+        return -1;
+
+    if(a->nro_posicion > b->nro_posicion)
+        return 1;
+
+    return 0;
 }
 
 int comparar_clave_casillero(const void* elem_a,const void* elem_b){
@@ -785,6 +824,38 @@ void limpiar_buffer(void) {
     while ((c = getchar()) != '\n' && c != EOF);
 }
 
+void pedir_nombre(char *nombre) {
+    int letras_guardadas;
+    int letras_totales;
+    int c;
+    char buffer[MAX_NOMBRE];
+
+    do {
+        printf("Ingrese su nombre (3 letras): ");
+
+        letras_guardadas = 0;
+        letras_totales = 0;
+
+        while ((c = getchar()) != '\n' && c != EOF) {
+            if (isalpha((unsigned char)c)) {
+                letras_totales++;
+                if (letras_guardadas < 3) {
+                    buffer[letras_guardadas++] = (char)toupper((unsigned char)c);
+                }
+            }
+        }
+        buffer[letras_guardadas] = '\0';
+
+        if (letras_totales != 3) {
+            printf("\nNombre invalido: Los nombres deben tener solo 3 letras.\n");
+        }
+
+    } while (letras_totales != 3);
+
+    strcpy(nombre, buffer);
+}
+
+/*
 void pedir_nombre(char *nombre) {
     size_t len;
     size_t i;
@@ -824,6 +895,8 @@ void pedir_nombre(char *nombre) {
         nombre[i] = (char)toupper((unsigned char)nombre[i]);
     }
 }
+*/
+
 
 void mostrar_menu() {
     printf("\n"

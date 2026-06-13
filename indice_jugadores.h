@@ -24,6 +24,10 @@ typedef struct {
     char nombre[MAX_NOMBRE];///clave
 } t_reg_jugador;
 
+#if DEBUG_GENERAR_PARTIDAS
+    int generarRegistros(void);
+#endif // DEBUG_GENERAR_PARTIDAS
+
 int ponerEnIndice(t_arbol* arbol, int ini, int fin, FILE* arch);
 int cmp_indices_persona(const void* elemA, const void* elemB);
 void print_indices(const void* elemA);

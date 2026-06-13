@@ -10,6 +10,12 @@
 #include "cola_dinamica.h"
 #include "arbolBinario.h"
 
+///OPCIONES DE DEBUG
+#define DEBUG_JUGADOR 1
+#define DEBUG_BANDIDOS 0
+#define DEBUG_BANDIDOS_LENTOS 0
+#define DEBUG_GENERAR_PARTIDAS 0
+
 #define VALORES_POR_LINEA_CONFIG 2
 #define MAX_CLAVE_CONFIG 64
 #define ARCHIVO_CONFIG "config.txt"

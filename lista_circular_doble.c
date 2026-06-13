@@ -21,6 +21,25 @@ void vaciar_lista(tLista *pl)
     return;
 }
 
+void map_lista_inverso(const tLista* pl, tAccion accion, void* parms)
+{
+    tNodo *act,
+          *primero;
+
+    if(!pl || !*pl)
+        return;
+
+    primero = *pl;
+    act = primero;
+
+    do
+    {
+        accion(act->info, parms);
+        act = act->ant;
+    }
+    while(act != primero);
+}
+
 void map_lista(const tLista* pl, tAccion accion, void* parms)
 {
     tNodo *act,

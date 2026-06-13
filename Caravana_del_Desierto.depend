@@ -10,23 +10,24 @@
 1780507061 c:\users\tomas\onedrive\desktop\caravana_del_desierto\consola.h
 	<stdio.h>
 
-1780866037 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\main.c
+1781320440 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\main.c
 	<stdio.h>
 	<stdlib.h>
 	"juego.h"
+	"indice_jugadores.h"
 
-1780866037 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\dado.c
+1781320205 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\dado.c
 	<stdlib.h>
 	<time.h>
 	"dado.h"
 
-1780866037 c:\users\tomas\onedrive\desktop\caravana_del_desierto\dado.h
+1781320205 c:\users\tomas\onedrive\desktop\caravana_del_desierto\dado.h
 
-1780866037 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\manejo_archivos.c
+1781320205 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\manejo_archivos.c
 	<string.h>
 	"manejo_archivos.h"
 
-1780866037 c:\users\tomas\onedrive\desktop\caravana_del_desierto\manejo_archivos.h
+1781320205 c:\users\tomas\onedrive\desktop\caravana_del_desierto\manejo_archivos.h
 	<stdio.h>
 	"juego.h"
 
@@ -96,13 +97,14 @@
 	<stdio.h>
 	<stdlib.h>
 
-1780961523 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\juego.c
+1781365607 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\juego.c
 	"juego.h"
 	"manejo_archivos.h"
 	"dado.h"
 	"lista_circular_doble.h"
+	"indice_jugadores.h"
 
-1780957297 c:\users\tomas\onedrive\desktop\caravana_del_desierto\juego.h
+1781364571 c:\users\tomas\onedrive\desktop\caravana_del_desierto\juego.h
 	<stdbool.h>
 	<time.h>
 	<stdlib.h>
@@ -112,10 +114,10 @@
 	"cola_dinamica.h"
 	"arbolBinario.h"
 
-1780866037 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\cola_dinamica.c
+1781320205 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\cola_dinamica.c
 	"cola_dinamica.h"
 
-1780866037 c:\users\tomas\onedrive\desktop\caravana_del_desierto\cola_dinamica.h
+1781320205 c:\users\tomas\onedrive\desktop\caravana_del_desierto\cola_dinamica.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -137,21 +139,21 @@
 	"cola_dinamica.h"
 	"arbolBinario.h"
 
-1780866037 c:\users\tomas\onedrive\desktop\caravana_del_desierto\lista_circular_doble.h
+1781322551 c:\users\tomas\onedrive\desktop\caravana_del_desierto\lista_circular_doble.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 
-1780866037 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\lista_circular_doble.c
+1781322551 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\lista_circular_doble.c
 	"lista_circular_doble.h"
 
-1780866037 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\arbolbinario.c
+1781320205 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\arbolbinario.c
 	<stdlib.h>
 	<stdio.h>
 	<string.h>
 	"arbolBinario.h"
 
-1780866037 c:\users\tomas\onedrive\desktop\caravana_del_desierto\arbolbinario.h
+1781320205 c:\users\tomas\onedrive\desktop\caravana_del_desierto\arbolbinario.h
 
 1780864489 c:\users\tomas\onedrive\desktop\caravana_del_desierto\globales.h
 
@@ -325,4 +327,21 @@
 
 1781310815 source:c:\algoritmo\caravana_del_desierto\indice_jugadores.c
 	"indice_jugadores.h"
+
+1781363930 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\indice_jugadores.c
+	"indice_jugadores.h"
+	"listaSimple.h"
+
+1781320440 c:\users\tomas\onedrive\desktop\caravana_del_desierto\indice_jugadores.h
+	"arbolBinario.h"
+	"juego.h"
+	<stdio.h>
+
+1781362655 c:\users\tomas\onedrive\desktop\caravana_del_desierto\listasimple.h
+
+1781362663 source:c:\users\tomas\onedrive\desktop\caravana_del_desierto\listasimple.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"listaSimple.h"
 
