@@ -35,4 +35,7 @@ FILE* abrir_txt(const char* nombre_archivo, const char* modo)
     return fopen(buffer, modo);
 }
 
-
+FILE* abrir_bin(const char* nombre_archivo, const char* modo) {
+    if (!nombre_archivo || !modo) return NULL;
+    return fopen(nombre_archivo, modo);
+}

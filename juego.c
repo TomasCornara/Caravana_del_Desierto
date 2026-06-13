@@ -2,7 +2,7 @@
 #include "manejo_archivos.h"
 #include "dado.h"
 #include "lista_circular_doble.h"
-
+#include "indice_jugadores.h"
 #define DEBUG_JUGADOR 1
 #define DEBUG_BANDIDOS 0
 #define DEBUG_BANDIDOS_LENTOS 1
@@ -12,7 +12,10 @@ void jugar_partida(t_mapa *mapa, t_config *config)
     #if DEBUG_JUGADOR
         unsigned numero_turno = 0;
     #endif // DEBUG_JUGADOR
-
+    t_arbol arbol_indice;
+    int cant_movs=0;
+    t_indice reg_idx;
+    unsigned id_jugador;
     t_movimientos cola_movimientos_jugador;
     t_movimientos cola_turno;
     t_movimiento movi;
@@ -156,9 +159,29 @@ void jugar_partida(t_mapa *mapa, t_config *config)
         printf("DEBUG - Ingrese cuantos puntos quiere tener: ");
         scanf("%d", &jugador.puntos);
     #endif // DEBUG_JUGADOR
-
+    //bajarindice(&arbol_indice,"indice.idx")
     ///ACA FALTA BAJAR LOS RESULTADOS AL INDICE Y LOS MOVIMIENTOS A UN ARCHIVO
+    cant_movs=mostrar_movimientos(&cola_movimientos_jugador, jugador.nombre);
 
+    crearArbol(&arbol_indice);
+    file_a_arbolIndice(& arbol_indice,ARCHIVO_IDX);
+    ///SI LO ENCUENTRA NOS DEVUELVE 1 SINO 0
+    if (indice_buscar(&arbol_indice, jugador.nombre, &reg_idx)) {
+        id_jugador=buscar_id(&reg_idx);
+        printf("%u",id_jugador);
+    } else {
+        FILE *arch;
+        id_jugador        = jugadores_proximo_id();
+        jugadores_agregar(id_jugador, jugador.nombre);
+        arch=fopen(ARCHIVO_JUGADORES,"rb");///reemplazar
+        if(!arch)return;
+        crear_indice(arch);
+
+    }
+
+    partidas_agregar(id_jugador, jugador.puntos, cant_movs);
+    destruirArbol(&arbol_indice);
+    //Limpiar estructuras
     //Limpiar estructuras
     vaciarCola(&cola_movimientos_jugador);
     vaciarCola(&cola_turno);
@@ -1025,4 +1048,24 @@ void limpiar_pantalla() {
         system("clear");
     #endif
 }
+int mostrar_movimientos(t_movimientos *cola, const char* nombre_jugador) {
+    t_movimiento mov;
+    int total = 0;
+    int col   = 0;
 
+    printf("\n=== Movimientos de %s ===\n", nombre_jugador);
+
+    while (desacolar(cola, &mov, sizeof(t_movimiento))) {
+        if (mov.jugador_humano) {
+            int delta = (int)mov.pos_final - (int)mov.pos_inicial;
+            char tipo  = (delta >= 0) ? 'F' : 'B';
+            int  pasos = (delta >= 0) ? delta : -delta;
+            printf("%c%d ", tipo, pasos);
+            total++;
+            col++;
+            if (col % 15 == 0) printf("\n");
+        }
+    }
+    printf("\nTotal: %d movimientos\n", total);
+    return total;
+}

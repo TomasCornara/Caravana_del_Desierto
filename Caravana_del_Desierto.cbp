@@ -46,6 +46,10 @@
 		<Unit filename="globales.h">
 			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
+		<Unit filename="indice_jugadores.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="indice_jugadores.h" />
 		<Unit filename="juego.c">
 			<Option compilerVar="CC" />
 		</Unit>

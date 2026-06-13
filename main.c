@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "juego.h"
-
+#include "indice_jugadores.h"
 #define SALIR 3
 #define JUGAR 1
 #define RANKING 2
@@ -61,9 +61,9 @@ int main() {
 
             case RANKING:
                 limpiar_pantalla();
-                printf("\n  RANKING DE JUGADORES  \n");
-                printf("\n  PROXIMAMENTE\n");
-                //ranking_mostrar(&arbol_jugadores); creo que seria algo asi
+                printf("\n  === TOP %d - RANKING DE JUGADORES ===\n", TOP_RANKING);
+                ranking_mostrar();
+                limpiar_buffer();
                 pausa();
                 break;
 

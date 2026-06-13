@@ -15,7 +15,11 @@
 #define ARCHIVO_CONFIG "config.txt"
 #define ARCHIVO_MAPA "caravana.txt"
 #define ARCHIVO_RANKING "ranking.txt"
+#define ARCHIVO_JUGADORES "jugadores.dat"
+#define ARCHIVO_PARTIDAS "partidas.dat"
+#define ARCHIVO_IDX "indice.idx"
 #define CARAS_DADO 6
+#define TOP_RANKING 5
 
 //Valores del juego
 #define ANCHO_CONSOLA 120
@@ -42,11 +46,17 @@
 
 
 
-typedef t_Arbol t_raking;
+typedef t_arbol t_raking;
 typedef tLista t_mapa;
 typedef t_mapa t_pos;
 typedef void(*animCasillero)(void);
 typedef t_cola t_movimientos;
+
+typedef struct {
+    unsigned id;
+    unsigned puntos_totales;
+    unsigned cant_movimientos_t;
+} t_acum;
 
 typedef struct{
     char nombre[MAX_NOMBRE];
@@ -125,7 +135,7 @@ void quitar_jugador(void* a,void* parametro_extra);
 void ponerlo_jugador(void* a,void* parametro_extra);
 void poner_bandido(void* a, void* parametro_extra);
 void quitar_bandido(void *a, void* parametro_extra);
-
+int mostrar_movimientos(t_movimientos *cola, const char* nombre_jugador);
 
 //Funciones consola
 
