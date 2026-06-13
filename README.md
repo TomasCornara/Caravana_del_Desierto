@@ -1,26 +1,87 @@
 # Caravana del Desierto - AyED
 
-Este repositorio es una implementación en C de un juego interactivo de consola llamado "Caravana del Desierto", donde los jugadores emprenden una peligrosa travesía por el desierto. 
+![Diagrama Conceptual](banner.png)
+
+Este repositorio es una implementación en C de un juego interactivo de consola llamado "Caravana del Desierto", donde los jugadores emprenden una peligrosa travesía por el desierto.
 
 El juego de Caravana del Desierto es una simulación basada en casilleros por los cuales uno se va desplazando. La travesía en el tablero está determinada por las siguientes reglas:
 
-- Un jugador que cae en un oasis recupera ventaja, pausando las inclemencias del viaje.
-- Un jugador atrapado en una tormenta de arena sufre penalizaciones en el mapa.
-- Un jugador asaltado por bandidos pierde vidas si estos lo alcanzan.
-- Casilleros con premios y vidas extra aumentan la puntuación final y las probabilidades de éxito.
+* Un jugador que cae en un oasis recupera ventaja, pausando los malos tiempos del viaje y el ataque de los bandidos.
+
+* Un jugador atrapado en una tormenta de arena sufre debe refugiarse por al menos un turno.
+
+* Un jugador asaltado por bandidos pierde vidas si estos lo alcanzan y lo fuerzan a reemprender el viaje desde el inicio.
+
+* Casilleros con premios y vidas extra aumentan la puntuación final y las probabilidades de éxito.
 
 ## Tabla de Contenidos
-- [Descripción del Proyecto](#descripción-del-proyecto)
-- [Instrucciones de Uso](#instrucciones-de-uso)
-- [Integrantes](#integrantes)
+
+* [Descripción del Proyecto](#descripción-del-proyecto)
+
+* [Instrucciones de Uso](#instrucciones-de-uso)
+
+* [Integrantes](#integrantes)
 
 ## Descripción del Proyecto
-Este proyecto está escrito en C y construye un motor de juego utilizando TDA (Tipos de Datos Abstractos). Utiliza **Listas Circulares Dobles** para la representación de los casilleros del mapa y permitir el movimiento en un circuito cerrado. El accionar de los bandidos y del jugador se ejecutan almacenando sus distintas acciones en **Colas Dinámicas**. Por último, cuenta con un sistema de ranking el cual guarda a los jugadores con sus respectivos puntos ordenados en un **Árbol Binario de Búsqueda**. El programa logra carga un tablero de juego y las reglas leyendo un archivo de texto de configuración.
+
+### Diseño y Arquitectura
+
+Este proyecto está escrito integramente en C y construye un motor de juego utilizando diferentes estructuras de datos modelar los comportamientos del juego.
+
+La **configuracion inicial** del mapa del juego se carga a partir de un [archivo de configuración](#archivos-de-configuración) bien formado (En caso de no estarlo, se sustituyen valores erroneos por los de por defecto) que genera una estructura llamada t\_config de la cual se generá el mapa.
+
+Se utiliza **Listas Circulares Dobles** para la representación de los casilleros del mapa. El accionar de los bandidos y del jugador se ejecutan almacenando sus distintas acciones en **Colas Dinámicas** y los casilleros resultantes se generan a partir de el desacolo ordenado de estos movimientos. El jugador tiene en su estructura un atributo tipo unsigneque indica su posicion en el mapa. Cada casillero tiene en sus atributos la cantidad de bandidos presentes en esa casilla y si el jugador esta presente o no (Por lo que los bandidos se manejan como atributos de los casilleros y no entidades propias).
+
+![Diagrama Conceptual](conceptual_turnos.png)
+
+Tiene un sistema de ranking implementado sobre un **indice** utilizando un **arbol binario** que retiene la informacion de las partidas y los jugadores y calcula un raking a partir de una **cola enlazada simple.**.
+
+Por ultimo, tiene un, siempre muy util, opción de salida para terminar el juego.
+
+![Diagrama Conceptual](conceptual.png)
+
+### Notacion del mapa/caravana.txt
+
+Para la visualización y exportación del estado del mapa, el proyecto utiliza una notación compacta estructurada por casilleros. Cada casillero se representa de forma individual siguiendo un formato específico que resume sus propiedades principales.
+
+Cada casillero se imprime con la siguiente estructura:
+
+`[Posición|Tipo|Jugador|Bandidos]`
+
+A continuación se detalla qué significa cada campo dentro de los corchetes:
+
+| Campo        | Formato / Valores                 | Descripción                                                                         |
+| :----------- | :-------------------------------- | :---------------------------------------------------------------------------------- |
+| **Posición** | `00` al `99` (Dos dígitos)        | El número identificador de la posición del casillero (`nro_posicion`).              |
+| **Tipo**     | `I`, `F`, `O`, `T`, `V`, `P`, `.` | La inicial del tipo de terreno o evento del casillero (Ver *Referencias de Tipos*). |
+| **Jugador**  | `J` o `.`                         | Indica si hay un jugador presente (`J`) o si está vacío (`.`).                      |
+| **Bandidos** | `B:X` (Donde X es un número)      | Indica la cantidad de bandidos presentes en ese casillero.                          |
+
+***
+
+### Referencias de Tipos de Casillero
+
+El segundo parámetro (`Tipo`) varía según las constantes definidas en el juego:
+
+* **`I`** : **Inicio** (`TIPO_INICIO`) — Punto de partida de la caravana.
+
+* **`F`** : **Fin** (`TIPO_FIN`) — Meta o destino final.
+
+* **`O`** : **Oasis** (`TIPO_OASIS`) — Zona de descanso o reabastecimiento.
+
+* **`T`** : **Tormenta** (`TIPO_TORMENTA`) — Obstáculo o evento climático.
+
+* **`V`** : **Vida Extra** (`TIPO_VIDA_EXTRA`) — Power-up o bonificación de salud.
+
+* **`P`** : **Premio** (`TIPO_PREMIO`) — Recompensa o tesoro.
+
+* **`.`** : **Casillero Estándar** (`default`) — Terreno neutral sin eventos especiales.
 
 ## Instrucciones de Uso
 
 ### Archivos de Configuración
-Antes de iniciar, puede modificar el archivo de texto `config.txt` que debe encontrarse en el mismo directorio que el ejecutable. Debe estar formateado de la siguiente manera:
+
+Antes de iniciar, puede modificar/agregar el archivo de texto `config.txt` que debe encontrarse en el mismo directorio que el ejecutable. Debe estar formateado de la siguiente manera:
 
 ```text
 cantidad_posiciones:25
@@ -31,21 +92,29 @@ maximo_vidas_extra:1
 maximo_oasis:2
 maximo_tormentas:3
 ```
-*(Si no se encuentra el archivo `config.txt`, el motor cargará estos valores por defecto).*
+
+*(Si no se encuentra el archivo* *`config.txt`, el motor cargará estos valores por defecto).*
 
 ### Utilizar
+
 Para usar el programa, debe abrir una consola de comandos donde se encuentre el binario compilado y ejecutarlo:
+
 ```bash
 Caravana_del_Desierto.exe
 ```
+
 1. Seleccione la opción númerica en el menú principal.
 2. Elija "Jugar nueva partida" para comenzar o "Ver ranking" para leer el historial de puntajes, el cual es deserializado del archivo binario integrado.
 3. Siga las instrucciones en pantalla y presione la tecla indicada para lanzar el dado.
 
 ## Integrantes
-- Valentín, Nievas 
-- Divano, Matías 
-- Gauto, Gastón
-- Cornara, Tomás
-- Lazarte, Ulises
 
+* Gauto, Gastón
+
+* Lazarte, Ulises
+
+* Valentín, Nievas
+
+* Divano, Matías
+
+* Cornara, Tomás
