@@ -54,18 +54,7 @@ void jugar_partida(t_mapa *mapa, t_config *config)
 
         mostrarEstadisticas(&jugador);
         printCaravana(stdout, mapa);
-        /*
-        if (jugador.efectoTormenta)
-        {
-            jugador.efectoTormenta = false;
-            printf("La tormenta te hace perder este turno.\n");
-            mostrarFooter();
-            pausa();
 
-        }
-        else
-        {
-        */
             unsigned pos_final_j;
             direccion = AVANZAR; //Por defecto se avanza
 
@@ -137,15 +126,8 @@ void jugar_partida(t_mapa *mapa, t_config *config)
                     }else{
                        jugador.efectoTormenta = false;
                     }
-                    //mover_jugador(mapa,&jugador,&movi);
-                    //resolver_casillero_actual(mapa,&jugador);
                 }else{
-                    //t_casillero *casillero_jugador;
                     mover_bandido(mapa,&movi);
-
-                    //Le paso donde esta el jugador para que pueda chequear si le puede hacer daño
-                    //casillero_jugador = obtener_de_lista_dir_dato(mapa, &(jugador.pos_en_mapa), comparar_clave_casillero);
-                    //resolver_bandido_en_casillero(mapa, &jugador, casillero_jugador);
                 }
                 resolver_casillero_actual(mapa,&jugador);
             }
@@ -202,8 +184,6 @@ void jugar_partida(t_mapa *mapa, t_config *config)
 
     partidas_agregar(id_jugador, jugador.puntos, cant_movs);
     destruirArbol(&arbol_indice);
-    //Limpiar estructuras
-    //Limpiar estructuras
     vaciarCola(&cola_movimientos_jugador);
     vaciarCola(&cola_turno);
     destruirDado(&dado);
@@ -411,15 +391,6 @@ void resolver_casillero_actual(t_mapa * mapa,t_jugador *jugador)
     {
         jugador->vidas++;
     }
-    /*
-    else if (casillero_actual->tipo_casillero != TIPO_TORMENTA && jugador->efectoOasis)
-    {
-        jugador->efectoOasis = false;
-        limpiar_pantalla();
-        printf("Pierdes el efecto Oasis.\n");
-        pausa();
-    }
-    */
     if (casillero_actual->animacion)
     {
         limpiar_pantalla();
@@ -470,7 +441,6 @@ void resolver_bandido_en_casillero(t_mapa*mapa,t_jugador *jugador, t_casillero *
         mover_jugador(mapa,jugador,&movimiento_jugador);
     }else{
         printf("El Oasis te protege del bandido\n");
-        //jugador->efectoOasis = false;
         limpiar_buffer();
     }
     casillero_actual->cant_bandidos--; //Elimina al bandido que ataco
@@ -740,95 +710,6 @@ void printCasillero(void* casillero, void* file){
 void printCaravana(FILE* archivo, t_mapa* mapa){
     map_lista(mapa,printCasillero,archivo);
 }
-
-///MI PRINT CARAVANA
-/*
-void printCaravana(FILE *archivo, t_mapa *mapa)
-{
-    t_casillero *cas;
-    unsigned pos;
-    int contador_casilleros;
-    int cantidad_casilleros;
-
-    //t_casillero casillero_actual;
-
-    if (!archivo || !mapa || !*mapa) return;
-
-    contador_casilleros = 0;
-    cantidad_casilleros = cantidad_elementos_lista(mapa);
-    printf("\n");
-    while (contador_casilleros <= cantidad_casilleros )
-    {
-        int num_elems = 0;
-        char elems[20][3];
-        //obtener_de_lista(mapa,&contador_casilleros,&casillero_actual,sizeof(t_casillero),comparar_clave_casillero);
-
-        cas = obtener_de_lista_dir_dato(mapa,&contador_casilleros,comparar_clave_casillero);
-        pos = cas->nro_posicion;
-
-        if (cas->tipo_casillero != TIPO_NORMAL || (!cas->presencia_jugador && cas->cant_bandidos == 0))
-        {
-            switch (cas->tipo_casillero)
-            {
-            case TIPO_INICIO:
-                strcpy(elems[num_elems++], "I");
-                break;
-            case TIPO_FIN:
-                strcpy(elems[num_elems++], "S");
-                break;
-            case TIPO_NORMAL:
-                strcpy(elems[num_elems++], ".");
-                break;
-            case TIPO_OASIS:
-                strcpy(elems[num_elems++], "O");
-                break;
-            case TIPO_TORMENTA:
-                strcpy(elems[num_elems++], "T");
-                break;
-            case TIPO_VIDA_EXTRA:
-                strcpy(elems[num_elems++], "V");
-                break;
-            case TIPO_PREMIO:
-                strcpy(elems[num_elems++], "P");
-                break;
-            default:
-                strcpy(elems[num_elems++], "?");
-                break;
-            }
-        }
-
-        if (cas->presencia_jugador)
-        {
-            strcpy(elems[num_elems++], "J");
-        }
-
-        for (unsigned i = 0; i < cas->cant_bandidos; i++)
-        {
-            if (num_elems < 20) strcpy(elems[num_elems++], "B");
-        }
-
-        fprintf(archivo, "%02u", pos);
-        if (num_elems == 1)
-        {
-            fprintf(archivo, ":%s\n", elems[0]);
-        }
-        else if (num_elems > 1)
-        {
-            fprintf(archivo, ":[");
-            for (int i = 0; i < num_elems; i++)
-            {
-                fprintf(archivo, "%s%s", elems[i], i == num_elems - 1 ? "" : " ");
-            }
-            fprintf(archivo, "]\n");
-        }
-        else
-        {
-            fprintf(archivo, ":.\n");
-        }
-        contador_casilleros++;
-    }
-    fprintf(archivo, "\n");
-}*/
 
 ///FUNCIONES DE COMPARACION
 
@@ -1137,25 +1018,4 @@ void limpiar_pantalla() {
     #else
         system("clear");
     #endif
-}
-int mostrar_movimientos(t_movimientos *cola, const char* nombre_jugador) {
-    t_movimiento mov;
-    int total = 0;
-    int col   = 0;
-
-    printf("\n=== Movimientos de %s ===\n", nombre_jugador);
-
-    while (desacolar(cola, &mov, sizeof(t_movimiento))) {
-        if (mov.jugador_humano) {
-            int delta = (int)mov.pos_final - (int)mov.pos_inicial;
-            char tipo  = (delta >= 0) ? 'F' : 'B';
-            int  pasos = (delta >= 0) ? delta : -delta;
-            printf("%c%d ", tipo, pasos);
-            total++;
-            col++;
-            if (col % 15 == 0) printf("\n");
-        }
-    }
-    printf("\nTotal: %d movimientos\n", total);
-    return total;
 }

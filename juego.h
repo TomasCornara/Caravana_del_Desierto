@@ -49,8 +49,6 @@
 #define CONFIG_MAXIMO_OASIS_DEFAULT 2
 #define CONFIG_MAXIMO_TORMENTAS_DEFAULT 3
 
-
-
 typedef t_arbol t_raking;
 typedef tLista t_mapa;
 typedef t_mapa t_pos;
@@ -140,7 +138,6 @@ void quitar_jugador(void* a,void* parametro_extra);
 void ponerlo_jugador(void* a,void* parametro_extra);
 void poner_bandido(void* a, void* parametro_extra);
 void quitar_bandido(void *a, void* parametro_extra);
-int mostrar_movimientos(t_movimientos *cola, const char* nombre_jugador);
 
 //Funciones consola
 

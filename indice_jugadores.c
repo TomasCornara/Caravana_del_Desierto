@@ -211,7 +211,7 @@ int partidas_agregar(unsigned id_jugador, unsigned puntos, unsigned cant_movimie
     FILE *f = abrir_bin(ARCHIVO_PARTIDAS, "ab");
     if (!f) return 0;
 
-    reg.id_partida = 0; ///ACA FALTA IMPLEMENTAR LA LOGICA DE CONSEGUIR UN NUEVO ID
+    reg.id_partida = obtener_ultimo_id_reg(f);
     reg.id_jugador       = id_jugador;
     reg.puntos           = puntos;
     reg.cant_movimientos = cant_movimientos;
@@ -220,6 +220,19 @@ int partidas_agregar(unsigned id_jugador, unsigned puntos, unsigned cant_movimie
     fclose(f);
     return 1;
 }
+
+int obtener_ultimo_id_reg(FILE * pf){ //recibe el archivo abierto
+   t_reg_partida reg_ultimo_id;
+
+   fseek(pf,-(long)sizeof(t_reg_partida),SEEK_END);
+
+   if(fread(&reg_ultimo_id,sizeof(t_reg_partida),1,pf)==1){
+      fseek(pf, 0, SEEK_SET);
+      return reg_ultimo_id.id_partida + 1;
+   }
+   return 0;
+}
+
 
 int cmp_id(const void* a, const void* b) {
     return ((t_acum*)a)->id_jugador - ((t_acum*)b)->id_jugador;
