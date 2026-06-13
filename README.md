@@ -26,6 +26,8 @@ El juego de Caravana del Desierto es una simulación basada en casilleros por lo
 
 ### Diseño y Arquitectura
 
+![Diagrama Conceptual](conceptual.png)
+
 Este proyecto está escrito integramente en C y construye un motor de juego utilizando diferentes estructuras de datos modelar los comportamientos del juego.
 
 La **configuracion inicial** del mapa del juego se carga a partir de un [archivo de configuración](#archivos-de-configuración) bien formado (En caso de no estarlo, se sustituyen valores erroneos por los de por defecto) que genera una estructura llamada t\_config de la cual se generá el mapa.
@@ -37,8 +39,6 @@ Se utiliza **Listas Circulares Dobles** para la representación de los casillero
 Tiene un sistema de ranking implementado sobre un **indice** utilizando un **arbol binario** que retiene la informacion de las partidas y los jugadores y calcula un raking a partir de una **cola enlazada simple.**.
 
 Por ultimo, tiene un, siempre muy util, opción de salida para terminar el juego.
-
-![Diagrama Conceptual](conceptual.png)
 
 ### Notacion del mapa/caravana.txt
 
