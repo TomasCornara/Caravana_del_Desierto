@@ -14,7 +14,6 @@
 #define DEBUG_JUGADOR 1
 #define DEBUG_BANDIDOS 0
 #define DEBUG_BANDIDOS_LENTOS 0
-#define DEBUG_GENERAR_PARTIDAS 0
 
 #define VALORES_POR_LINEA_CONFIG 2
 #define MAX_CLAVE_CONFIG 64
@@ -59,7 +58,7 @@ typedef void(*animCasillero)(void);
 typedef t_cola t_movimientos;
 
 typedef struct {
-    unsigned id;
+    unsigned id_jugador;
     unsigned puntos_totales;
     unsigned cant_movimientos_t;
 } t_acum;

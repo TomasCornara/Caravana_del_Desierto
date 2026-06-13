@@ -162,7 +162,6 @@ void jugar_partida(t_mapa *mapa, t_config *config)
         scanf("%d", &jugador.puntos);
     #endif // DEBUG_JUGADOR
     //bajarindice(&arbol_indice,"indice.idx")
-    ///ACA FALTA BAJAR LOS RESULTADOS AL INDICE Y LOS MOVIMIENTOS A UN ARCHIVO
     cant_movs=mostrar_movimientos(&cola_movimientos_jugador, jugador.nombre);
 
     crearArbol(&arbol_indice);
@@ -178,7 +177,6 @@ void jugar_partida(t_mapa *mapa, t_config *config)
         arch=fopen(ARCHIVO_JUGADORES,"rb");///reemplazar
         if(!arch)return;
         crear_indice(arch);
-
     }
 
     partidas_agregar(id_jugador, jugador.puntos, cant_movs);
@@ -854,49 +852,6 @@ void pedir_nombre(char *nombre) {
 
     strcpy(nombre, buffer);
 }
-
-/*
-void pedir_nombre(char *nombre) {
-    size_t len;
-    size_t i;
-    int letras;
-
-    do {
-        printf("Ingrese su nombre (al menos 3 letras): ");
-        if (fgets(nombre, MAX_NOMBRE, stdin) == NULL) {
-            nombre[0] = '\0';
-            return;
-        }
-
-        // Eliminar el salto de linea
-        len = strlen(nombre);
-        if (len > 0 && nombre[len - 1] == '\n') {
-            nombre[len - 1] = '\0';
-            len--;
-        } else {
-            limpiar_buffer();
-        }
-
-        // Verificar que se haya escrito algo
-        letras = 0;
-        for (i = 0; i < len; i++) {
-            if (isalpha((unsigned char)nombre[i])) {
-                letras++;
-            }
-        }
-
-        if (letras < 3) {
-            printf("\nNombre invalido: ingrese al menos 3 letras.\n");
-        }
-    } while (letras < 3);
-
-    // Normalizar a mayusculas
-    for (i = 0; i < len; i++) {
-        nombre[i] = (char)toupper((unsigned char)nombre[i]);
-    }
-}
-*/
-
 
 void mostrar_menu() {
     printf("\n"

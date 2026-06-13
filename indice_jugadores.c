@@ -84,7 +84,7 @@ int crear_indice(FILE* arch)
     t_reg_jugador buffer_reg_jugador;
     t_arbol ord_arbol;
 
-    FILE * idx=fopen(ARCHIVO_IDX,"wb");///crear define
+    FILE * idx=fopen(ARCHIVO_IDX,"wb");
     if(!idx)
     {
         return 0;
@@ -206,19 +206,23 @@ int indice_buscar(t_raking *arbol, const char *nombre, t_indice *dest) {
 }
 
 int partidas_agregar(unsigned id_jugador, unsigned puntos, unsigned cant_movimientos) {
+
     t_reg_partida reg;
     FILE *f = abrir_bin(ARCHIVO_PARTIDAS, "ab");
     if (!f) return 0;
+
+    reg.id_partida = 0; ///ACA FALTA IMPLEMENTAR LA LOGICA DE CONSEGUIR UN NUEVO ID
     reg.id_jugador       = id_jugador;
     reg.puntos           = puntos;
     reg.cant_movimientos = cant_movimientos;
+
     fwrite(&reg, sizeof(t_reg_partida), 1, f);
     fclose(f);
     return 1;
 }
 
 int cmp_id(const void* a, const void* b) {
-    return ((t_acum*)a)->id - ((t_acum*)b)->id;
+    return ((t_acum*)a)->id_jugador - ((t_acum*)b)->id_jugador;
 }
 
 void acumular_stats(void* destino, const void* origen) {
@@ -238,7 +242,7 @@ int cmp_puntos_desc(const void* a, const void* b) {
 void imprimir_fila_ranking(int pos, const t_acum *datos) {
     char nombre[MAX_NOMBRE];
 
-    if (jugadores_buscar_nombre(datos->id, nombre)) {
+    if (jugadores_buscar_nombre(datos->id_jugador, nombre)) {
         printf("  %-4d %-20s %8u %8u\n", pos, nombre, datos->puntos_totales, datos->cant_movimientos_t);
     } else {
         printf("  %-4d %-20s %8u %8u\n", pos, "???", datos->puntos_totales, datos->cant_movimientos_t);
@@ -266,7 +270,7 @@ void ranking_mostrar() {
     }
 
     while (fread(&reg, sizeof(t_reg_partida), 1, f) == 1) {
-        acum_aux.id = reg.id_jugador;
+        acum_aux.id_jugador = reg.id_jugador;
         acum_aux.puntos_totales = reg.puntos;
         acum_aux.cant_movimientos_t = reg.cant_movimientos;
 
@@ -290,72 +294,3 @@ void ranking_mostrar() {
 
     vaciarLista(&lista_acum);
 }
-
-#if DEBUG_GENERAR_PARTIDAS
-int generarRegistros(void){
-    t_reg_jugador jugadores[] =
-        {
-            {1005, "EVA"}, // Puntos totales: 43
-            {1002, "ANA"}, // Puntos totales: 40
-            {1008, "ZOE"}, // Puntos totales: 11
-            {1001, "TOM"}, // Puntos totales: 59
-            {1006, "DAN"}, // Puntos totales: 59
-            {1004, "MAX"}, // Puntos totales: 91
-            {1003, "LUC"}, // Puntos totales: 81
-            {1007, "LEO"}  // Puntos totales: 80
-        };
-
-        t_reg_partida partidas[] =
-        {
-            {1001, 1, 32, 12},
-            {1002, 2, 18,  8},
-            {1003, 3, 45, 17},
-            {1001, 4, 27, 10},
-            {1004, 5, 50, 19},
-            {1005, 6, 14,  6},
-            {1006, 7, 39, 15},
-            {1002, 8, 22,  9},
-            {1007, 9, 47, 18},
-            {1008, 10, 11,  5},
-            {1003, 11, 36, 13},
-            {1005, 12, 29, 11},
-            {1004, 13, 41, 16},
-            {1006, 14, 20,  7},
-            {1007, 15, 33, 14}
-        };
-
-        FILE* f_jugadores = fopen("jugadores.dat", "wb");
-        FILE* f_partidas  = fopen("partidas.dat", "wb");
-
-        if(!f_jugadores || !f_partidas)
-        {
-            if(f_jugadores)
-                fclose(f_jugadores);
-
-            if(f_partidas)
-                fclose(f_partidas);
-
-            fprintf(stderr, "Error al crear archivos de prueba.\n");
-            return 0;
-        }
-
-        fwrite(
-            jugadores,
-            sizeof(t_reg_jugador),
-            sizeof(jugadores) / sizeof(jugadores[0]),
-            f_jugadores
-        );
-
-        fwrite(
-            partidas,
-            sizeof(t_reg_partida),
-            sizeof(partidas) / sizeof(partidas[0]),
-            f_partidas
-        );
-
-        fclose(f_jugadores);
-        fclose(f_partidas);
-
-        return 1;
-}
-#endif
