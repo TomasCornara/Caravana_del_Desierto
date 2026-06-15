@@ -151,7 +151,6 @@ void jugar_partida(t_mapa *mapa, t_config *config)
                 pausa();
             #endif // DEBUG_UUGADOR
             limpiar_pantalla();
-        //}
     }
 
     ///Fin del juego
@@ -165,7 +164,6 @@ void jugar_partida(t_mapa *mapa, t_config *config)
         scanf("%d", &jugador.puntos);
         limpiar_buffer();
     #endif // DEBUG_JUGADOR
-    //bajarindice(&arbol_indice,"indice.idx")
     cant_movs = resultado_partida(&cola_movimientos_jugador);
     pausa();
     crearArbol(&arbol_indice);
@@ -208,6 +206,9 @@ int resultado_partida(t_movimientos * cola ){
          acumulador_retroceder += movimiento_desacolado.cantidad_movimiento;
       }
    }
+
+   limpiar_pantalla();
+
    printf("\n-----------------MOVIMIENTOS JUGADOR----------------------\n");
 
    printf("F: %u      B: %u", acumulador_avanzar, acumulador_retroceder);
