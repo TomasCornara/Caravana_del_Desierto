@@ -195,10 +195,12 @@ void jugar_partida(t_mapa *mapa, t_config *config)
 
 int resultado_partida(t_movimientos * cola ){
    t_movimiento movimiento_desacolado;
+   int cant_movs = 0;
    unsigned acumulador_avanzar = 0;
    unsigned acumulador_retroceder = 0;
 
-   while( !colaVacia(cola) ){
+   while(!colaVacia(cola)){
+      cant_movs++;
       desacolar(cola,&movimiento_desacolado,sizeof(t_movimiento));
       if(movimiento_desacolado.orientacion == AVANZAR){
          acumulador_avanzar += movimiento_desacolado.cantidad_movimiento;
@@ -215,7 +217,7 @@ int resultado_partida(t_movimientos * cola ){
 
    printf("\n----------------------------------------------------------\n");
 
-   return acumulador_avanzar + acumulador_retroceder;
+   return cant_movs;
 }
 
 unsigned calcular_pos_final_del_jugador(unsigned pos_inicial_del_jugador,
