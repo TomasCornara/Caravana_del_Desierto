@@ -275,6 +275,7 @@ void ranking_mostrar() {
     f = abrir_bin(ARCHIVO_PARTIDAS, "rb");
     if (!f) {
         printf("  No hay partidas registradas todavia.\n");
+        pausa();
         return;
     }
 
