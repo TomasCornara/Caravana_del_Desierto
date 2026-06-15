@@ -58,7 +58,6 @@ void map_lista(const tLista* pl, tAccion accion, void* parms)
     while(act != primero);
 }
 
-//Busca el casillero segun la clave y cuando la encuentra haces algo con la accion y el parametro extra
 void modificar_elemento_segun_clave(tLista * pl, void * clave,tCmp cmp, tAccion accion, void * parametro_extra){
    tNodo * inicio = (*pl);
    tNodo * actual = (*pl);
@@ -206,17 +205,17 @@ int obtener_de_lista(const tLista* pl,const void* key, void* buffer, unsigned ta
     primero = *pl;
     act = primero;
 
-    do //Como la lista no puede estar vacia
+    do
     {
-        if(cmp(key, act->info) == 0) //Si coincide, se copia
+        if(cmp(key, act->info) == 0)
         {
             memcpy(buffer, act->info, MIN(tam_dato, act->tamInfo));
             return 1;
         }
 
-        act = act->sig; //Sino sigo al siguiente
+        act = act->sig;
     }
-    while(act != primero); //Si estos coinciden, di toda la vuelta
+    while(act != primero);
 
     return 0;
 }

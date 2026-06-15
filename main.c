@@ -16,13 +16,7 @@ int main() {
     int  opcion;
     t_config config;
     t_mapa mapa;
-    #if DEBUG_GENERAR_PARTIDAS
-        if(generarRegistros()){
-            printf("DEBUG - Registros generados correctamente.\n");
-        } else {
-            printf("DEBUG - Error al generar registros.\n");
-        }
-    #endif // DEBUG_GENERAR_PARTIDAS
+
 
     ///BLOQUE DE EJECUCION
     printf("MAXIME ESTA VENTANA PARA PODER VISUALIZAR EL JUEGO CORRECTAMENTE\n");
@@ -45,9 +39,7 @@ int main() {
     pausa();
     limpiar_pantalla();
 
-    // Menu principal
     printf("\n  === CARAVANA DEL DESIERTO ===\n");
-
     do {
         limpiar_pantalla();
         mostrar_menu();
@@ -62,14 +54,12 @@ int main() {
                 } else {
                     printf("No se pudo generar el mapa.\n");
                 }
-                pausa();
                 break;
 
             case RANKING:
                 limpiar_pantalla();
                 printf("\n  === TOP %d - RANKING DE JUGADORES ===\n", TOP_RANKING);
                 ranking_mostrar();
-                pausa();
                 break;
 
             case SALIR:

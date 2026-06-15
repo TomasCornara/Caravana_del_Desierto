@@ -66,10 +66,6 @@ int ponerEnIndice(t_arbol* arbol, int ini, int fin, FILE* arch){
     fseek(arch, medio * sizeof(t_indice), SEEK_SET);
     fread(&buffer_indice_aux,sizeof(t_indice),1,arch);
 
-   /* strcpy(indice_aux.clave.nombre,buffer_reg_jugador.nombre);
-    indice_aux.pos = medio;*/
-
-
     r_padre = ponerOrdenado(arbol,&buffer_indice_aux,sizeof(t_indice),cmp_indices_jugadores,NULL);
     r_izq = ponerEnIndice(arbol, ini, medio - 1, arch);
     r_der = ponerEnIndice(arbol, medio + 1, fin, arch);
@@ -211,7 +207,7 @@ int partidas_agregar(unsigned id_jugador, unsigned puntos, unsigned cant_movimie
     FILE *f = abrir_bin(ARCHIVO_PARTIDAS, "ab");
     if (!f) return 0;
 
-    reg.id_partida = 0; ///ACA FALTA IMPLEMENTAR LA LOGICA DE CONSEGUIR UN NUEVO ID
+    reg.id_partida = 0;
     reg.id_jugador       = id_jugador;
     reg.puntos           = puntos;
     reg.cant_movimientos = cant_movimientos;
@@ -293,4 +289,5 @@ void ranking_mostrar() {
     printf("\n");
 
     vaciarLista(&lista_acum);
+    pausa();
 }

@@ -21,7 +21,7 @@ typedef struct {
 
 typedef struct {
     unsigned id_jugador;
-    char nombre[MAX_NOMBRE];///clave
+    char nombre[MAX_NOMBRE];
 } t_reg_jugador;
 
 int ponerEnIndice(t_arbol* arbol, int ini, int fin, FILE* arch);

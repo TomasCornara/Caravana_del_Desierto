@@ -6,8 +6,6 @@ void crearDado(t_dado* d, unsigned cnt_lados)
 {
     if (!d) return;
     d->lados = cnt_lados;
-    //srand((unsigned)time(NULL));
-    //d->cara = (cnt_lados > 0) ? (rand() % cnt_lados) + 1 : 1;
     d->cara = 0;
 }
 

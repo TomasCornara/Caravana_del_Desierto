@@ -5,16 +5,19 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-#include "lista_circular_doble.h"
-#include "manejo_archivos.h"
-#include "cola_dinamica.h"
-#include "arbolBinario.h"
-
 ///OPCIONES DE DEBUG
 #define DEBUG_JUGADOR 1
 #define DEBUG_BANDIDOS 0
 #define DEBUG_BANDIDOS_LENTOS 0
 
+//Archivos
+#include "lista_circular_doble.h"
+#include "manejo_archivos.h"
+#include "cola_dinamica.h"
+#include "arbolBinario.h"
+
+
+//Valores del juego
 #define VALORES_POR_LINEA_CONFIG 2
 #define MAX_CLAVE_CONFIG 64
 #define ARCHIVO_CONFIG "config.txt"
@@ -25,8 +28,6 @@
 #define ARCHIVO_IDX "indice.idx"
 #define CARAS_DADO 6
 #define TOP_RANKING 5
-
-//Valores del juego
 #define ANCHO_CONSOLA 120
 #define ALTO_CONSOLA 30
 #define MAX_NOMBRE 4
@@ -107,7 +108,7 @@ typedef struct {
 } t_config;
 
 
-//Funciones logica de juego
+///Funciones logica de juego
 void poner_tipo_random(t_mapa *mapa, int total, unsigned tipo, int cantidad);
 void poner_bandidos_random(t_mapa *mapa, int total, int cantidad);
 void poner_casilleros_especiales(t_mapa *mapa, t_config *config);
@@ -122,17 +123,12 @@ void mover_bandido(t_mapa *mapa, t_movimiento* movimiento_bandido);
 void resolver_casillero_actual(t_mapa * mapa,t_jugador *jugador);
 void resolver_bandido_en_casillero(t_mapa*mapa,t_jugador *jugador, t_casillero *casillero_actual);
 void printCaravana(FILE *archivo, t_mapa *mapa);
-
-
 unsigned calcular_pos_final_del_jugador(unsigned pos_inicial_del_jugador,
                                    unsigned cantidad_nodos_lista,
                                    unsigned cantidad_pasos,
                                    char direccion);
-
 void calcular_bandidos(t_mapa * mapa, t_movimientos * cola);
 void situar_bandidos(void * a, void * parametro_extra);
-
-
 int comparar_posicion_casilleros(const void* elem_a,const void* elem_b);
 int comparar_clave_casillero(const void* elem_a,const void* elem_b);
 int comparar_posicion_del_jugador_en_mapa(const void * a,const void * b);
@@ -142,7 +138,7 @@ void poner_bandido(void* a, void* parametro_extra);
 void quitar_bandido(void *a, void* parametro_extra);
 int mostrar_movimientos(t_movimientos *cola, const char* nombre_jugador);
 
-//Funciones consola
+///Funciones consola
 
 //Utiles
 void limpiar_pantalla();
