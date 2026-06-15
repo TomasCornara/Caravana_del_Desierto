@@ -179,6 +179,7 @@ void jugar_partida(t_mapa *mapa, t_config *config)
         arch=fopen(ARCHIVO_JUGADORES,"rb");
         if(!arch)return;
         crear_indice(arch);
+        fclose(arch);
     }
 
     partidas_agregar(id_jugador, jugador.puntos, cant_movs);
