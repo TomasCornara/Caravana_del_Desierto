@@ -2,9 +2,9 @@
 
 ![Diagrama Conceptual](banner.png)
 
-Este repositorio es una implementación en C de un juego interactivo de consola llamado "Caravana del Desierto", donde los jugadores emprenden una peligrosa travesía por el desierto.
+Este repositorio es una implementación en C de un juego interactivo de consola llamado "Caravana del Desierto", donde los jugadores emprenden una peligrosa travesía por las arenas del desierto.
 
-El juego de Caravana del Desierto es una simulación basada en casilleros por los cuales uno se va desplazando. La travesía en el tablero está determinada por las siguientes reglas:
+El juego es una simulación basada en casilleros por los cuales el jugador se va desplazando. La travesía en el tablero está determinada por las siguientes reglas:
 
 * Un jugador que cae en un oasis recupera ventaja, pausando los malos tiempos del viaje y el ataque de los bandidos.
 
@@ -28,17 +28,15 @@ El juego de Caravana del Desierto es una simulación basada en casilleros por lo
 
 ![Diagrama Conceptual](conceptual.png)
 
-Este proyecto está escrito integramente en C y construye un motor de juego utilizando diferentes estructuras de datos modelar los comportamientos del juego.
+Este proyecto está codificado integramente en C y construye un motor de juego utilizando diferentes estructuras de datos para modelar los comportamientos del juego.
 
-La **configuracion inicial** del mapa del juego se carga a partir de un [archivo de configuración](#archivos-de-configuración) bien formado (En caso de no estarlo, se sustituyen valores erroneos por los de por defecto) que genera una estructura llamada t\_config de la cual se generá el mapa.
+La **configuracion inicial** del mapa se carga a partir de un [archivo de configuración](#archivos-de-configuración) bien formado (En caso de no estarlo, se sustituyen valores erroneos por los de por defecto) que genera una estructura llamada t\_config desde la cual se generá el mapa.
 
-Se utiliza **Listas Circulares Dobles** para la representación de los casilleros del mapa. El accionar de los bandidos y del jugador se ejecutan almacenando sus distintas acciones en **Colas Dinámicas** y los casilleros resultantes se generan a partir de el desacolo ordenado de estos movimientos. El jugador tiene en su estructura un atributo tipo unsigneque indica su posicion en el mapa. Cada casillero tiene en sus atributos la cantidad de bandidos presentes en esa casilla y si el jugador esta presente o no (Por lo que los bandidos se manejan como atributos de los casilleros y no entidades propias).
+Se utiliza una **Lista Circular Doble** para la representación de los casilleros del mapa. El accionar de los bandidos y del jugador se ejecutan almacenando sus distintas acciones en una **Cola Dinámica** y los casilleros resultantes se generan a partir de el desacolo ordenado de estos movimientos. El jugador tiene en su estructura un atributo tipo unsigned como indice de su posicion en el mapa. Cada casillero tiene en sus atributos la cantidad de bandidos presentes en esa casilla y si el jugador esta presente o no (Los bandidos se manejan como atributos de los casilleros y no entidades propias).
 
 ![Diagrama Conceptual](conceptual_turnos.png)
 
-Tiene un sistema de ranking implementado sobre un **indice** utilizando un **arbol binario** que retiene la informacion de las partidas y los jugadores y calcula un raking a partir de una **cola enlazada simple.**.
-
-Por ultimo, tiene un, siempre muy util, opción de salida para terminar el juego.
+Tiene un sistema de ranking implementado como un **indice** sobre un **arbol binario** que retiene la informacion de los jugadores y, relacionandolo los datos de partidas cargados y ordenados dentro de una **lista enlazada simple.**, calcula el top 5 mejores jugadores.
 
 ### Notacion del mapa/caravana.txt
 
@@ -48,7 +46,6 @@ Cada casillero se imprime con la siguiente estructura:
 
 `[Posición|Tipo|Jugador|Bandidos]`
 
-A continuación se detalla qué significa cada campo dentro de los corchetes:
 
 | Campo        | Formato / Valores                 | Descripción                                                                         |
 | :----------- | :-------------------------------- | :---------------------------------------------------------------------------------- |
@@ -81,7 +78,7 @@ El segundo parámetro (`Tipo`) varía según las constantes definidas en el jueg
 
 ### Archivos de Configuración
 
-Antes de iniciar, puede modificar/agregar el archivo de texto `config.txt` que debe encontrarse en el mismo directorio que el ejecutable. Debe estar formateado de la siguiente manera:
+Antes de iniciar, puede modificar/agregar el archivo de texto `config.txt` que debe encontrarse en el mismo directorio que el ejecutable. Su formato debe ser similar a este:
 
 ```text
 cantidad_posiciones:25

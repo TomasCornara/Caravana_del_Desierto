@@ -50,8 +50,6 @@
 #define CONFIG_MAXIMO_OASIS_DEFAULT 2
 #define CONFIG_MAXIMO_TORMENTAS_DEFAULT 3
 
-
-
 typedef t_arbol t_raking;
 typedef tLista t_mapa;
 typedef t_mapa t_pos;
@@ -123,6 +121,8 @@ void mover_bandido(t_mapa *mapa, t_movimiento* movimiento_bandido);
 void resolver_casillero_actual(t_mapa * mapa,t_jugador *jugador);
 void resolver_bandido_en_casillero(t_mapa*mapa,t_jugador *jugador, t_casillero *casillero_actual);
 void printCaravana(FILE *archivo, t_mapa *mapa);
+int resultado_partida(t_movimientos * cola );
+
 unsigned calcular_pos_final_del_jugador(unsigned pos_inicial_del_jugador,
                                    unsigned cantidad_nodos_lista,
                                    unsigned cantidad_pasos,
@@ -136,7 +136,6 @@ void quitar_jugador(void* a,void* parametro_extra);
 void ponerlo_jugador(void* a,void* parametro_extra);
 void poner_bandido(void* a, void* parametro_extra);
 void quitar_bandido(void *a, void* parametro_extra);
-int mostrar_movimientos(t_movimientos *cola, const char* nombre_jugador);
 
 ///Funciones consola
 
@@ -144,7 +143,7 @@ int mostrar_movimientos(t_movimientos *cola, const char* nombre_jugador);
 void limpiar_pantalla();
 void mostrarHeader(void);
 void mostrarFooter(void);
-void mostrarEstadisticas(unsigned vidas, unsigned puntos, char* nombre);
+void mostrarEstadisticas(t_jugador * jugador);
 void pausa();
 void mostrar_menu();
 void pedir_nombre(char *nombre);

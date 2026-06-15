@@ -18,6 +18,7 @@ void jugar_partida(t_mapa *mapa, t_config *config)
     t_movimiento movi;
     t_jugador jugador;
     t_dado dado;
+    bool caso_oasis = false;
     char direccion;
     unsigned cantidad_casilleros,
             posicion_salida;
@@ -51,19 +52,9 @@ void jugar_partida(t_mapa *mapa, t_config *config)
             numero_turno++;
         #endif // DEBUG_JUGADOR
 
-        mostrarEstadisticas(jugador.vidas, jugador.puntos, jugador.nombre);
+        mostrarEstadisticas(&jugador);
         printCaravana(stdout, mapa);
 
-        if (jugador.efectoTormenta)
-        {
-            jugador.efectoTormenta = false;
-            printf("La tormenta te hace perder este turno.\n");
-            mostrarFooter();
-            pausa();
-
-        }
-        else
-        {
             unsigned pos_final_j;
             direccion = AVANZAR; //Por defecto se avanza
 
@@ -99,12 +90,17 @@ void jugar_partida(t_mapa *mapa, t_config *config)
             pos_final_j = calcular_pos_final_del_jugador(jugador.pos_en_mapa,
                                                          cantidad_casilleros,
                                                          dado.cara,direccion);
+            if(jugador.efectoTormenta == false){
+                guardar_movimiento(&cola_movimientos_jugador,
+                                   jugador.pos_en_mapa,
+                                   pos_final_j,
+                                   direccion,
+                                   dado.cara,true);
+            }else{
 
-            guardar_movimiento(&cola_movimientos_jugador,
-                               jugador.pos_en_mapa,
-                               pos_final_j,
-                               direccion,
-                               dado.cara,true);
+               printf("\nLA TORMENTA TE HACE PERDER EL TURNO");
+               pausa();
+            }
 
             guardar_movimiento(&cola_turno,
                                jugador.pos_en_mapa,
@@ -125,15 +121,23 @@ void jugar_partida(t_mapa *mapa, t_config *config)
                 #endif // DEBUG_BANDIDOS
 
                 if(movi.jugador_humano){
-                    mover_jugador(mapa,&jugador,&movi);
-                    resolver_casillero_actual(mapa,&jugador);
+                    if(jugador.efectoTormenta == false){
+                        mover_jugador(mapa,&jugador,&movi);
+                    }else{
+                       jugador.efectoTormenta = false;
+                    }
                 }else{
-                    t_casillero *casillero_jugador;
                     mover_bandido(mapa,&movi);
+                }
+                resolver_casillero_actual(mapa,&jugador);
+            }
 
-                    //Le paso donde esta el jugador para que pueda chequear si le puede hacer daño
-                    casillero_jugador = obtener_de_lista_dir_dato(mapa, &(jugador.pos_en_mapa), comparar_clave_casillero);
-                    resolver_bandido_en_casillero(mapa, &jugador, casillero_jugador);
+            if( jugador.efectoOasis && caso_oasis == false ){
+                caso_oasis = true;
+            }else{
+                if(caso_oasis == true){
+                    jugador.efectoOasis = false;
+                    caso_oasis = false;
                 }
             }
 
@@ -147,7 +151,7 @@ void jugar_partida(t_mapa *mapa, t_config *config)
                 pausa();
             #endif // DEBUG_UUGADOR
             limpiar_pantalla();
-        }
+        //}
     }
 
     ///Fin del juego
@@ -161,9 +165,9 @@ void jugar_partida(t_mapa *mapa, t_config *config)
         scanf("%d", &jugador.puntos);
         limpiar_buffer();
     #endif // DEBUG_JUGADOR
-
-    cant_movs=mostrar_movimientos(&cola_movimientos_jugador, jugador.nombre);
-
+    //bajarindice(&arbol_indice,"indice.idx")
+    cant_movs = resultado_partida(&cola_movimientos_jugador);
+    pausa();
     crearArbol(&arbol_indice);
     file_a_arbolIndice(& arbol_indice,ARCHIVO_IDX);
 
@@ -189,6 +193,28 @@ void jugar_partida(t_mapa *mapa, t_config *config)
     destruirDado(&dado);
 
     return;
+}
+
+int resultado_partida(t_movimientos * cola ){
+   t_movimiento movimiento_desacolado;
+   unsigned acumulador_avanzar = 0;
+   unsigned acumulador_retroceder = 0;
+
+   while( !colaVacia(cola) ){
+      desacolar(cola,&movimiento_desacolado,sizeof(t_movimiento));
+      if(movimiento_desacolado.orientacion == AVANZAR){
+         acumulador_avanzar += movimiento_desacolado.cantidad_movimiento;
+      }else{
+         acumulador_retroceder += movimiento_desacolado.cantidad_movimiento;
+      }
+   }
+   printf("\n-----------------MOVIMIENTOS JUGADOR----------------------\n");
+
+   printf("F: %u      B: %u", acumulador_avanzar, acumulador_retroceder);
+
+   printf("\n----------------------------------------------------------\n");
+
+   return acumulador_avanzar + acumulador_retroceder;
 }
 
 unsigned calcular_pos_final_del_jugador(unsigned pos_inicial_del_jugador,
@@ -369,14 +395,6 @@ void resolver_casillero_actual(t_mapa * mapa,t_jugador *jugador)
     {
         jugador->vidas++;
     }
-    else if (casillero_actual->tipo_casillero != TIPO_TORMENTA && jugador->efectoOasis)
-    {
-        jugador->efectoOasis = false;
-        limpiar_pantalla();
-        printf("Pierdes el efecto Oasis.\n");
-        pausa();
-    }
-
     if (casillero_actual->animacion)
     {
         limpiar_pantalla();
@@ -414,7 +432,7 @@ void resolver_bandido_en_casillero(t_mapa*mapa,t_jugador *jugador, t_casillero *
     printBandido();
     pausa();
 
-    if (jugador->vidas > 0)
+    if (jugador->vidas > 0 && jugador->efectoOasis != true)
     {
         limpiar_pantalla();
         t_movimiento movimiento_jugador;
@@ -425,8 +443,10 @@ void resolver_bandido_en_casillero(t_mapa*mapa,t_jugador *jugador, t_casillero *
         movimiento_jugador.pos_final = 0;
         movimiento_jugador.cantidad_movimiento = 0;
         mover_jugador(mapa,jugador,&movimiento_jugador);
+    }else{
+        printf("El Oasis te protege del bandido\n");
+        limpiar_buffer();
     }
-
     casillero_actual->cant_bandidos--; //Elimina al bandido que ataco
     pausa();
 }
@@ -796,12 +816,27 @@ void mostrarBienvenida(void){
     );
 }
 
-void mostrarEstadisticas(unsigned vidas, unsigned puntos, char* nombre){
+void mostrarEstadisticas(t_jugador * jugador){
+
+    char efecto_tormenta[12];
+    char efecto_oasis[12];
+
+    if(jugador->efectoTormenta){
+        strcpy(efecto_tormenta,"ACTIVO");
+    }else{
+        strcpy(efecto_tormenta,"DESACTIVADO");
+    }
+    if(jugador->efectoOasis){
+        strcpy(efecto_oasis,"ACTIVO");
+    }else{
+        strcpy(efecto_oasis,"DESACTIVADO");
+    }
+
     printf(
     "                                                      VIDAS: %d                                                         \n"
-    "                                                      PUNTOS: %d                             JUGADOR: %s                \n"
-    "########################################################################################################################\n",
-    vidas, puntos, nombre
+    "   EFECTO TORMENTA: %s      EFECTO OASIS: %s           PUNTOS: %d                           JUGADOR: %s                \n"
+    "#########################################################################################################################\n",
+    jugador->vidas,efecto_tormenta,efecto_oasis, jugador->puntos,jugador->nombre
     );
 }
 
@@ -987,27 +1022,4 @@ void limpiar_pantalla() {
     #else
         system("clear");
     #endif
-}
-int mostrar_movimientos(t_movimientos *cola, const char* nombre_jugador) {
-    t_movimiento mov;
-    int total = 0;
-    int col   = 0;
-
-    limpiar_pantalla();
-    printf("\n=== Movimientos de %s ===\n", nombre_jugador);
-
-    while (desacolar(cola, &mov, sizeof(t_movimiento))) {
-        if (mov.jugador_humano) {
-            int delta = (int)mov.pos_final - (int)mov.pos_inicial;
-            char tipo  = (delta >= 0) ? 'F' : 'B';
-            int  pasos = (delta >= 0) ? delta : -delta;
-            printf("%c%d ", tipo, pasos);
-            total++;
-            col++;
-            if (col % 15 == 0) printf("\n");
-        }
-    }
-    printf("\nTotal: %d movimientos\n", total);
-    pausa();
-    return total;
 }

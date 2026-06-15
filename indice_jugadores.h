@@ -40,7 +40,7 @@ int partidas_agregar(unsigned id_jugador, unsigned puntos, unsigned cant_movimie
 void ranking_mostrar();
 int indice_comparar(const void *a, const void *b);
 int indice_buscar(t_raking *arbol, const char *nombre, t_indice *dest);
-
+int obtener_ultimo_id_reg(FILE * pf);
 int crear_indice(FILE* arch);
 void guardarIndiceINorden(const t_arbol* arbol, FILE* arch);
 #endif // INDICE_JUGADORES_H_INCLUDED
