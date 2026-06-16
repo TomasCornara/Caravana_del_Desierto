@@ -706,10 +706,17 @@ char inicialTipoCasillero(unsigned tipo)
 }
 
 void printCasillero(void* casillero, void* file){
+    unsigned numero_casillero;
     FILE* arch = (FILE*)file;
     t_casillero* cas = (t_casillero*)casillero;
+
+    numero_casillero = cas->nro_posicion;
+    #if !DEBUG_JUGADOR
+        numero_casillero++;
+    #endif
+
     fprintf(arch,"[%02d|%c|%c|B:%d]\n",
-            cas->nro_posicion,
+            numero_casillero,
             inicialTipoCasillero(cas->tipo_casillero),
             (cas->presencia_jugador)? 'J':'.',
             cas->cant_bandidos);

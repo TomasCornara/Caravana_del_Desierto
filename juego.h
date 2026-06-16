@@ -6,7 +6,7 @@
 #include <ctype.h>
 
 ///OPCIONES DE DEBUG
-#define DEBUG_JUGADOR 1
+#define DEBUG_JUGADOR 0
 #define DEBUG_BANDIDOS 0
 #define DEBUG_BANDIDOS_LENTOS 0
 
